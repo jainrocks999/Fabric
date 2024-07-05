@@ -52,7 +52,7 @@ const LandingPage = () => {
             </View>
             <View style={{alignItems:'center',justifyContent:'center'}}>
                 <TouchableOpacity 
-                 onPress={() => navigation.replace('Test')}
+                 onPress={() => navigation.replace('Home')}
                 style={{backgroundColor:colors.color1,paddingHorizontal:20,paddingVertical:10,borderRadius:6}}>
                     <Text style={{color:'#fff',fontSize:14,fontFamily:'Montserrat-SemiBold'}}>Proceed</Text>
                 </TouchableOpacity>

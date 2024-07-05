@@ -20,7 +20,7 @@ import Punchorder2 from "../screens/Main/HomeComponets/Punchorder2";
 import PunchorderList from "../screens/Main/HomeComponets/PunchorderList";
 import OrderSuccessful from "../screens/Main/HomeComponets/OrderSuccessful";
 import Testing from "../screens/Main/HomeComponets/Testing";
-import Test from "../screens/Main/HomeComponets/Test";
+
 
 const Stack = createNativeStackNavigator();
 function Navigate() {
@@ -35,7 +35,6 @@ function Navigate() {
         <Stack.Screen name="Login" component={Login} />
         
         <Stack.Screen name="LandingPage" component={LandingPage}/>
-        <Stack.Screen name='Test' component={Test}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

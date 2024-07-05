@@ -6,10 +6,64 @@ import Eye1 from "../../../assets/Icon/eye1.svg"
 import { useNavigation } from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
 import colors from "../../../assets/colors";
-
+import axios from "axios";
+import Toast from 'react-native-simple-toast';
+import Loading from "../../../components/Loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Login = () => {
   const navigation = useNavigation()
   const [visible,setVisible]=useState(true)
+  const[email,setEmail]=useState('');
+  const[password,setPassword]=useState('');
+  const[loading,setLoading]=useState(false);
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ const HandaleLogin=()=>{
+  // data.append('email', 'aatish@gmail.com');
+  // data.append('password', '12345678');
+  if(re.test(email) == ''){
+    Toast.show('Please enter the valid email');
+    return;
+  } else if(password == ''){
+    Toast.show('Please enter the valid password');
+    return;
+  }
+  else{
+try {
+  let data = new FormData();
+data.append('email', email);
+data.append('password', password);
+setLoading(true);
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'http://203.123.38.118:8080/admin/index.php/api/login',
+  headers: { 
+    // ...data.getHeaders()
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  if(response.data.status==200){
+    setLoading(false);
+    console.log(JSON.stringify(response.data));
+    AsyncStorage.setItem('token',response.data.token);
+    AsyncStorage.setItem('User',JSON.stringify(response.data.user))
+    navigation.replace('LandingPage')
+  }else{
+    setLoading(false);
+    console.log(JSON.stringify(response.data));
+  }
+  
+})
+
+} catch (error) {
+  setLoading(false);
+  console.log('error,,',error);
+}}
+ }
+
   return (
     <LinearGradient colors={['#FFF', '#FFF8']} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
@@ -19,7 +73,7 @@ const Login = () => {
         keyboardShouldPersistTaps="always"
         contentContainerStyle={{ flexGrow: 1 }}
       >
-
+{loading?<Loading/>:null}
         <View style={{ flex: 1 }}>
           <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 70 }}>
             <Image style={{ height: 200, width: '50%', }} source={require('../../../assets/Logo/fabric_logo.png')} />
@@ -38,7 +92,9 @@ const Login = () => {
             <TextInput style={{fontSize:14,marginBottom:-2,color:'#000'}}
               placeholder="Email Address"
               keyboardType="email-address"
-              // placeholderTextColor={'#000'}
+              //  placeholderTextColor={'#000'}
+              value={email}
+              onChangeText={(text)=>setEmail(text)}
             />
             </View>
             <Text style={{ fontFamily: 'Montserrat-SemiBold', fontSize: 15, color: colors.color1, marginTop: 30 }}>Password</Text>
@@ -57,6 +113,8 @@ const Login = () => {
               placeholder="Password"
               keyboardType="default"
               // placeholderTextColor={'#000'}
+              value={password}
+              onChangeText={(text)=>setPassword(text)}
               secureTextEntry={visible}
             />
             {visible?
@@ -72,7 +130,7 @@ const Login = () => {
           </View>
           <View style={{ marginTop: 40, marginHorizontal: 15 }}>
             <TouchableOpacity activeOpacity={0.6}
-              onPress={() => navigation.replace('LandingPage')}
+              onPress={() =>HandaleLogin()}
               style={{
                 height: 45,
                 borderRadius: 20,

@@ -24,7 +24,8 @@ const Punchorder = () => {
     Price: '',
     Matchoption: '',
     Cut: '',
-    Remark: ''
+    Remark: '',
+    quality:'',
   })
   const handleInputs = (text, input) => {
     setInputs(prev => ({ ...prev, [text]: input }));
@@ -41,6 +42,53 @@ const Punchorder = () => {
       />
       <ScrollView style={{ marginBottom: 0 }}>
         <View style={{ paddingHorizontal: 5, marginBottom: 80 }}>
+        <View style={styles.Main}>
+            <Text style={styles.inputText}>Quality</Text>
+            <View style={styles.dropdown}>
+              <Dropdown
+                style={{
+                  height: 22
+                }}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={{ color: '#000', fontSize: 14 }}
+                search
+                data={data2}
+                inputSearchStyle={{
+                  borderRadius: 10,
+                  backgroundColor: '#f0f0f0',
+                }}
+                itemTextStyle={{ color: '#474747' }}
+                searchPlaceholder="search.."
+                maxHeight={250}
+                labelField="label"
+                valueField="value"
+                placeholder="Quality"
+                value={inputs.quality}
+                renderItem={(item) => item.value === inputs.quality ? (
+
+                  <View style={{
+                    padding: 17,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: 'grey'
+                  }}>
+                    <Text style={[styles.selectedTextStyle, { color: '#fff' }]}>{item.label}</Text>
+                  </View>
+                ) : <View style={{
+                  padding: 17,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                  <Text style={[styles.selectedTextStyle, { color: '#000' }]}>{item.label}</Text>
+                </View>}
+                onChange={item => {
+                  handleInputs("quality", item.value)
+                }}
+              />
+            </View>
+          </View>
           <View style={styles.Main}>
             <Text style={styles.inputText}>Design</Text>
             <View style={styles.dropdown}>

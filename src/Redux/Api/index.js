@@ -1,113 +1,68 @@
 import axios from 'axios';
 import Constants from '../Constants';
-// import Toast from 'react-native-simple-toast';
-export default class Api {
-  static fetchDataByPOST = async (url, data) => {
-    // console.log('Login detail',Constants.MainUrl + url);
-    try {
-      const response = await axios({
-        method: 'POST',
-        headers: {
-          MobileAppKey: 'EED26D5A-711D-49BD-8999-38D8A60329C5',
-        },
-        url: Constants.MainUrl + url,
-        params: data,
-      });
-      // console.log('response.....',params);
-      return response;
-    } catch (error) {
-      console.log('why eorror fatch by login', error);
-      throw error;
-    }
-  };
+import {Alert} from 'react-native';
+import * as naviagationService from '../../utils/navigationService';
+import storage from '../../utils/storageService';
 
-  static fetchDataByGET = async (url, data) => {
-    try {
-      // console.log('virendra',data,Constants.MainUrl + url);
-      const response = await axios({
-        method: 'GET',
-        headers: {
-          MobileAppKey: 'EED26D5A-711D-49BD-8999-38D8A60329C5',
-          // Authorization: 'Bearer ' + loginToken,
-        },
-        url: Constants.MainUrl + url,
-        params: data,
-      });
-      // console.log('data downloadby data',response.data);
-      return response.data;
-    } catch (error) {
-    //    Toast.show('Server not responding')
-      console.log('error123', error);
-      throw error;
-    }
-  };
-  static fetchDataByGET1 = async (url, Token, data) => {
-    console.log(
-      'virendra mishra......token',
-      Constants.MainUrl + url,
-      data,
-      Token,
+class Api {
+  axiosInstance;
+  constructor() {
+    this.axiosInstance = axios.create({
+      baseURL: Constants.mainUrl,
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+
+    this.axiosInstance.interceptors.response.use(
+      response => response,
+      async error => {
+        if (error.response && error.response.status === 401) {
+          Alert.alert(
+            'Session Expired',
+            'Your session has expired. Please log in again.',
+            [
+              {
+                text: 'OK',
+                onPress: () => this.redirectToLogin(),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+        return Promise.reject(error);
+      },
     );
-    try {
-      const response = await axios({
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-          "Olocker": `Bearer ${Token}`,
-        },
-        url: Constants.MainUrl + url,
-        params: data,
-      });
-      return response.data;
-    } catch (error) {
-    //   Toast.show('Server not responding')
-      console.log('error123', error);
-      throw error;
-    }
+  }
+
+  redirectToLogin = async () => {
+    await storage.removeItem(storage.TOKEN);
+    naviagationService.reset('Login');
   };
 
-static fetchDataByGET3 = async (url, Token, data) => {
-    console.log(
-      'virendra mishra......token',
-      Constants.MainUrl + url,
-      data,
-      Token,
-    );
+  async getRequest(endpoint, token) {
     try {
-      const response = await axios({
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          "Olocker": `Bearer ${Token}`,
-        },
-        url: Constants.MainUrl + url,
-        data: data,
+      const response = await this.axiosInstance.get(endpoint, {
+        headers: {Authorization: `Bearer ${token}`},
       });
       return response.data;
     } catch (error) {
-    //   Toast.show('Server not responding')
-      console.log('error123', error);
+      console.error('Request failed', error);
       throw error;
     }
-  };
+  }
 
-  static fetchDataByGET2 = async (url,Token) => {
-    console.log('bbbb', url);
-    console.log('aaaaa', Constants.MainUrl + url);
+  async postRequest(endpoint, data, token) {
     try {
-      const response = await axios({
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-          "Olocker": `Bearer ${Token}`,
-        },
-        url: Constants.MainUrl + url,
+      const response = await this.axiosInstance.post(endpoint, data, {
+        headers: {Authorization: `Bearer ${token}`},
       });
       return response.data;
     } catch (error) {
-        // Toast.show('Server not responding')
-      // console.log('vvvvv',error);
+      console.error('Request failed', error);
       throw error;
     }
-  };
+  }
 }
+
+export default new Api();

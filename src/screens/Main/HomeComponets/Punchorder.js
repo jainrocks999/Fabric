@@ -1,76 +1,167 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
-import Header from "../../../components/CustomHeader";
-import { Dropdown } from 'react-native-element-dropdown';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ToastAndroid,
+} from 'react-native';
+import Header from '../../../components/CustomHeader';
+import {Dropdown} from 'react-native-element-dropdown';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useNavigation } from "@react-navigation/native";
-import colors from "../../../assets/colors";
-import BackArrow from "../../../assets/Icon/BackArrow.svg";
+import {useNavigation} from '@react-navigation/native';
+import colors from '../../../assets/colors';
+import BackArrow from '../../../assets/Icon/BackArrow.svg';
+import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loading from '../../../components/Loader';
+import storage from '../../../utils/storageService';
+import Api from '../../../Redux/Api';
+const useDebounce = (func, delay) => {
+  const timeoutRef = useRef(null);
+
+  const debouncedFunc = (...args) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+
+  return debouncedFunc;
+};
 const Punchorder = () => {
-  const navigation = useNavigation()
-  const [customer, setCustomer] = useState('')
-  const [address, setAddress] = useState('')
-  const [remark, setRemark] = useState('')
+  const {} = useSelector(state => state);
+  const [isFetching, setIsFetching] = useState(false);
+  const dispatch = useDispatch();
+  const [totoalPage, setTotalPage] = useState(10);
+  const [partyList, setPartyList] = useState([]);
+  const navigation = useNavigation();
+  const [customer, setCustomer] = useState('');
+  const [address, setAddress] = useState('');
+  const [remark, setRemark] = useState('');
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    getPartyName(page);
+  }, []);
+  const fetchData = async (endpoint, token) => {
+    try {
+      setIsFetching(true);
+      const res = await Api.getRequest(endpoint, token);
+      if (res.status) {
+        setPartyList(prev => [...prev, ...res.data]);
+        setTotalPage(res.totalPages);
+      } else {
+        ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+      }
+    } catch (err) {
+      console.log(err);
+      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+  const getPartyName = async page_number => {
+    if (isFetching) {
+      return;
+    }
+    const endpoint = `party-names/${page_number}`;
+    const token = await storage.getItem(storage.TOKEN);
+    fetchData(endpoint, token);
+    setPage(page_number);
+  };
+
+  const onScroll = ({nativeEvent}) => {
+    if (!nativeEvent) return;
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 20) {
+      if (page <= totoalPage) {
+        getPartyName(page + 1);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Header
-        title={"Punch Order"}
-        onPress={() => navigation.openDrawer()}
-      />
-      <ScrollView style={{ marginBottom: 0 }}>
-        <View style={{ paddingHorizontal: 5, marginBottom: 80 }}>
+      <Header title={'Punch Order'} onPress={() => navigation.openDrawer()} />
+      {isFetching && (
+        <Loading
+          style={{
+            zIndex: 100,
+          }}
+        />
+      )}
+      <ScrollView style={{marginBottom: 0}}>
+        <View style={{paddingHorizontal: 5, marginBottom: 80}}>
           <View style={styles.Main}>
             <Text style={styles.inputText}>Customer Name</Text>
             <View style={styles.dropdown}>
               <Dropdown
                 style={{
-                  height: 22
+                  height: 22,
+                }}
+                flatListProps={{
+                  onScroll: onScroll,
                 }}
                 placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{ color: '#000', fontSize: 14 }}
+                selectedTextStyle={{color: '#000', fontSize: 14}}
                 search
-                data={data1}
+                data={partyList}
                 inputSearchStyle={{
                   borderRadius: 10,
                   backgroundColor: '#f0f0f0',
                 }}
-                itemTextStyle={{ color: '#474747' }}
+                itemTextStyle={{color: '#474747'}}
                 searchPlaceholder="search.."
                 maxHeight={250}
-                labelField="label"
-                valueField="value"
+                labelField="Partyname"
+                valueField="Partyid"
                 placeholder="Customer Name"
                 value={customer}
-                renderItem={(item) => item.value === customer ? (
-
-                  <View style={{
-                    padding: 17,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    backgroundColor: 'grey'
-                  }}>
-                    <Text style={[styles.selectedTextStyle, { color: '#fff' }]}>{item.label}</Text>
-                  </View>
-                ) : <View style={{
-                  padding: 17,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                  <Text style={[styles.selectedTextStyle, { color: '#000' }]}>{item.label}</Text>
-                </View>}
-                onChange={item => {
-                  setCustomer(item.value)
-                  setAddress(item.address)
+                onScrollEndDrag={() => {
+                  alert('called');
                 }}
-
+                renderItem={item =>
+                  item.Partyname === customer ? (
+                    <View
+                      style={{
+                        padding: 17,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: 'grey',
+                      }}>
+                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
+                        {item.Partyname}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        padding: 17,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
+                        {item.Partyname}
+                      </Text>
+                    </View>
+                  )
+                }
+                onChange={item => {
+                  setCustomer(item.Partyid);
+                  setAddress(item.Adr4);
+                }}
               />
-
             </View>
           </View>
 
@@ -80,12 +171,11 @@ const Punchorder = () => {
               <TextInput
                 style={styles.dropdown}
                 placeholder="Address"
-                value={address}
-                onChangeText={(val) => setAddress(val)}
+                value={`${address.substring(0, 45)}...`}
+                onChangeText={setAddress}
               />
             </View>
           </View>
-
 
           <View style={styles.Main}>
             <Text style={styles.inputText}>Remark</Text>
@@ -93,21 +183,31 @@ const Punchorder = () => {
               <TextInput
                 style={styles.dropdown}
                 placeholder="Remark"
+                value={remark}
+                onChangeText={setRemark}
               />
             </View>
           </View>
 
           <View style={styles.buttonView}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Punchorder2')}
-              style={styles.buttonOpen}
-            >
-              <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 15, }}>Proceed</Text>
+              onPress={() =>
+                navigation.navigate('Punchorder2', {remark, customer, address})
+              }
+              style={styles.buttonOpen}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'Montserrat-Bold',
+                  fontSize: 15,
+                }}>
+                Proceed
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
-      <View style={{ position: 'absolute', bottom: 20, left: 20 }}>
+      <View style={{position: 'absolute', bottom: 20, left: 20}}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -119,14 +219,14 @@ const Punchorder = () => {
             borderTopLeftRadius: 80,
             borderTopRightRadius: 40,
             borderBottomLeftRadius: 80,
-            borderBottomRightRadius: 40
+            borderBottomRightRadius: 40,
           }}>
           <BackArrow />
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   buttonOpen: {
@@ -138,26 +238,29 @@ const styles = StyleSheet.create({
     marginTop: hp(3),
     width: wp(91),
     backgroundColor: colors.color1,
-    borderRadius: wp(2)
+    borderRadius: wp(2),
   },
   buttonView: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    paddingHorizontal: 13
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 13,
   },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     // paddingHorizontal:15
   },
-  Main: { marginHorizontal: wp(3), marginTop: wp(3.5) },
+  Main: {marginHorizontal: wp(3), marginTop: wp(3.5)},
   inputText: {
     fontSize: wp(3.5),
     // marginLeft: wp(1),
     fontWeight: '700',
-    color: '#000'
+    color: '#000',
   },
   dropdown: {
-    marginTop: wp(2), borderWidth: 1, borderColor: '#979998',
+    marginTop: wp(2),
+    borderWidth: 1,
+    borderColor: '#979998',
     color: '#000',
     height: hp(5.5),
     backgroundColor: 'white',
@@ -172,16 +275,14 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     fontSize: 14,
     elevation: 3,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   placeholderStyle: {
     fontSize: 15,
     color: '#a0a0a0',
-
   },
   selectedTextStyle: {
     fontSize: 14,
-
   },
   iconStyle: {
     width: 20,
@@ -200,27 +301,26 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 80,
     borderTopRightRadius: 40,
     borderBottomLeftRadius: 80,
-    borderBottomRightRadius: 40
-  }
+    borderBottomRightRadius: 40,
+  },
 });
 export default Punchorder;
 const data1 = [
-  { label: 'Vivek', value: 'Vivek', address: '184 Mali bag mumbai' },
-  { label: 'Virendra', value: 'Virendra', address: '184 Mali bag mumbai' },
-  { label: 'Raju Barde', value: 'Raju Barde', address: '184 Mali bag mumbai' },
-  { label: 'Tarun', value: 'Tarun', address: '184 Mali bag mumbai' },
+  {label: 'Vivek', value: 'Vivek', address: '184 Mali bag mumbai'},
+  {label: 'Virendra', value: 'Virendra', address: '184 Mali bag mumbai'},
+  {label: 'Raju Barde', value: 'Raju Barde', address: '184 Mali bag mumbai'},
+  {label: 'Tarun', value: 'Tarun', address: '184 Mali bag mumbai'},
 ];
 const data3 = [
-  { label: '184 Mali bag mumbai', value: '184 Mali bag mumbai' },
-  { label: '184 Mali bag mumbai', value: '184 Mali bag mumbai' },
-  { label: '184 Mali bag mumbai', value: '184 Mali bag mumbai' },
-  { label: '184 Mali bag mumbai', value: '184 Mali bag mumbai' },
+  {label: '184 Mali bag mumbai', value: '184 Mali bag mumbai'},
+  {label: '184 Mali bag mumbai', value: '184 Mali bag mumbai'},
+  {label: '184 Mali bag mumbai', value: '184 Mali bag mumbai'},
+  {label: '184 Mali bag mumbai', value: '184 Mali bag mumbai'},
 ];
 
 const data2 = [
-  { label: '200', value: '200' },
-  { label: '300', value: '300' },
-  { label: '400', value: '400' },
-  { label: '500', value: '500' },
+  {label: '200', value: '200'},
+  {label: '300', value: '300'},
+  {label: '400', value: '400'},
+  {label: '500', value: '500'},
 ];
-

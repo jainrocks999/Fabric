@@ -1,44 +1,33 @@
-import { ToastAndroid, YellowBox } from 'react-native';
-import { takeEvery, put, call } from 'redux-saga/effects';
+import {ToastAndroid, YellowBox} from 'react-native';
+import {takeEvery, put, call} from 'redux-saga/effects';
 import Api from '../Api';
 // import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { parse } from 'react-native-svg';
-
-//Login
-function* doLogin(action) {
+import {parse} from 'react-native-svg';
+function* getPartyName(action) {
   try {
-    const data = {
-      email: action.email,
-      password: action.password,
-    };
-    const response = yield call(Api.fetchDataByGET, action.url, data);
-    if (!response) {
-      // Toast.show('Please enter  Valid user id & password   ');
-    } else if (response.status == true) {
+    const res = yield Api.getRequest(action.endpoint, action.token);
+
+    if (res.status) {
+      const data = action.data?.length > 0 ? action.data : [];
       yield put({
-        type: 'User_Login_Success',
-        payload: response,
+        type: 'Party_Name_Success',
+        payload: [...data, ...res.data],
       });
-      AsyncStorage.setItem('Partnersrno', response.id);
-      AsyncStorage.setItem('loginToken', response.token);
-      action.navigation.replace('Home');
-      // Toast.show(response.message);
     } else {
       yield put({
-        type: 'User_Login_Error',
+        type: 'Party_Name_Error',
       });
-      // Toast.show(response.message);
+      ToastAndroid.show(res.message, ToastAndroid.SHORT);
     }
-  } catch (error) {
-    console.log('error223', error);
+  } catch (err) {
+    console.log(err);
     yield put({
-      type: 'User_Login_Error',
+      type: 'Party_Name_Error',
     });
+    ToastAndroid.show(String(Error.message), ToastAndroid.SHORT);
   }
 }
-
-
 export default function* authSaga() {
-  yield takeEvery('User_Login_Request', doLogin);
+  yield takeEvery('Party_Name_Request', getPartyName);
 }

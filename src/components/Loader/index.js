@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import colors from '../../assets/colors';
 
-
 //Main loader component0
-export default class Loading extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={Platform.OS == 'ios' ? 1 : 40} color={colors.color1} />
-      </View>
-    );
-  }
-}
+export default Loading = ({style}) => {
+  return (
+    <View style={[styles.container, style]}>
+      <ActivityIndicator
+        size={Platform.OS == 'ios' ? 1 : 40}
+        color={colors.color1}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

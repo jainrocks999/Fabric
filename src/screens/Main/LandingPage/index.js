@@ -7,6 +7,7 @@ import colors from '../../../assets/colors';
 import axios from 'axios';
 import Loading from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from '../../../utils/storageService';
 const LandingPage = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
@@ -14,8 +15,8 @@ const LandingPage = () => {
   const [Rndata, setRndata] = useState([]);
   const [id, setId] = useState('');
   const GetData = async () => {
-    const Token = await AsyncStorage.getItem('token');
-    const User = await AsyncStorage.getItem('User');
+    const Token = await storage.getItem(storage.TOKEN);
+    const User = await storage.getItem(storage.USER);
 
     try {
       setLoader(true);
@@ -37,10 +38,8 @@ const LandingPage = () => {
           return {label, value};
         });
         setRndata(result);
-      
       } else {
         setLoader(false);
-       
       }
     } catch (error) {
       setLoader(false);
@@ -92,7 +91,9 @@ const LandingPage = () => {
           // onValueChange={(value) => console.log('hhihih',value)}
           items={Rndata}
           value={id}
-          onValueChange={value => setId(value)}
+          onValueChange={async value => {
+            setId(value);
+          }}
           useNativeAndroidPickerStyle={false}
           placeholder={{label: 'Please select', value: 'Please select'}}
           style={{
@@ -112,7 +113,10 @@ const LandingPage = () => {
       </View>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity
-          onPress={() => navigation.replace('Home')}
+          onPress={async () => {
+            await storage.setItem(storage.COMPANY, id);
+            navigation.replace('Home');
+          }}
           style={{
             backgroundColor: colors.color1,
             paddingHorizontal: 20,

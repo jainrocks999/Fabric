@@ -18,6 +18,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Loader';
 import Toast from 'react-native-simple-toast';
+import storage from '../../utils/storageService';
 const Drawer = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
@@ -56,7 +57,6 @@ const Drawer = () => {
   };
 
   const Loggout = () => {
-
     Alert.alert(
       'Are you sure you want to log out?',
       '',
@@ -76,7 +76,7 @@ const Drawer = () => {
 
   const Logout = async () => {
     navigation.dispatch(DrawerActions.closeDrawer());
-    const Token = await AsyncStorage.getItem('token');
+    const Token = await storage.getItem(storage.TOKEN);
     try {
       setLoader(true);
       const response = await axios({
@@ -90,8 +90,8 @@ const Drawer = () => {
       if (response.data.status == 'success') {
         setLoader(false);
         Toast.show(response?.data?.message);
-        AsyncStorage.setItem('token','');
-        navigation.replace('Login')
+        storage.removeItem(storage.TOKEN);
+        navigation.replace('Login');
         console.log('hoofogsdog', response.data);
       } else {
         setLoader(false);
@@ -105,7 +105,7 @@ const Drawer = () => {
 
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-      {loader?<Loading/>:null}
+      {loader ? <Loading /> : null}
       <View
         style={{
           paddingLeft: 15,

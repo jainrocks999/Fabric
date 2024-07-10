@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Eye from '../../../assets/Icon/eye.svg';
@@ -18,6 +19,7 @@ import Toast from 'react-native-simple-toast';
 import Loading from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from '../../../utils/storageService';
+import Api from '../../../Redux/Api';
 const Login = () => {
   const navigation = useNavigation();
   const [visible, setVisible] = useState(true);
@@ -25,7 +27,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const HandaleLogin = () => {
+  const HandaleLogin = async () => {
     // data.append('email', 'aatish@gmail.com');
     // data.append('password', '12345678');
     if (re.test(email) == '') {
@@ -44,24 +46,35 @@ const Login = () => {
           method: 'post',
           maxBodyLength: Infinity,
           url: 'http://203.123.38.118:8080/admin/index.php/api/login',
-          headers: {
-            // ...data.getHeaders()
-          },
+          headers: {},
           data: data,
         };
 
-        axios.request(config).then(response => {
-          if (response.data.status == 200) {
-            setLoading(false);
+        axios
+          .request(config)
+          .then(response => {
+            if (response.data.status == 200) {
+              setLoading(false);
 
-            storage.setItem(storage.TOKEN, response.data.token);
-            storage.setItem(storage.USER, JSON.stringify(response.data.user));
-            navigation.replace('LandingPage');
-          } else {
+              storage.setItem(storage.TOKEN, response.data.token);
+              storage.setItem(storage.USER, JSON.stringify(response.data.user));
+              ToastAndroid.show('Login Success', ToastAndroid.SHORT);
+              navigation.replace('LandingPage');
+            } else {
+              setLoading(false);
+              console.log(JSON.stringify(response.data));
+            }
+          })
+          .catch(err => {
+            if (err.response.status === 400) {
+              ToastAndroid.show(
+                'invalid username or password',
+                ToastAndroid.SHORT,
+              );
+            }
             setLoading(false);
-            console.log(JSON.stringify(response.data));
-          }
-        });
+            throw err;
+          });
       } catch (error) {
         setLoading(false);
         console.log('error,,', error);

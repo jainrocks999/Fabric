@@ -55,7 +55,10 @@ class Api {
   async postRequest(endpoint, data, token) {
     try {
       const response = await this.axiosInstance.post(endpoint, data, {
-        headers: {Authorization: `Bearer ${token}`},
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
       return response.data;
     } catch (error) {
@@ -63,6 +66,27 @@ class Api {
       throw error;
     }
   }
+  login = async (endpoint, data) => {
+    console.log(`${Constants.mainUrl}/${endpoint}`);
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${Constants.mainUrl}/${endpoint}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    };
+
+    try {
+      const response = await axios.post(config);
+      return response;
+    } catch (error) {
+      console.error('Error during login request:', error);
+      throw error;
+    }
+  };
 }
 
 export default new Api();

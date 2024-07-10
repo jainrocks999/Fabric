@@ -31,18 +31,30 @@ const Punchorder = ({route}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const initialstate = {
-    customerName: '',
+    customerName: customer ?? '',
     grade: '',
-    design: '',
-    shade: '',
-    color: '',
+    design: {},
+    shade: {},
+    color: {},
     price: '',
     matchoption: '',
     cut: '',
     remark: '',
-    quality: '',
+    remark1: remark ?? '',
+    quality: {},
+    address: address ?? '',
   };
   const [inputs, setInputs] = useState(initialstate);
+  useEffect(() => {
+    setInputs(prev => {
+      return {
+        ...prev,
+        customerName: customer,
+        address: address,
+        remark1: remark,
+      };
+    });
+  }, []);
 
   const handleInputs = (text, input) => {
     setInputs(prev => ({...prev, [text]: input}));
@@ -77,7 +89,7 @@ const Punchorder = ({route}) => {
       if (res.status) {
         setdata(res.data, type);
       } else {
-        ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
       }
     } catch (err) {
       console.log(err);
@@ -95,6 +107,34 @@ const Punchorder = ({route}) => {
     } else if (type === 'colorshade') {
       setColorShadeList(data);
     }
+  };
+  const addToCart = async () => {
+    let array = [];
+    const date = new Date()
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+      .replace(/ /g, ' ')
+      .toLowerCase();
+
+    console.log(date);
+
+    const cartList = await storage.getItem(storage.CART);
+
+    let newId = 1;
+    if (cartList != null && cartList.length > 0) {
+      newId = Math.max(...cartList.map(item => item.id)) + 1;
+      array = [...cartList];
+    }
+
+    const newItem = {...inputs, date, id: newId};
+    array.push(newItem);
+
+    await storage.setItem(storage.CART, array);
+    ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
+    setInputs(initialstate);
   };
 
   return (
@@ -130,9 +170,9 @@ const Punchorder = ({route}) => {
                 labelField="Quality"
                 valueField="Qualityid"
                 placeholder="Quality"
-                value={inputs.quality}
+                value={inputs.quality?.Qualityid}
                 renderItem={item =>
-                  item.Qualityid === inputs.quality ? (
+                  item.Qualityid === inputs.quality?.Qualityid ? (
                     <View
                       style={{
                         padding: 17,
@@ -160,7 +200,7 @@ const Punchorder = ({route}) => {
                   )
                 }
                 onChange={item => {
-                  handleInputs('quality', item.Qualityid);
+                  handleInputs('quality', item);
                   fetchDesign(item.Qualityid);
                 }}
               />
@@ -187,9 +227,9 @@ const Punchorder = ({route}) => {
                 labelField="Design"
                 valueField="Designid"
                 placeholder="Design"
-                value={inputs.design}
+                value={inputs.design?.Designid}
                 renderItem={item =>
-                  item.Designid === inputs.design ? (
+                  item.Designid === inputs.design?.Designid ? (
                     <View
                       style={{
                         padding: 17,
@@ -217,7 +257,7 @@ const Punchorder = ({route}) => {
                   )
                 }
                 onChange={item => {
-                  handleInputs('design', item.Designid);
+                  handleInputs('design', item);
                   fetchColorShade(item.Designid);
                 }}
               />
@@ -244,9 +284,9 @@ const Punchorder = ({route}) => {
                 labelField="shade"
                 valueField="shadeid"
                 placeholder="Shade"
-                value={inputs.shade}
+                value={inputs.shade?.shadeid}
                 renderItem={item =>
-                  item.shadeid === inputs.shade ? (
+                  item.shadeid === inputs.shade?.shadeid ? (
                     <View
                       style={{
                         padding: 17,
@@ -274,7 +314,7 @@ const Punchorder = ({route}) => {
                   )
                 }
                 onChange={item => {
-                  handleInputs('shade', item.shadeid);
+                  handleInputs('shade', item);
                 }}
               />
             </View>
@@ -300,9 +340,9 @@ const Punchorder = ({route}) => {
                 labelField="color"
                 valueField="colorid"
                 placeholder="Color"
-                value={inputs.color}
+                value={inputs.color?.colorid}
                 renderItem={item =>
-                  item.colorid === inputs.color ? (
+                  item.colorid === inputs.color?.colorid ? (
                     <View
                       style={{
                         padding: 17,
@@ -330,7 +370,7 @@ const Punchorder = ({route}) => {
                   )
                 }
                 onChange={item => {
-                  handleInputs('color', item.colorid);
+                  handleInputs('color', item);
                 }}
               />
             </View>
@@ -346,6 +386,7 @@ const Punchorder = ({route}) => {
             <View>
               <TextInput
                 style={styles.dropdown}
+                value={inputs.cut}
                 placeholder="Cut"
                 onChangeText={value => {
                   handleInputs('cut', value);
@@ -359,6 +400,7 @@ const Punchorder = ({route}) => {
             <View>
               <TextInput
                 style={styles.dropdown}
+                value={inputs.price}
                 onChangeText={value => {
                   handleInputs('price', value);
                 }}
@@ -372,6 +414,7 @@ const Punchorder = ({route}) => {
             <View>
               <TextInput
                 style={styles.dropdown}
+                value={inputs.remark}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {
                   handleInputs('remark', value);
@@ -380,14 +423,18 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-          <TouchableOpacity style={styles.buttonOpen1}>
+          <TouchableOpacity
+            onPress={() => {
+              addToCart();
+            }}
+            style={styles.buttonOpen1}>
             <Text
               style={{
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
                 fontSize: 15,
               }}>
-              Add Item
+              Add To Cart
             </Text>
           </TouchableOpacity>
           <View style={styles.buttonView}>
@@ -413,7 +460,7 @@ const Punchorder = ({route}) => {
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 15,
                 }}>
-                View Order
+                View Cart
               </Text>
             </TouchableOpacity>
           </View>

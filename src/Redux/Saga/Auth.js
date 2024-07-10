@@ -28,6 +28,32 @@ function* getPartyName(action) {
     ToastAndroid.show(String(Error.message), ToastAndroid.SHORT);
   }
 }
+function* getBag(action) {
+  try {
+    const data = yield Api.getRequest(action.endpoint, action.token);
+    console.log(data.status);
+    if (data.status) {
+      const array = Array.isArray(action.bagdata) ? action.bagdata : [];
+      yield put({
+        type: 'bag_check_success',
+        payload: [...array, ...data.data],
+      });
+      action.navigation.navigate('BagCheck');
+    } else {
+      yield put({
+        type: 'bag_check_error',
+      });
+      ToastAndroid.show(data.message, ToastAndroid.LONG);
+    }
+  } catch (error) {
+    yield put({
+      type: 'bag_check_error',
+    });
+    ToastAndroid.show('Error with scanning QR code', ToastAndroid.SHORT);
+    console.log(error);
+  }
+}
 export default function* authSaga() {
   yield takeEvery('Party_Name_Request', getPartyName);
+  yield takeEvery('bag_check_request', getBag);
 }

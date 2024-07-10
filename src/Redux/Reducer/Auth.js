@@ -2,6 +2,7 @@ initialstate = {
   Login1: '',
   isFetching: false,
   partyList: [],
+  bagdata: {},
 };
 export default (state = initialstate, action) => {
   switch (action.type) {
@@ -20,6 +21,14 @@ export default (state = initialstate, action) => {
     case 'Party_Name_Error': {
       return {...state, isFetching: false};
     }
+    case 'bag_check_request': {
+      return {...state, isFetching: true};
+    }
+    case 'bag_check_success': {
+      return {...state, isFetching: false, bagdata: action.payload};
+    }
+    case 'bag_check_error':
+      return {...state, isFetching: false};
     default:
       return state;
   }

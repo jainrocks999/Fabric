@@ -45,7 +45,7 @@ const Punchorder = () => {
   const [totoalPage, setTotalPage] = useState(10);
   const [partyList, setPartyList] = useState([]);
   const navigation = useNavigation();
-  const [customer, setCustomer] = useState('');
+  const [customer, setCustomer] = useState({});
   const [address, setAddress] = useState('');
   const [remark, setRemark] = useState('');
   const [page, setPage] = useState(1);
@@ -73,7 +73,10 @@ const Punchorder = () => {
     if (isFetching) {
       return;
     }
-    const endpoint = `party-names/${page_number}`;
+
+    const endpoint =
+      //`party-names/${page_number}`;
+      `party-names?searchParty=`;
     const token = await storage.getItem(storage.TOKEN);
     fetchData(endpoint, token);
     setPage(page_number);
@@ -125,12 +128,12 @@ const Punchorder = () => {
                 labelField="Partyname"
                 valueField="Partyid"
                 placeholder="Customer Name"
-                value={customer}
+                value={customer?.Partyid}
                 onScrollEndDrag={() => {
                   alert('called');
                 }}
                 renderItem={item =>
-                  item.Partyname === customer ? (
+                  item.Partyname === customer?.Partyname ? (
                     <View
                       style={{
                         padding: 17,
@@ -158,7 +161,7 @@ const Punchorder = () => {
                   )
                 }
                 onChange={item => {
-                  setCustomer(item.Partyid);
+                  setCustomer(item);
                   setAddress(item.Adr4);
                 }}
               />
@@ -171,7 +174,7 @@ const Punchorder = () => {
               <TextInput
                 style={styles.dropdown}
                 placeholder="Address"
-                value={`${address.substring(0, 45)}...`}
+                value={address != '' ? `${address.substring(0, 45)}...` : ''}
                 onChangeText={setAddress}
               />
             </View>

@@ -88,23 +88,27 @@ const Punchorder = () => {
     <View style={styles.container}>
       <Header title={'Bag Check'} onPress={() => navigation.openDrawer()} />
       {isFetching && <Loader />}
-      <View style={{padding: 10}}>
+      <View style={{padding: 0}}>
         <View style={styles.Main}>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
+              position: 'absolute',
+              right: '1%',
+              marginTop: '-11%',
             }}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            {/* <TouchableOpacity onPress={() => navigation.goBack()}>
               <BackArrow />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={{
                 backgroundColor: colors.color1,
                 paddingHorizontal: 10,
                 paddingVertical: 4,
                 borderRadius: 6,
+                height: hp(4),
               }}
               onPress={() => {
                 dispatch({

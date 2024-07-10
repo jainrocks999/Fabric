@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Eye from '../../../assets/Icon/eye.svg';
@@ -20,6 +21,7 @@ import Loading from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
+import Constants from '../../../Redux/Constants';
 const Login = () => {
   const navigation = useNavigation();
   const [visible, setVisible] = useState(true);
@@ -45,7 +47,7 @@ const Login = () => {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: 'http://203.123.38.118:8080/admin/index.php/api/login',
+          url: Constants.mainUrl + '/login',
           headers: {},
           data: data,
         };
@@ -57,7 +59,7 @@ const Login = () => {
               setLoading(false);
 
               storage.setItem(storage.TOKEN, response.data.token);
-              storage.setItem(storage.USER, JSON.stringify(response.data.user));
+              storage.setItem(storage.USER, response.data.user);
               ToastAndroid.show('Login Success', ToastAndroid.SHORT);
               navigation.replace('LandingPage');
             } else {
@@ -72,11 +74,15 @@ const Login = () => {
                 ToastAndroid.SHORT,
               );
             }
-            setLoading(false);
+            Alert.alert(String(err));
             throw err;
+          })
+          .finally(() => {
+            setLoading(false);
           });
       } catch (error) {
         setLoading(false);
+        Alert.alert(String(error));
         console.log('error,,', error);
       }
     }

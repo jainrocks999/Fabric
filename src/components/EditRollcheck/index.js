@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   ToastAndroid,
+  Clipboard,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomHeader from '../CustomHeader';
@@ -39,55 +40,54 @@ const product = {
   color: 'Haldi',
 };
 
-const EditRoll = ({visible, data, dataList, onComplete}) => {
+const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
+  const newdata = data;
   const [isLoading, setIsLoading] = useState(false);
   const [qty, setQty] = useState('');
-  //   const [color, setColor] = useState('');
-  //   const [shade, setShade] = useState('');
-  //   const [colorshadeList, setColorShadeList] = useState([]);
+  useEffect(() => {
+    setQty(newdata.qty ?? '');
+  }, [data]);
   const complete = async () => {
     try {
-      //   const token = await storage.getItem(storage.TOKEN);
-      //   const endpoint = 'roll-check-barcode';
-      //   const data = new FormData();
-      //   data.append('partyid', product.partyid);
-      //   data.append('qualityid', product.qualityid);
-      //   data.append('designid', product.DESIGNid);
-      //   data.append('shadeid', product.shadeid);
-      //   data.append('quantity', qty);
-      //   data.append('companyid', product.COMPANYid);
-      //   data.append('barcode', product.barcode);
-      //   data.append('entry_date', product.ENTDT);
-      //   const res = await Api.postRequest(endpoint, data, token);
-      //   ToastAndroid.show(res.msg, ToastAndroid.SHORT);
-    } catch (error) {
-      console.log('thius alossosso', error);
-      ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
-    } finally {
-      onComplete();
-    }
-  };
-
-  const fetchColorShade = async id => {
-    const token = await storage.getItem(storage.TOKEN);
-    const endpoint = `shade/color/${id}`;
-    fetchData(endpoint, token, 'colorshade');
-  };
-
-  const fetchData = async (endpoint, token, type) => {
-    try {
-      setIsLoading(true);
-      const res = await Api.getRequest(endpoint, token);
-      if (res.status) {
-        setColorShadeList(res.data, type);
-      } else {
-        ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+      if (qty == '') {
+        ToastAndroid.show('Please Enter Quantity', ToastAndroid.SHORT);
+        return;
       }
-    } catch (err) {
-      console.log(err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      const token = await storage.getItem(storage.TOKEN);
+      const salesman = await storage.getItem(storage.USER);
+      const endpoint = addRole ? 'roll-check-barcode' : `update-roll-by-id`;
+      const data = new FormData();
+
+      if (addRole) {
+        data.append('partyid', newdata.partyid);
+        data.append('qualityid', newdata.qualityid);
+        data.append('designid', newdata.DESIGNid);
+        data.append('shadeid', newdata.shadeid);
+        data.append('quantity', qty);
+        data.append('companyid', newdata.COMPANYid);
+        data.append('barcode', newdata.barcode);
+        data.append('entry_date', newdata.ENTDT);
+        data.append('salesmanid', salesman.salesmanid);
+      } else {
+        data.append('barcode', newdata.barcode);
+        data.append('partyid', newdata.partyid);
+        data.append('companyid', newdata.companyid);
+        data.append('qualityid', newdata.qualityid);
+        data.append('designid', newdata.designid);
+        data.append('shadeid', newdata.shadeid);
+        data.append('salesmanid', salesman.salesmanid);
+        data.append('entryDate', newdata?.entryDate);
+        data.append('quantity', qty);
+        data.append('id', newdata?.id);
+      }
+      const res = await Api.postRequest(endpoint, data, token);
+      onComplete();
+      ToastAndroid.show(res?.msg ?? res?.message, ToastAndroid.SHORT);
+    } catch (error) {
+      onComplete();
+      console.log('thius alossosso', error);
+      ToastAndroid.show(error.message, ToastAndroid.SHORT);
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -105,12 +105,12 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
             style={{
               backgroundColor: 'white',
               width: wp(100),
-              height: hp(80),
+              height: hp(70),
               elevation: 5,
               shadowColor: '#fff',
               borderRadius: 8,
               paddingHorizontal: 20,
-              marginTop: '10%',
+              marginTop: '30%',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
@@ -121,7 +121,7 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
                 fontFamily: 'Montserrat-Bold',
                 alignSelf: 'center',
               }}>
-              Edit Roll
+              {addRole ? 'Add Roll' : 'Update Roll'}
             </Text>
             <View style={{height: '5%'}} />
             <View style={{width: '100%'}}>
@@ -129,7 +129,7 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data.Party}
+                value={data?.Party}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
                 placeholder="Remark"
@@ -139,7 +139,7 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data.DESIGN}
+                value={data?.DESIGN}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
                 placeholder="Remark"
@@ -150,7 +150,7 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data.SHADE}
+                value={data?.SHADE}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
                 placeholder="Remark"
@@ -270,16 +270,16 @@ const EditRoll = ({visible, data, dataList, onComplete}) => {
                 </View>
               </View> */}
 
-              <View style={{height: '4%'}} />
+              {/* <View style={{height: '4%'}} />
               <Text style={styles.inputText}>Price</Text>
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data.rate}
+                value={data?.rate}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
                 placeholder="Remark"
-              />
+              /> */}
 
               <View style={{height: '4%'}} />
               <Text style={styles.inputText}>

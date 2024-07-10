@@ -162,7 +162,11 @@ const Punchorder = () => {
                 }
                 onChange={item => {
                   setCustomer(item);
-                  setAddress(item.Adr4);
+                  const address = [item.Adr1, item.Adr2, item.Adr3]
+                    .filter(Boolean)
+                    .join(' ');
+                  console.log('now I am on address', address);
+                  setAddress(address === '' ? 'NA' : address);
                 }}
               />
             </View>
@@ -174,7 +178,11 @@ const Punchorder = () => {
               <TextInput
                 style={styles.dropdown}
                 placeholder="Address"
-                value={address != '' ? `${address.substring(0, 45)}...` : ''}
+                value={
+                  address.length > 45
+                    ? `${address.substring(0, 45)}...`
+                    : address
+                }
                 onChangeText={setAddress}
               />
             </View>
@@ -210,7 +218,7 @@ const Punchorder = () => {
           </View>
         </View>
       </ScrollView>
-      <View style={{position: 'absolute', bottom: 20, left: 20}}>
+      {/* <View style={{position: 'absolute', bottom: 20, left: 20}}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -225,8 +233,8 @@ const Punchorder = () => {
             borderBottomRightRadius: 40,
           }}>
           <BackArrow />
-        </TouchableOpacity>
-      </View>
+        </TouchableOpacity> 
+      </View>*/}
     </View>
   );
 };

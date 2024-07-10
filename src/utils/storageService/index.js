@@ -11,17 +11,17 @@ class StorageService {
   };
 
   getItem = async action => {
-    const item = await AsyncStorage.getItem(action);
-    if (item !== null) {
-      try {
+    try {
+      const item = await AsyncStorage.getItem(action);
+      if (item !== null) {
         const parsedItem = JSON.parse(item);
         return parsedItem.data;
-      } catch (e) {
-        console.error('Error parsing item:', e);
-        return null;
       }
+      return null;
+    } catch (e) {
+      console.error('Error parsing item:', e);
+      return null;
     }
-    return null;
   };
 
   removeItem = async action => {

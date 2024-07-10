@@ -135,7 +135,7 @@ const Punchorder = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <View style={{position: 'absolute', bottom: 20, left: 20}}>
+      {/* <View style={{position: 'absolute', bottom: 20, left: 20}}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -151,7 +151,7 @@ const Punchorder = () => {
           }}>
           <BackArrow />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

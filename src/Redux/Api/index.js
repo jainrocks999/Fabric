@@ -42,6 +42,7 @@ class Api {
 
   async getRequest(endpoint, token) {
     try {
+      console.log(endpoint);
       const response = await this.axiosInstance.get(endpoint, {
         headers: {Authorization: `Bearer ${token}`},
       });
@@ -54,12 +55,18 @@ class Api {
 
   async postRequest(endpoint, data, token) {
     try {
-      const response = await this.axiosInstance.post(endpoint, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+      const response = await this.axiosInstance.post(
+        endpoint,
+        data,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          maxContentLength: Infinity,
         },
-      });
+      );
       return response.data;
     } catch (error) {
       console.error('Request failed', error);

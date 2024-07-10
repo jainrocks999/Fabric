@@ -196,6 +196,7 @@ const Punchorder = () => {
   const [scanneddata, setScannedData] = useState({});
   const [data, setData] = useState([]);
   const [editable, setEditable] = useState(false);
+  const [addRole, setAddRolle] = useState(true);
   const onScann = async e => {
     setLoading(true);
     try {
@@ -209,6 +210,7 @@ const Punchorder = () => {
         setScannedData(res.data[0]);
         setVisibles(false);
         setEditable(true);
+        setAddRolle(true);
       } else {
         ToastAndroid.show(res.message, ToastAndroid.LONG);
       }
@@ -222,16 +224,25 @@ const Punchorder = () => {
   useEffect(() => {
     RolleList();
   }, []);
+
   const RolleList = async () => {
+    const salesman = await storage.getItem(storage.USER);
+    const endpoint = `roll-check-list/${salesman.salesmanid}`;
+    fetData(endpoint, 'roleList');
+  };
+  const getRollesForEdit = item => {
+    const endpoint = `edit-roll-by-id/${item.id}`;
+
+    fetData(endpoint, 'editRolle', item);
+  };
+  const fetData = async (endpoint, type, item) => {
     setLoading(true);
     try {
       const token = await storage.getItem(storage.TOKEN);
-      const endpoint = `roll-check-list`;
-
       const res = await Api.getRequest(endpoint, token);
       console.log(res);
       if (res.status) {
-        setData(res.data);
+        setdata(res.data, type, item);
         console.log(res);
       } else {
         ToastAndroid.show(res.message, ToastAndroid.LONG);
@@ -242,11 +253,30 @@ const Punchorder = () => {
       setLoading(false);
     }
   };
+  const setdata = (data, type, item) => {
+    if (type == 'roleList') {
+      setData(data);
+    }
+    if (type == 'editRolle') {
+      console.log('this is data', data);
+      setScannedData({
+        ...data,
+        Party: item.party_name,
+        DESIGN: item.design_name,
+        SHADE: item.shade_name,
+        qty: item.quantity,
+        ...item,
+      });
+      setEditable(true);
+      setAddRolle(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <EditRoll
         dataList={data}
+        addRole={addRole}
         onComplete={() => {
           setEditable(false);
           RolleList();
@@ -292,7 +322,7 @@ const Punchorder = () => {
           style={{marginTop: 20}}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: hp(12),
+            paddingBottom: hp(18),
           }}
           renderItem={({item}) => (
             <View
@@ -303,6 +333,21 @@ const Punchorder = () => {
                 borderRadius: 6,
                 padding: 10,
               }}>
+              <TouchableOpacity
+                onPress={() => {
+                  getRollesForEdit(item);
+                }}
+                style={{right: '3%', position: 'absolute', top: '3%'}}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: colors.color1,
+                    fontFamily: 'Montserrat-SemiBold',
+                    width: '100%',
+                  }}>
+                  Edit
+                </Text>
+              </TouchableOpacity>
               <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
                   <Text
@@ -517,7 +562,7 @@ const Punchorder = () => {
           </View>
         </Modal>
       </View>
-      <View style={{position: 'absolute', bottom: 20, left: 20}}>
+      {/* <View style={{position: 'absolute', bottom: 20, left: 20}}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -533,7 +578,7 @@ const Punchorder = () => {
           }}>
           <BackArrow />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

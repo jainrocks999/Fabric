@@ -33,15 +33,15 @@ const Punchorder = ({route}) => {
   const initialstate = {
     customerName: customer ?? '',
     grade: '',
-    design: {},
-    shade: {},
-    color: {},
+    design: '',
+    shade: '',
+    color: '',
     price: '',
     matchoption: '',
     cut: '',
-    remark: '',
-    remark1: remark ?? '',
-    quality: {},
+    remark: 'NA',
+    remark1: remark ?? 'NA',
+    quality: '',
     address: address ?? '',
   };
   const [inputs, setInputs] = useState(initialstate);
@@ -135,6 +135,26 @@ const Punchorder = ({route}) => {
     await storage.setItem(storage.CART, array);
     ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
     setInputs(initialstate);
+  };
+  const validate = () => {
+    const messages = {
+      quality: 'Please select Quality',
+      design: 'Please select Design',
+      shade: 'Please select Shade',
+      color: 'Please select Color',
+      cut: 'Please enter Cut',
+      price: 'Please enter Price',
+    };
+
+    for (const key in messages) {
+      const value = inputs[key];
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
+        ToastAndroid.show(messages[key], ToastAndroid.SHORT);
+        return;
+      }
+    }
+
+    addToCart();
   };
 
   return (
@@ -414,7 +434,7 @@ const Punchorder = ({route}) => {
             <View>
               <TextInput
                 style={styles.dropdown}
-                value={inputs.remark}
+                value={inputs.remark == 'NA' ? '' : inputs.remark}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {
                   handleInputs('remark', value);
@@ -425,7 +445,7 @@ const Punchorder = ({route}) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              addToCart();
+              validate();
             }}
             style={styles.buttonOpen1}>
             <Text

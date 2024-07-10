@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, Clipboard} from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -12,6 +12,8 @@ import storage from '../../../utils/storageService';
 const PunchorderList = () => {
   const navigation = useNavigation();
   const [carts, setCarts] = useState([]);
+  Clipboard.setString(JSON.stringify(carts));
+
   useEffect(() => {
     getCarts();
   }, []);

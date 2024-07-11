@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, FlatList, Clipboard} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Clipboard,
+  ToastAndroid,
+} from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -8,6 +15,9 @@ import {
 } from 'react-native-responsive-screen';
 import colors from '../../../assets/colors';
 import storage from '../../../utils/storageService';
+import punchOrderPost from '../../../utils/punchOrderPost';
+import Api from '../../../Redux/Api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PunchorderList = () => {
   const navigation = useNavigation();
@@ -17,11 +27,33 @@ const PunchorderList = () => {
   useEffect(() => {
     getCarts();
   }, []);
+  const [isLoading, setIsLoading] = useState(false);
   const getCarts = async () => {
     const carts = await storage.getItem(storage.CART);
-    setCarts(carts);
+    if (carts) {
+      setCarts(carts);
+    }
   };
-  console.log(carts);
+  const punchorder = async () => {
+    try {
+      setIsLoading(true);
+      const token = await storage.getItem(storage.TOKEN);
+      const endpoint = 'punch-order';
+      const formData = await punchOrderPost(carts);
+      const res = await Api.postRequest(endpoint, formData, token);
+      ToastAndroid.show(res.message, ToastAndroid.LONG);
+      if (res.status) {
+        await storage.removeItem(storage.CART);
+        setCarts([]);
+        navigation.navigate('OrderSuccessful');
+      }
+      setIsLoading(false);
+    } catch (error) {
+      ToastAndroid.show(error.message, ToastAndroid.LONG);
+      setIsLoading(false);
+      console.log(error);
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <Header
@@ -188,7 +220,9 @@ const PunchorderList = () => {
           backgroundColor: '#fff',
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('OrderSuccessful')}
+          onPress={() => {
+            punchorder();
+          }}
           style={{
             height: hp(5.3),
             alignSelf: 'center',

@@ -19,7 +19,6 @@ import StockDetailScreen from '../screens/Main/HomeComponets/StockDetailScreen';
 import Punchorder2 from '../screens/Main/HomeComponets/Punchorder2';
 import PunchorderList from '../screens/Main/HomeComponets/PunchorderList';
 import OrderSuccessful from '../screens/Main/HomeComponets/OrderSuccessful';
-import Testing from '../screens/Main/HomeComponets/Testing';
 import {navigationRef} from '../utils/navigationService';
 
 const Stack = createNativeStackNavigator();
@@ -50,7 +49,6 @@ function Home() {
       <Stack1.Screen name="PunchorderList" component={PunchorderList} />
       <Stack1.Screen name="StockDetailScreen" component={StockDetailScreen} />
       <Stack1.Screen name="OrderSuccessful" component={OrderSuccessful} />
-      <Stack1.Screen name="Test" component={Testing} />
     </Stack1.Navigator>
   );
 }

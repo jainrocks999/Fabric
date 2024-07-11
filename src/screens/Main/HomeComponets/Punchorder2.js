@@ -21,6 +21,8 @@ import Modal from 'react-native-modal';
 import Api from '../../../Redux/Api';
 import storage from '../../../utils/storageService';
 import Loading from '../../../components/Loader';
+import punchOrderPost from '../../../utils/punchOrderPost';
+import {err} from 'react-native-svg/lib/typescript/xml';
 
 const Punchorder = ({route}) => {
   const {remark, customer, address} = route.params;
@@ -109,6 +111,7 @@ const Punchorder = ({route}) => {
     }
   };
   const addToCart = async () => {
+    const companyid = await storage.getItem(storage.COMPANY);
     let array = [];
     const date = new Date()
       .toLocaleDateString('en-GB', {
@@ -128,15 +131,13 @@ const Punchorder = ({route}) => {
       newId = Math.max(...cartList.map(item => item.id)) + 1;
       array = [...cartList];
     }
-
-    const newItem = {...inputs, date, id: newId};
+    const newItem = {...inputs, date, id: newId, compId: companyid};
     array.push(newItem);
-
     await storage.setItem(storage.CART, array);
     ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
     setInputs(initialstate);
   };
-  const validate = () => {
+  const validate = bool => {
     const messages = {
       quality: 'Please select Quality',
       design: 'Please select Design',
@@ -153,8 +154,30 @@ const Punchorder = ({route}) => {
         return;
       }
     }
-
-    addToCart();
+    if (bool) {
+      addToCart();
+    } else {
+      punchorder();
+    }
+  };
+  const punchorder = async () => {
+    try {
+      setIsLoading(true);
+      const token = await storage.getItem(storage.TOKEN);
+      const companyid = await storage.getItem(storage.COMPANY);
+      const endpoint = 'punch-order';
+      const formData = await punchOrderPost([{...inputs, compId: companyid}]);
+      const res = await Api.postRequest(endpoint, formData, token);
+      ToastAndroid.show(res.message, ToastAndroid.LONG);
+      if (res.status) {
+        setInputs(initialstate);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      ToastAndroid.show(error.message, ToastAndroid.LONG);
+      setIsLoading(false);
+      console.log(error);
+    }
   };
 
   return (
@@ -445,7 +468,7 @@ const Punchorder = ({route}) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              validate();
+              validate(true);
             }}
             style={styles.buttonOpen1}>
             <Text
@@ -458,7 +481,11 @@ const Punchorder = ({route}) => {
             </Text>
           </TouchableOpacity>
           <View style={styles.buttonView}>
-            <TouchableOpacity style={styles.buttonOpen}>
+            <TouchableOpacity
+              onPress={() => {
+                validate(false);
+              }}
+              style={styles.buttonOpen}>
               <Text
                 style={{
                   color: 'white',

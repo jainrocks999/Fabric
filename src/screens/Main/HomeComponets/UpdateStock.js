@@ -63,7 +63,6 @@ const Punchorder = () => {
     if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 20) {
       if (page <= totalPages) {
         getUpdatedStock(page + 1);
-        console.log(totalPages);
       }
     }
   };

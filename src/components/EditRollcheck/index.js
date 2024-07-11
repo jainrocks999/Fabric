@@ -114,10 +114,30 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
+            <TouchableOpacity
+              onPress={() => onComplete()}
+              style={{
+                position: 'absolute',
+                top: '1%',
+                right: '3%',
+                padding: '3%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: colors.color1,
+                  fontFamily: 'Montserrat-Bold',
+                  alignSelf: 'center',
+                }}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: 16,
-                color: 'grey',
+                color: colors.color1,
                 fontFamily: 'Montserrat-Bold',
                 alignSelf: 'center',
               }}>

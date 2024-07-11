@@ -35,13 +35,13 @@ const Drawer = () => {
   };
   const manageBagCheck = () => {
     navigation.dispatch(DrawerActions.closeDrawer());
-    // navigation.navigate('BagCheck')
-    setVisibles(true);
+    navigation.navigate('BagCheck', {visible: true});
+    // setVisibles(true);
   };
   const manageRollCheck = () => {
     navigation.dispatch(DrawerActions.closeDrawer());
-    // navigation.navigate('RollCheck')
-    setVisibles(true);
+    navigation.navigate('RollCheck', {visible: true});
+    // setVisibles(true);
   };
   const manageStockCheck = () => {
     navigation.dispatch(DrawerActions.closeDrawer());

@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useDeferredValue, useEffect, useState} from 'react';
 import {
   View,
   Text,
   FlatList,
   TextInput,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Image,
   ToastAndroid,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import {Dropdown} from 'react-native-element-dropdown';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -20,7 +17,6 @@ import {useNavigation} from '@react-navigation/native';
 import colors from '../../../assets/colors';
 import Modal from 'react-native-modal';
 import QRCodeScanner from '../../../components/QRCodeScanner';
-import BackArrow from '../../../assets/Icon/BackArrow.svg';
 import EditRoll from '../../../components/EditRollcheck';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
@@ -189,15 +185,33 @@ const data2 = [
     rate: '.0000',
   },
 ];
-const Punchorder = () => {
+const Punchorder = ({route}) => {
+  const visbles = route.params.visible;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visible, setVisibles] = useState(false);
   const [scanneddata, setScannedData] = useState({});
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [editable, setEditable] = useState(false);
   const [addRole, setAddRolle] = useState(true);
+  const [searched, setSeached] = useState('');
+  const defferedValue = useDeferredValue(searched);
+  useEffect(() => {
+    setVisibles(visbles);
+  }, [visbles]);
+  useEffect(() => {
+    filter(defferedValue, data);
+  }, [defferedValue, data]);
+  const filter = (value, data) => {
+    const newData = data.filter(item => {
+      return item.party_name.toLowerCase().includes(value.toLowerCase());
+    });
+    setFilteredData(value == '' ? data : newData);
+  };
+
   const onScann = async e => {
+    navigation.setParams({visible: false});
     setLoading(true);
     try {
       const token = await storage.getItem(storage.TOKEN);
@@ -240,10 +254,9 @@ const Punchorder = () => {
     try {
       const token = await storage.getItem(storage.TOKEN);
       const res = await Api.getRequest(endpoint, token);
-      console.log(res);
+
       if (res.status) {
         setdata(res.data, type, item);
-        console.log(res);
       } else {
         ToastAndroid.show(res.message, ToastAndroid.LONG);
       }
@@ -295,6 +308,9 @@ const Punchorder = () => {
         <View style={{}}>
           <TextInput
             placeholder="Search"
+            onChangeText={value => {
+              setSeached(value);
+            }}
             style={{
               marginTop: wp(2),
               borderWidth: 1,
@@ -318,7 +334,7 @@ const Punchorder = () => {
           />
         </View>
         <FlatList
-          data={data}
+          data={filteredData}
           style={{marginTop: 20}}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -556,7 +572,10 @@ const Punchorder = () => {
                 // completionHandler={this.completionQRViewHandler}
                 page="rolecheck"
                 onScann={onScann}
-                closeHandler={() => setVisibles(false)}
+                closeHandler={() => {
+                  setVisibles(false);
+                  navigation.setParams({visible: false});
+                }}
               />
             </View>
           </View>

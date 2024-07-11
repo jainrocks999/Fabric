@@ -19,7 +19,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import colors from '../../../assets/colors';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Calendar from '../../../assets/Icon/Calendar.svg';
 import QRCodeScanner from '../../../components/QRCodeScanner';
 import BackArrow from '../../../assets/Icon/backArrow1.svg';
@@ -28,8 +28,9 @@ import Loader from '../../../components/Loader';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 
-const Punchorder = () => {
+const Punchorder = ({route}) => {
   const navigation = useNavigation();
+  const visbles = route.params.visible;
   const {isFetching, bagdata} = useSelector(state => state);
 
   const [name, setName] = useState('');
@@ -39,6 +40,10 @@ const Punchorder = () => {
   const dispatch = useDispatch();
   const [visible, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
+  useEffect(() => {
+    setVisibles(visbles);
+    // navigation.setParams({visible: false});
+  }, [visbles]);
   const FormateDate = da => {
     const date = new Date(da);
     const options = {day: '2-digit', month: 'short', year: 'numeric'};
@@ -279,7 +284,9 @@ const Punchorder = () => {
             <View style={{flex: 1}}>
               <QRCodeScanner
                 // completionHandler={this.completionQRViewHandler}
-                closeHandler={() => setVisibles(false)}
+                closeHandler={() => {
+                  setVisibles(false), navigation.setParams({visible: false});
+                }}
               />
             </View>
           </View>

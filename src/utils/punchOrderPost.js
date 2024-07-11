@@ -1,3 +1,5 @@
+import storage from './storageService';
+
 const data1 = [
   {
     customerName: {
@@ -69,18 +71,36 @@ const data1 = [
     compId: '3',
   },
 ];
-export default value => {
+export default async value => {
   const data = new FormData();
-  data1.forEach((item, index) => {
-    data.append(`firstArray[party]`, item.customerName.Partyid);
-    data.append(`firstArray[remark]`, item.remark1);
+  const salesman = await storage.getItem(storage.USER);
+  data.append(`firstArray[party]`, value[0].customerName.Partyid);
+  data.append(`firstArray[remark]`, value[0].remark1);
+  data.append(`firstArray[entdt]`, '');
+  data.append(`firstArray[pono]`, '');
+  data.append(`firstArray[refdt]`, '');
+  data.append(`firstArray[brok]`, '');
+  data.append(`firstArray[salesman]`, salesman.salesmanid);
+  data.append(`firstArray[hast]`, '');
+  data.append(`firstArray[delat]`, '');
+  data.append(`firstArray[bkth]`, '');
+  data.append(`firstArray[trsp]`, '');
+  data.append(`firstArray[deldate]`, '');
+  data.append(`firstArray[rem]`, '');
+  data.append(`firstArray[sample1]`, '');
+  data.append(`firstArray[srem]`, '');
+  data.append(`firstArray[comp]`, value[0].compId);
+  data.append(`firstArray[sabid]`, '');
+  data.append(`firstArray[udate]`, '');
+  data.append('firstArray[add]', value[0].address);
+  value.forEach((item, index) => {
     data.append(`secondArray[${index}][Gradeid]`, item.grade);
-    data.append(`secondArray[${index}][prodid]`, '4');
+    data.append(`secondArray[${index}][prodid]`, item.quality.Qualityid);
     data.append(`secondArray[${index}][dsnoid]`, item.design.Designid);
     data.append(`secondArray[${index}][shade]`, item.shade.shadeid);
     data.append(`secondArray[${index}][color]`, item.color.colorid);
     data.append(`secondArray[${index}][pcs]`, '3');
-    data.append(`secondArray[${index}][qty]`, '5');
+    data.append(`secondArray[${index}][qty]`, ' ');
     data.append(`secondArray[${index}][cutper]`, '3');
     data.append(`secondArray[${index}][rate]`, item.quality.rate);
     data.append(`secondArray[${index}][sabrowid]`, '2');
@@ -91,29 +111,14 @@ export default value => {
     data.append(`secondArray[${index}][sabid]`, '8');
     data.append(`secondArray[${index}][udate]`, '255');
     data.append(`secondArray[${index}][remark]`, item.remark);
-    data.append(`firstArray[entdt]`, '');
-    data.append(`firstArray[pono]`, '');
-    data.append(`firstArray[refdt]`, '');
-    data.append(`firstArray[brok]`, '');
-    data.append(`firstArray[salesman]`, '');
-    data.append(`firstArray[hast]`, '');
-    data.append(`firstArray[delat]`, '');
-    data.append(`firstArray[bkth]`, '');
-    data.append(`firstArray[trsp]`, '');
-    data.append(`firstArray[deldate]`, '');
-    data.append(`firstArray[rem]`, '');
-    data.append(`firstArray[sample1]`, '');
-    data.append(`firstArray[srem]`, '');
-    data.append(`firstArray[comp]`, '');
-    data.append(`firstArray[sabid]`, '');
-    data.append(`firstArray[udate]`, '');
   });
+  return data;
 };
 {
   /*
 
 
-data.append('firstArray[add]', 'address');-
+;-
 data.append('firstArray[remark]', 'wffg');-
 data.append('secondArray[0][Gradeid]', '2');-
 data.append('secondArray[0][prodid]', '4');-

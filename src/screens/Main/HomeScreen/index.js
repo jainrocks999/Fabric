@@ -41,11 +41,11 @@ const HomeScreen = () => {
     if (title == 'Punch Order') {
       navigation.navigate('PunchOrder');
     } else if (title == 'Bag Check') {
-      navigation.navigate('BagCheck');
+      navigation.navigate('BagCheck', {visible: false});
       // openScanner()
       // setVisibles(true)
     } else if (title == 'Roll Check') {
-      navigation.navigate('RollCheck');
+      navigation.navigate('RollCheck', {visible: false});
       // setVisibles(true)
     } else if (title == 'Stock Check') {
       navigation.navigate('StockCheck');

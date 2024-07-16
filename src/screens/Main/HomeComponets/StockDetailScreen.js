@@ -8,32 +8,10 @@ import Loader from '../../../components/Loader';
 
 const StockDetailScreen = ({route}) => {
   const [loading, setIsLoading] = useState(false);
-  const [data, setData] = useState(false);
-  const {barcode} = route.params;
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-    try {
-      const token = await storage.getItem(storage.TOKEN);
-      const endpoint = `stock-details/${barcode}`;
-      setIsLoading(true);
-      const res = await Api.getRequest(endpoint, token);
-      if (res.status) {
-        setdata(res.data);
-      } else {
-        ToastAndroid.show(res.message, ToastAndroid.SHORT);
-      }
-    } catch (err) {
-      console.log(err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const setdata = data => {
-    setData(data[0]);
-  };
+  // const [data, setData] = useState(false);
+  const {data} = route.params;
+  const barcode = data.barcode;
+
   const navigation = useNavigation();
   return (
     <View style={{flex: 1}}>

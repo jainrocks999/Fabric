@@ -26,9 +26,29 @@ import SelectModal from '../../../components/CustomHeader/SelectModal';
 const HomeScreen = () => {
   const {Rndata} = useSelector(state => state);
   const [setdata, setSedata] = useState([]);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [visibless, setVisible] = useState(false);
+  const [visible, setVisibles] = useState(false);
+  const [selected, setSelected] = useState(0);
+  const [company_name, setCompanyName] = useState('');
+  const [user, setUser] = useState('');
+  const [company, setCompany] = useState('');
+  const focus = useIsFocused();
   useEffect(() => {
     setSedata(Rndata);
   }, [Rndata]);
+  useEffect(() => {
+    getCompanyName();
+  }, [focus]);
+  const getCompanyName = async () => {
+    const name = await storage.getItem(storage.COMPANY_NAME);
+    const company = await storage.getItem(storage.COMPANY);
+    setCompany(company);
+    const userName = await storage.getItem(storage.USER);
+    setCompanyName(name);
+    setUser(userName);
+  };
   const [search, setSearch] = useState('');
   const deferredValue = useDeferredValue(search);
   useEffect(() => {
@@ -64,6 +84,7 @@ const HomeScreen = () => {
                   item.label, // Fixed typo
                 );
                 setCompanyName(item.label);
+                setCompany(value);
                 setVisible(false);
                 await storage.removeItem(storage.CART);
               } else {
@@ -81,26 +102,7 @@ const HomeScreen = () => {
       setVisible(false);
     }
   };
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const [visibless, setVisible] = useState(false);
-  const [visible, setVisibles] = useState(false);
-  const [selected, setSelected] = useState(0);
-  const [company_name, setCompanyName] = useState('');
-  const [user, setUser] = useState('');
-  const [company, setCompany] = useState('');
-  const focus = useIsFocused();
-  useEffect(() => {
-    getCompanyName();
-  }, [focus]);
-  const getCompanyName = async () => {
-    const name = await storage.getItem(storage.COMPANY_NAME);
-    const company = await storage.getItem(storage.COMPANY);
-    setCompany(company);
-    const userName = await storage.getItem(storage.USER);
-    setCompanyName(name);
-    setUser(userName);
-  };
+
   // useEffect(()=>{
   //     // Tts.speak('Hello, world!')
   //     Voice.onSpeechStart = this.onSpeechStartHandler.bind(this);
@@ -231,26 +233,35 @@ const HomeScreen = () => {
             <TouchableOpacity
               onPress={() => setVisible(true)}
               style={{
-                paddingHorizontal: 10,
+                paddingHorizontal: 20,
                 paddingVertical: 10,
-                justifyContent: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: '-2%',
               }}>
-              <Text
-                style={{
-                  fontFamily: 'Montserrat-Bold',
-                  fontSize: 16,
-                  color: colors.color1,
-                }}>
-                Welcome to
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily: 'Montserrat-SemiBold',
-                  color: colors.color1,
-                }}>
-                {'' + company_name}
-              </Text>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: 'Montserrat-Bold',
+                    fontSize: 16,
+                    color: colors.color1,
+                  }}>
+                  Welcome to
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: 'Montserrat-SemiBold',
+                    color: colors.color1,
+                  }}>
+                  {'' + company_name}
+                </Text>
+              </View>
+              <Image
+                style={{height: 15, width: 15, marginRight: '5%'}}
+                source={require('../../../assets/Icon/F.png')}
+              />
             </TouchableOpacity>
           </View>
           <FlatList

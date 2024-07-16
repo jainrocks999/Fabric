@@ -198,6 +198,26 @@ const Punchorder = ({route}) => {
   const [searched, setSeached] = useState('');
   const defferedValue = useDeferredValue(searched);
   const [manuvisble, setMenuVisible] = useState(false);
+  const somedata = [
+    {
+      barcode: '760000186',
+      company_name: 'Invictor Clothing Llp',
+      companyid: 8,
+      design_name: 'RION...',
+      designid: 4952,
+      entryDate: '2023-04-19 00:00:00',
+      id: 33,
+      party_name: 'Ibf(Invictor Supplier)',
+      partyid: 3358,
+      quality_name: 'RION...',
+      qualityid: 2462,
+      quantity: '505.0000',
+      salesman_name: 'Aatish Singh',
+      salesmanid: 1,
+      shade_name: 'Haldi',
+      shadeid: 713,
+    },
+  ];
   useEffect(() => {
     setVisibles(visbles ?? false);
   }, [visbles]);
@@ -205,14 +225,28 @@ const Punchorder = ({route}) => {
     filter(defferedValue, data);
   }, [defferedValue, data]);
   const filter = (value, data) => {
+    if (value == '') {
+      setFilteredData(data);
+      return;
+    }
+    const lowersearch = value.toLowerCase();
     const newData = data.filter(item => {
-      return item.party_name.toLowerCase().includes(value.toLowerCase());
+      return (
+        item.party_name.toLowerCase().includes(lowersearch) ||
+        item.design_name.includes(lowersearch) ||
+        item.quality_name.includes(lowersearch) ||
+        item.shade_name.includes(lowersearch) ||
+        item.quantity.includes(value) ||
+        item.barcode.includes(value)
+      );
     });
-    setFilteredData(value == '' ? data : newData);
+    setFilteredData(newData);
   };
 
   const onScann = async e => {
     navigation.setParams({visible: false});
+    setVisibles(false);
+    setMenuVisible(false);
     setLoading(true);
     try {
       const token = await storage.getItem(storage.TOKEN);
@@ -305,8 +339,7 @@ const Punchorder = ({route}) => {
       <Header
         title={'Roll Check'}
         onPress={() => navigation.openDrawer()}
-        scanner={true}
-        onPress2={() => setVisibles(true)}
+        scanner={false}
       />
       <View style={{padding: 10}}>
         <View style={{}}>
@@ -337,6 +370,27 @@ const Punchorder = ({route}) => {
             }}
           />
         </View>
+        <TouchableOpacity
+          onPress={() => setVisibles(true)}
+          style={{
+            height: hp(5.3),
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: hp(3),
+            width: wp(91),
+            backgroundColor: colors.color1,
+            borderRadius: wp(2),
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Montserrat-Bold',
+              color: '#fff',
+              fontSize: 15,
+            }}>
+            Scan Barcode
+          </Text>
+        </TouchableOpacity>
         <FlatList
           data={filteredData}
           style={{marginTop: 20}}
@@ -368,7 +422,7 @@ const Punchorder = ({route}) => {
                   Edit
                 </Text>
               </TouchableOpacity>
-              <View style={{flexDirection: 'row', width: '100%'}}>
+              {/* <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
                   <Text
                     style={{
@@ -396,6 +450,36 @@ const Punchorder = ({route}) => {
                     fontSize: 13,
                   }}>
                   {item?.party_name.substring(0, 30) + '..'}
+                </Text>
+              </View> */}
+              <View style={{flexDirection: 'row', width: '100%'}}>
+                <View style={{width: '40%', flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                      width: '100%',
+                    }}>
+                    {'Barcode'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {':'}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: '#000',
+                    fontFamily: 'Montserrat-Regular',
+                    fontSize: 13,
+                  }}>
+                  {item?.barcode}
                 </Text>
               </View>
               <View style={{flexDirection: 'row', width: '100%'}}>
@@ -437,7 +521,37 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-SemiBold',
                       width: '100%',
                     }}>
-                    {'Color'}
+                    {'Quality'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {':'}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: '#000',
+                    fontFamily: 'Montserrat-Regular',
+                    fontSize: 13,
+                  }}>
+                  {item?.quality_name}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row', width: '100%'}}>
+                <View style={{width: '40%', flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                      width: '100%',
+                    }}>
+                    {'Shade'}
                   </Text>
                   <Text
                     style={{

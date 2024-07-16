@@ -61,6 +61,7 @@ const CustomHeader = ({
 
   const onSelect = item => {
     const value = item.value;
+
     if (value != company) {
       console.log('called');
       Alert.alert(
@@ -75,14 +76,15 @@ const CustomHeader = ({
             text: 'Ok',
             onPress: async () => {
               if (item.label) {
-                // Ensure label exists
                 await storage.setItem(storage.COMPANY, value);
                 await storage.setItem(
                   storage.COMPANY_NAME,
                   item.label, // Fixed typo
                 );
+                setCompany(value);
                 setCompanyName(item.label);
                 setVisible(false);
+
                 await storage.removeItem(storage.CART);
               } else {
                 console.error('Label not found for the selected value');

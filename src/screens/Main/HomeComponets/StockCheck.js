@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import Header from '../../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -20,13 +21,17 @@ import BackArrow from '../../../assets/Icon/BackArrow.svg';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
+import QRCodeScanner from '../../../components/QRCodeScanner';
 const Punchorder = () => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
+  const [manuvisble, setMenuVisible] = useState(false);
   const [loading, setIsLoading] = useState(false);
   useEffect(() => {
     fetchData();
   }, []);
+  const [visble, setVisible] = useState(false);
+  const [data, setData] = useState(false);
 
   const [stockList, setStockList] = useState([]);
   const fetchData = async () => {
@@ -52,6 +57,36 @@ const Punchorder = () => {
       return {label: item.barcode, value: item.barcode};
     });
     setStockList(formated);
+  };
+  const onScann = e => {
+    console.log(e.data);
+    setMenuVisible(false);
+    setVisible(false);
+    fetchData1(e.data);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData1 = async barcode => {
+    try {
+      const token = await storage.getItem(storage.TOKEN);
+      const endpoint = `stock-details/${barcode}`;
+      setIsLoading(true);
+      const res = await Api.getRequest(endpoint, token);
+      if (res.status) {
+        setdata1(res.data);
+      } else {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      }
+    } catch (err) {
+      console.log(err);
+      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const setdata1 = data => {
+    navigation.navigate('StockDetailScreen', {data: data[0]});
   };
   return (
     <View style={styles.container}>
@@ -120,20 +155,94 @@ const Punchorder = () => {
             marginTop: 40,
           }}>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('StockDetailScreen', {barcode: name})
-            }
+            onPress={() => {
+              if (name != '') fetchData1(name);
+              else {
+                ToastAndroid.show('Please Select a Stock', ToastAndroid.SHORT);
+              }
+            }}
             style={{
+              height: hp(5.3),
+              alignSelf: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+              // marginTop: hp(3),
+              width: wp(91),
               backgroundColor: colors.color1,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              borderRadius: 8,
+              borderRadius: wp(2),
             }}>
-            <Text style={{color: '#FFF', fontFamily: 'Montserrat-SemiBold'}}>
+            <Text style={{fontFamily: 'Montserrat-Bold', color: '#fff'}}>
               Get Details
             </Text>
           </TouchableOpacity>
         </View>
+        <View
+          style={{
+            height: hp(10),
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              alignSelf: 'center',
+              fontFamily: 'Montserrat-SemiBold',
+              fontSize: wp(4),
+              color: 'grey',
+            }}>
+            OR
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
+          style={{
+            height: hp(5.3),
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // marginTop: hp(3),
+            width: wp(91),
+            backgroundColor: colors.color1,
+            borderRadius: wp(2),
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Montserrat-Bold',
+              color: '#fff',
+              // fontSize: 15,
+            }}>
+            Scan Barcode
+          </Text>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          visible={visble}
+          style={{
+            width: '100%',
+            alignSelf: 'center',
+            marginHorizontal: 50,
+            margin: 0,
+          }}
+          onRequestClose={() => {}}>
+          <View
+            style={{
+              //   flex: 1,
+              backgroundColor: '#D6E1EC50',
+              height: '100%',
+            }}>
+            <View style={{flex: 1}}>
+              <QRCodeScanner
+                // completionHandler={this.completionQRViewHandler}
+                page="rolecheck"
+                onScann={onScann}
+                closeHandler={() => {
+                  setVisible(false);
+                  setMenuVisible(false);
+                }}
+                manuvisble={manuvisble}
+                setMenuVisible={setMenuVisible}
+              />
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
       {/* <View style={{position: 'absolute', bottom: 20, left: 20}}>
         <TouchableOpacity

@@ -57,6 +57,7 @@ const Punchorder = ({route}) => {
       };
     });
   }, []);
+  console.log(inputs.remark);
 
   const handleInputs = (text, input) => {
     setInputs(prev => ({...prev, [text]: input}));
@@ -461,7 +462,7 @@ const Punchorder = ({route}) => {
                 value={inputs.remark == 'NA' ? '' : inputs.remark}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {
-                  handleInputs('remark', value);
+                  handleInputs('remark', value == '' ? 'NA' : value);
                 }}
                 placeholder="Remark"
               />

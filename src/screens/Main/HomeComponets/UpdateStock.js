@@ -1,23 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useDeferredValue} from 'react';
 import {
   View,
   Text,
   FlatList,
   TextInput,
   StyleSheet,
-  ScrollView,
-  TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import {Dropdown} from 'react-native-element-dropdown';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
-import colors from '../../../assets/colors';
-import BackArrow from '../../../assets/Icon/BackArrow.svg';
 import storage from '../../../utils/storageService';
 import Loader from '../../../components/Loader';
 import Api from '../../../Redux/Api';
@@ -28,9 +23,16 @@ const Punchorder = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const differedValue = useDeferredValue(search);
+  const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    filterData(data, differedValue);
+  }, [differedValue, data]);
   useEffect(() => {
     getUpdatedStock(1);
   }, []);
+
   const getUpdatedStock = page_number => {
     if (loading) {
       return;
@@ -39,6 +41,34 @@ const Punchorder = () => {
     fetData(endpoint);
     setPage(page_number);
   };
+  const searchCriteria = {
+    COMPANY: 'Infino',
+    DESIGN: 'RICOTTI',
+    ENTDT: '2024-04-01',
+    Party: 'RATHOD',
+    Quality: 'RICOTTI',
+    SHADE: '300',
+    barcode: '750000019',
+    entno: '000002',
+    qty: '42',
+  };
+  function filterData(data, searchString) {
+    const searchLower = searchString.toLowerCase().trim();
+    if (searchLower === '') {
+      setFilteredData(data);
+      return;
+    }
+    const filtred = data.filter(item => {
+      return (
+        item?.COMPANY?.toLowerCase()?.includes(searchLower) ||
+        item?.Party?.toLowerCase()?.includes(searchLower) ||
+        item?.Quality.toLowerCase()?.includes(searchLower) ||
+        item?.barcode?.includes(searchString) ||
+        item?.SHADE?.includes(searchString)
+      );
+    });
+    setFilteredData(filtred);
+  }
 
   const fetData = async endpoint => {
     setLoading(true);
@@ -62,7 +92,7 @@ const Punchorder = () => {
     const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
     if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 20) {
       if (page <= totalPages) {
-        getUpdatedStock(page + 1);
+        search == '' ? getUpdatedStock(page + 1) : null;
       }
     }
   };
@@ -70,12 +100,40 @@ const Punchorder = () => {
   return (
     <View style={styles.container}>
       <Header title={'Update Stock'} onPress={() => navigation.openDrawer()} />
+      <View style={{height: hp(10), justifyContent: 'center'}}>
+        <TextInput
+          placeholder="Search"
+          value={search}
+          onChangeText={setSearch}
+          style={{
+            marginTop: wp(-1),
+            borderWidth: 1,
+            borderColor: '#979998',
+            color: '#000',
+            height: hp(5.5),
+            backgroundColor: 'white',
+            borderRadius: wp(2),
+            paddingHorizontal: 12,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            fontSize: 14,
+            elevation: 3,
+            justifyContent: 'center',
+            marginHorizontal: '2%',
+          }}
+        />
+      </View>
       {loading && <Loader />}
       <View style={{marginTop: -18}}>
         <FlatList
           onScroll={onScroll}
-          contentContainerStyle={{paddingBottom: hp(20)}}
-          data={data}
+          contentContainerStyle={{paddingBottom: hp(25)}}
+          data={filteredData}
           renderItem={({item}) => (
             <View
               style={{

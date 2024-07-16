@@ -45,7 +45,7 @@ const Punchorder = () => {
   const [totoalPage, setTotalPage] = useState(10);
   const [partyList, setPartyList] = useState([]);
   const navigation = useNavigation();
-  const [customer, setCustomer] = useState({});
+  const [customer, setCustomer] = useState('');
   const [address, setAddress] = useState('');
   const [remark, setRemark] = useState('');
   const [page, setPage] = useState(1);
@@ -199,16 +199,30 @@ const Punchorder = () => {
                 style={styles.dropdown}
                 placeholder="Remark"
                 value={remark}
-                onChangeText={setRemark}
+                onChangeText={value => {
+                  setRemark(value);
+                }}
               />
             </View>
           </View>
 
           <View style={styles.buttonView}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Punchorder2', {remark, customer, address})
-              }
+              onPress={() => {
+                console.log(customer?.Partyname);
+                if (customer != '') {
+                  navigation.navigate('Punchorder2', {
+                    remark,
+                    customer,
+                    address,
+                  });
+                } else {
+                  ToastAndroid.show(
+                    'Please Select Customer',
+                    ToastAndroid.SHORT,
+                  );
+                }
+              }}
               style={styles.buttonOpen}>
               <Text
                 style={{
@@ -249,7 +263,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    //borderWidth: wp(0.6),
     marginTop: hp(3),
     width: wp(91),
     backgroundColor: colors.color1,
@@ -263,7 +276,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    // paddingHorizontal:15
   },
   Main: {marginHorizontal: wp(3), marginTop: wp(3.5)},
   inputText: {

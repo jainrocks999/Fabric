@@ -62,32 +62,64 @@ const PunchorderList = () => {
         arrow={true}
       />
       <View style={{padding: 15}}>
-        <FlatList
-          data={carts}
-          style={{marginBottom: 100}}
-          renderItem={({item}) => (
-            <View
-              style={{
-                borderWidth: 1,
-                width: '100%',
-                marginBottom: 10,
-                borderRadius: 6,
-                padding: 10,
-              }}>
+        {carts.length > 0 ? (
+          <FlatList
+            data={carts}
+            style={{marginBottom: 100}}
+            renderItem={({item}) => (
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  borderWidth: 1,
                   width: '100%',
+                  marginBottom: 10,
+                  borderRadius: 6,
+                  padding: 10,
                 }}>
-                <View style={{flexDirection: 'row', width: '75%'}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}>
+                  <View style={{flexDirection: 'row', width: '75%'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {'Customer Name : '}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 10,
+                        color: '#000',
+                        fontFamily: 'Montserrat-Regular',
+                        fontSize: 13,
+                      }}>
+                      {item?.customerName?.Partyname?.substring(0, 20)}
+                    </Text>
+                  </View>
+                  <View style={{alignItems: 'flex-end'}}>
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontFamily: 'Montserrat-Regular',
+                        fontSize: 13,
+                      }}>
+                      {item?.date}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text
                     style={{
                       fontSize: 14,
                       color: '#000',
                       fontFamily: 'Montserrat-SemiBold',
                     }}>
-                    {'Customer Name : '}
+                    {'Color : '}
                   </Text>
                   <Text
                     style={{
@@ -96,155 +128,146 @@ const PunchorderList = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.customerName?.Partyname?.substring(0, 20)}
+                    {item?.color.color}
                   </Text>
                 </View>
-                <View style={{alignItems: 'flex-end'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text
                     style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {'Design : '}
+                  </Text>
+                  <Text
+                    style={{
+                      marginLeft: 10,
                       color: '#000',
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.date}
+                    {item?.design?.Design}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {'Price : '}
+                  </Text>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.price}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {'Cut : '}
+                  </Text>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.cut}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily: 'Montserrat-SemiBold',
+                    }}>
+                    {'Shade : '}
+                  </Text>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.shade?.shade}
                   </Text>
                 </View>
               </View>
-
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {'Color : '}
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.color.color}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {'Design : '}
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.design?.Design}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {'Price : '}
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.price}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {'Cut : '}
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.cut}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {'Shade : '}
-                </Text>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.shade?.shade}
-                </Text>
-              </View>
-            </View>
-          )}
-        />
-      </View>
-
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 20,
-          left: 0,
-          right: 0,
-          backgroundColor: '#fff',
-        }}>
-        <TouchableOpacity
-          onPress={() => {
-            punchorder();
-          }}
-          style={{
-            height: hp(5.3),
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: wp(42),
-            backgroundColor: colors.color1,
-            borderRadius: wp(2),
-          }}
-          // onPress={() => navigation.navigate('PunchorderList')}
-        >
-          <Text
+            )}
+          />
+        ) : (
+          <View
             style={{
-              color: 'white',
-              fontFamily: 'Montserrat-Bold',
-              fontSize: wp(4.5),
-              fontWeight: 'bold',
+              height: '100%',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-            Punch Order
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: 'lightgrey',
+                fontFamily: 'Montserrat-Bold',
+                fontSize: wp(4.5),
+                fontWeight: 'bold',
+                marginTop: '-15%',
+              }}>
+              {'There are no items'}
+            </Text>
+          </View>
+        )}
       </View>
+
+      {carts.length > 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 0,
+            right: 0,
+            backgroundColor: '#fff',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              punchorder();
+            }}
+            style={{
+              height: hp(5.3),
+              alignSelf: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: wp(42),
+              backgroundColor: colors.color1,
+              borderRadius: wp(2),
+            }}
+            // onPress={() => navigation.navigate('PunchorderList')}
+          >
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'Montserrat-Bold',
+                fontSize: wp(4.5),
+                fontWeight: 'bold',
+              }}>
+              Punch Order
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

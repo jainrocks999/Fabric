@@ -33,7 +33,6 @@ const Punchorder = ({route}) => {
   const navigation = useNavigation();
   const visbles = route.params?.visible;
   const {isFetching, bagdata} = useSelector(state => state);
-
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -78,6 +77,10 @@ const Punchorder = ({route}) => {
   }, []);
   const onPressComplete = async () => {
     try {
+      dispatch({
+        type: 'setFetching',
+        payload: true,
+      });
       const token = await storage.getItem(storage.TOKEN);
 
       const barcodes = bagdata
@@ -98,10 +101,18 @@ const Punchorder = ({route}) => {
         type: 'bag_check_success',
         payload: [],
       });
+      dispatch({
+        type: 'setFetching',
+        payload: false,
+      });
       ToastAndroid.show(res.message, ToastAndroid.SHORT);
     } catch (err) {
       console.log(err);
       ToastAndroid.show('Failed to send email: ', ToastAndroid.SHORT);
+      dispatch({
+        type: 'setFetching',
+        payload: false,
+      });
     }
   };
 
@@ -123,30 +134,33 @@ const Punchorder = ({route}) => {
             {/* <TouchableOpacity onPress={() => navigation.goBack()}>
               <BackArrow />
             </TouchableOpacity> */}
-            <TouchableOpacity
-              style={{
-                backgroundColor: colors.color1,
-                paddingHorizontal: 10,
-                paddingVertical: 4,
-                borderRadius: 6,
-                height: hp(4),
-              }}
-              onPress={() => {
-                dispatch({
-                  type: 'bag_check_success',
-                  payload: [],
-                });
-              }}>
-              <Text
+            {bagdata.length > 0 && (
+              <TouchableOpacity
                 style={{
-                  color: '#fff',
-                  fontSize: 12,
-                  fontFamily: 'Montserrat-SemiBold',
+                  backgroundColor: colors.color1,
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  borderRadius: 6,
+                  height: hp(4),
+                }}
+                onPress={() => {
+                  dispatch({
+                    type: 'bag_check_success',
+                    payload: [],
+                  });
+                  setVisibles(true);
                 }}>
-                {' '}
-                + Start New List
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 12,
+                    fontFamily: 'Montserrat-SemiBold',
+                  }}>
+                  {' '}
+                  + Start New List
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
           {/* <View style={styles.dropdown}>
             <Dropdown
@@ -250,7 +264,7 @@ const Punchorder = ({route}) => {
               color: '#fff',
               fontSize: 15,
             }}>
-            Start List
+            Scan Barcode
           </Text>
         </TouchableOpacity>
       </View>
@@ -518,7 +532,14 @@ const Punchorder = ({route}) => {
                       payload: newdata,
                     });
                   }}
-                  style={{right: '3%', position: 'absolute', top: '2%'}}>
+                  style={{
+                    right: '1%',
+                    position: 'absolute',
+                    top: '1%',
+                    padding: '2%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
                   {item.qty > 10 ? (
                     <Text
                       style={{
@@ -534,14 +555,14 @@ const Punchorder = ({route}) => {
                       style={{
                         height: 12,
                         width: 12,
-                        marginTop: '40%',
+                        marginTop: '2%',
                         marginRight: '1%',
                       }}
                       source={require('../../../assets/Icon/close.png')}
                     />
                   )}
                 </TouchableOpacity>
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     width: '100%',
@@ -576,7 +597,7 @@ const Punchorder = ({route}) => {
                       ? item?.Party.substring(0, 12) + '...'
                       : item?.Party}
                   </Text>
-                </View>
+                </View> */}
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text

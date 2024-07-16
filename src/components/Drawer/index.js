@@ -204,7 +204,7 @@ const Drawer = () => {
               fontFamily: 'Montserrat-Medium',
               marginTop: 20,
             }}>
-            Stock Stock
+            Stock Check
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

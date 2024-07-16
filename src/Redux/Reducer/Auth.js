@@ -36,6 +36,8 @@ export default (state = initialstate, action) => {
       return {...state, isFetching: false, Rndata: action.payload};
     case 'fetch_copanies_error':
       return {...state, isFetching: false};
+    case 'setFetching':
+      return {...state, isFetching: action.payload};
     default:
       return state;
   }

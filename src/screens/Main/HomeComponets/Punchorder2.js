@@ -187,8 +187,9 @@ const Punchorder = ({route}) => {
         title={'Punch Order'}
         onPress={() => navigation.goBack()}
         arrow={true}
-        scanner={true}
+        scanner={false}
         onPress2={() => setVisible(true)}
+        nocompany
       />
       <ScrollView style={{marginBottom: 0}}>
         <View style={{paddingHorizontal: 5, marginBottom: 80}}>

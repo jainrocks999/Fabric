@@ -4,6 +4,7 @@ class StorageService {
   TOKEN = 'token';
   USER = 'User';
   COMPANY = 'company_id';
+  COMPANY_NAME = 'company_name';
   CART = 'cart';
   setItem = async (action, data) => {
     const value = JSON.stringify({data});

@@ -33,6 +33,8 @@ class Api {
         return Promise.reject(error);
       },
     );
+    this.getRequest = this.getRequest.bind(this);
+    this.postRequest = this.postRequest.bind(this);
   }
 
   redirectToLogin = async () => {

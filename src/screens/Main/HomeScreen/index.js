@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useDeferredValue} from 'react';
 import {
   View,
   Text,
@@ -9,22 +9,98 @@ import {
   TouchableOpacity,
   StatusBar,
   BackHandler,
+  Alert,
 } from 'react-native';
 import Menu from '../../../assets/Icon/Menu.svg';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import colors from '../../../assets/colors';
 import {RNCamera} from 'react-native-camera';
 import QRCodeScanner from '../../../components/QRCodeScanner';
 import Tts from 'react-native-tts';
+import storage from '../../../utils/storageService';
+import {useDispatch, useSelector} from 'react-redux';
+import SelectModal from '../../../components/CustomHeader/SelectModal';
 // import Voice from '@react-native-voice/voice';
 
 const HomeScreen = () => {
+  const {Rndata} = useSelector(state => state);
+  const [setdata, setSedata] = useState([]);
+  useEffect(() => {
+    setSedata(Rndata);
+  }, [Rndata]);
+  const [search, setSearch] = useState('');
+  const deferredValue = useDeferredValue(search);
+  useEffect(() => {
+    setSedata(() => {
+      return Rndata.filter(item => {
+        return (
+          deferredValue === '' ||
+          item.label.toLowerCase().includes(deferredValue.toLowerCase())
+        );
+      });
+    });
+  }, [deferredValue]);
+  const onSelect = item => {
+    const value = item.value;
+    if (value != company) {
+      console.log('called');
+      Alert.alert(
+        'Warning',
+        'If you change company, all your previous tasks will be removed', // Fixed typos
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Ok',
+            onPress: async () => {
+              if (item.label) {
+                // Ensure label exists
+                await storage.setItem(storage.COMPANY, value);
+                await storage.setItem(
+                  storage.COMPANY_NAME,
+                  item.label, // Fixed typo
+                );
+                setCompanyName(item.label);
+                setVisible(false);
+                await storage.removeItem(storage.CART);
+              } else {
+                console.error('Label not found for the selected value');
+                setVisible(false);
+              }
+            },
+          },
+        ],
+        {
+          cancelable: true,
+        },
+      );
+    } else {
+      setVisible(false);
+    }
+  };
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [isVisible, setVisible] = useState(false);
+  const [visibless, setVisible] = useState(false);
   const [visible, setVisibles] = useState(false);
   const [selected, setSelected] = useState(0);
-
+  const [company_name, setCompanyName] = useState('');
+  const [user, setUser] = useState('');
+  const [company, setCompany] = useState('');
+  const focus = useIsFocused();
+  useEffect(() => {
+    getCompanyName();
+  }, [focus]);
+  const getCompanyName = async () => {
+    const name = await storage.getItem(storage.COMPANY_NAME);
+    const company = await storage.getItem(storage.COMPANY);
+    setCompany(company);
+    const userName = await storage.getItem(storage.USER);
+    setCompanyName(name);
+    setUser(userName);
+  };
   // useEffect(()=>{
   //     // Tts.speak('Hello, world!')
   //     Voice.onSpeechStart = this.onSpeechStartHandler.bind(this);
@@ -57,12 +133,18 @@ const HomeScreen = () => {
       navigation.navigate('LandingPage');
     }
   };
+  useEffect(() => {
+    getCompanies();
+  }, []);
 
-  const onSuccess = e => {
-    console.error('An error occured');
-    // Linking.openURL(e.data).catch(err =>
-    //   console.error('An error occured', err)
-    // );
+  const getCompanies = async () => {
+    const endpoint = 'companies';
+    const token = await storage.getItem(storage.TOKEN);
+    dispatch({
+      type: 'fetch_copanies_rquest',
+      endpoint,
+      token,
+    });
   };
 
   function handleBackButtonClick() {
@@ -79,9 +161,29 @@ const HomeScreen = () => {
       );
     };
   }, []);
+  const getGreeting = () => {
+    let hours = new Date().getHours();
+    if (hours < 12) {
+      return 'Good Morning';
+    } else if (hours < 18) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      <SelectModal
+        onClose={value => {
+          setVisible(value);
+        }}
+        search={search}
+        data={setdata}
+        setSearch={setSearch}
+        visible={visibless}
+        onSelect={onSelect}
+      />
       <View
         style={{
           height: 50,
@@ -100,13 +202,12 @@ const HomeScreen = () => {
         <View style={{marginTop: 20, paddingHorizontal: 10}}>
           <View style={{paddingHorizontal: 10}}>
             <Text
-              onPress={() => navigation.navigate('Test')}
               style={{
                 fontSize: 18,
                 fontFamily: 'Montserrat-Bold',
                 color: colors.color1,
               }}>
-              Hi Johnson!
+              {`Hi ${user.salesman}!`}
             </Text>
             <Text
               style={{
@@ -114,7 +215,7 @@ const HomeScreen = () => {
                 fontFamily: 'Montserrat-SemiBold',
                 color: colors.color1,
               }}>
-              Good morning
+              {getGreeting()}
             </Text>
           </View>
           <View
@@ -127,7 +228,8 @@ const HomeScreen = () => {
               borderRadius: 10,
               justifyContent: 'center',
             }}>
-            <View
+            <TouchableOpacity
+              onPress={() => setVisible(true)}
               style={{
                 paddingHorizontal: 10,
                 paddingVertical: 10,
@@ -139,15 +241,17 @@ const HomeScreen = () => {
                   fontSize: 16,
                   color: colors.color1,
                 }}>
-                Welcome
+                Welcome to
               </Text>
               <Text
                 style={{
                   fontSize: 15,
                   fontFamily: 'Montserrat-SemiBold',
                   color: colors.color1,
-                }}>{`To Company A!`}</Text>
-            </View>
+                }}>
+                {'' + company_name}
+              </Text>
+            </TouchableOpacity>
           </View>
           <FlatList
             data={data}

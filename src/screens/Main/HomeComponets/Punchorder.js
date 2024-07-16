@@ -94,7 +94,11 @@ const Punchorder = () => {
 
   return (
     <View style={styles.container}>
-      <Header title={'Punch Order'} onPress={() => navigation.openDrawer()} />
+      <Header
+        nocompany
+        title={'Punch Order'}
+        onPress={() => navigation.openDrawer()}
+      />
       {isFetching && (
         <Loading
           style={{

@@ -3,6 +3,7 @@ initialstate = {
   isFetching: false,
   partyList: [],
   bagdata: {},
+  Rndata: [],
 };
 export default (state = initialstate, action) => {
   switch (action.type) {
@@ -28,6 +29,12 @@ export default (state = initialstate, action) => {
       return {...state, isFetching: false, bagdata: action.payload};
     }
     case 'bag_check_error':
+      return {...state, isFetching: false};
+    case 'fetch_copanies_rquest':
+      return {...state, isFetching: true};
+    case 'fetch_copanies_success':
+      return {...state, isFetching: false, Rndata: action.payload};
+    case 'fetch_copanies_error':
       return {...state, isFetching: false};
     default:
       return state;

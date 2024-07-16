@@ -186,7 +186,7 @@ const data2 = [
   },
 ];
 const Punchorder = ({route}) => {
-  const visbles = route.params.visible;
+  const visbles = route.params?.visible;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visible, setVisibles] = useState(false);
@@ -197,8 +197,9 @@ const Punchorder = ({route}) => {
   const [addRole, setAddRolle] = useState(true);
   const [searched, setSeached] = useState('');
   const defferedValue = useDeferredValue(searched);
+  const [manuvisble, setMenuVisible] = useState(false);
   useEffect(() => {
-    setVisibles(visbles);
+    setVisibles(visbles ?? false);
   }, [visbles]);
   useEffect(() => {
     filter(defferedValue, data);
@@ -222,7 +223,7 @@ const Punchorder = ({route}) => {
       const res = await Api.getRequest(endpoint, token);
       if (res.status) {
         setScannedData(res.data[0]);
-        setVisibles(false);
+
         setEditable(true);
         setAddRolle(true);
       } else {
@@ -233,6 +234,8 @@ const Punchorder = ({route}) => {
       console.log(err);
     } finally {
       setLoading(false);
+      setVisibles(false);
+      setMenuVisible(false);
     }
   };
   useEffect(() => {
@@ -264,6 +267,7 @@ const Punchorder = ({route}) => {
       console.log('is error here', err);
     } finally {
       setLoading(false);
+      setMenuVisible(false);
     }
   };
   const setdata = (data, type, item) => {
@@ -574,8 +578,11 @@ const Punchorder = ({route}) => {
                 onScann={onScann}
                 closeHandler={() => {
                   setVisibles(false);
+                  setMenuVisible(false);
                   navigation.setParams({visible: false});
                 }}
+                manuvisble={manuvisble}
+                setMenuVisible={setMenuVisible}
               />
             </View>
           </View>

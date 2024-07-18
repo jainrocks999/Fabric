@@ -4,6 +4,7 @@ initialstate = {
   partyList: [],
   bagdata: {},
   Rndata: [],
+  rollelist: [],
 };
 export default (state = initialstate, action) => {
   switch (action.type) {
@@ -38,6 +39,8 @@ export default (state = initialstate, action) => {
       return {...state, isFetching: false};
     case 'setFetching':
       return {...state, isFetching: action.payload};
+    case 'add_role_list':
+      return {...state, rollelist: action.payload};
     default:
       return state;
   }

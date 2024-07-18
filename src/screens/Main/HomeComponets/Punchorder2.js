@@ -114,16 +114,6 @@ const Punchorder = ({route}) => {
   const addToCart = async () => {
     const companyid = await storage.getItem(storage.COMPANY);
     let array = [];
-    const date = new Date()
-      .toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
-      .replace(/ /g, ' ')
-      .toLowerCase();
-
-    console.log(date);
 
     const cartList = await storage.getItem(storage.CART);
 
@@ -132,7 +122,12 @@ const Punchorder = ({route}) => {
       newId = Math.max(...cartList.map(item => item.id)) + 1;
       array = [...cartList];
     }
-    const newItem = {...inputs, date, id: newId, compId: companyid};
+    const newItem = {
+      ...inputs,
+      currentDate: dateFromate(),
+      id: newId,
+      compId: companyid,
+    };
     array.push(newItem);
     await storage.setItem(storage.CART, array);
     ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
@@ -161,15 +156,28 @@ const Punchorder = ({route}) => {
       punchorder();
     }
   };
+  const dateFromate = () => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    return formattedDate;
+  };
   const punchorder = async () => {
     try {
       setIsLoading(true);
       const token = await storage.getItem(storage.TOKEN);
       const companyid = await storage.getItem(storage.COMPANY);
       const endpoint = 'punch-order';
-      const formData = await punchOrderPost([{...inputs, compId: companyid}]);
+
+      const formData = await punchOrderPost([
+        {
+          ...inputs,
+          currentDate: dateFromate(),
+          compId: companyid,
+        },
+      ]);
       const res = await Api.postRequest(endpoint, formData, token);
       ToastAndroid.show(res.message, ToastAndroid.LONG);
+      console.log(res);
       if (res.status) {
         setInputs(initialstate);
       }
@@ -178,6 +186,8 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(error.message, ToastAndroid.LONG);
       setIsLoading(false);
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

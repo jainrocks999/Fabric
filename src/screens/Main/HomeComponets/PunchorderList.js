@@ -23,6 +23,7 @@ const PunchorderList = () => {
   const navigation = useNavigation();
   const [carts, setCarts] = useState([]);
   Clipboard.setString(JSON.stringify(carts));
+  // console.log(carts);
 
   useEffect(() => {
     getCarts();
@@ -41,6 +42,7 @@ const PunchorderList = () => {
       const endpoint = 'punch-order';
       const formData = await punchOrderPost(carts);
       const res = await Api.postRequest(endpoint, formData, token);
+      console.log('yyjyyj', res);
       ToastAndroid.show(res.message, ToastAndroid.LONG);
       if (res.status) {
         await storage.removeItem(storage.CART);

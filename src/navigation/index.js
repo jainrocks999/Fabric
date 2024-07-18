@@ -20,6 +20,8 @@ import Punchorder2 from '../screens/Main/HomeComponets/Punchorder2';
 import PunchorderList from '../screens/Main/HomeComponets/PunchorderList';
 import OrderSuccessful from '../screens/Main/HomeComponets/OrderSuccessful';
 import {navigationRef} from '../utils/navigationService';
+import Test from '../screens/Main/HomeScreen/Test';
+import PunchOrderHistory from '../screens/Main/HomeComponets/PunchOrderHistory';
 
 const Stack = createNativeStackNavigator();
 function Navigate() {
@@ -60,7 +62,9 @@ function MyDrawer() {
       screenOptions={{headerShown: false}}
       drawerContent={() => <Drawer />}>
       <DrawerStack.Screen name="Home1" component={HomeScreen} />
+      <DrawerStack.Screen name="test" component={Test} />
       <DrawerStack.Screen name="PunchOrder" component={PunchOrder} />
+      <DrawerStack.Screen name="History" component={PunchOrderHistory} />
       <DrawerStack.Screen name="BagCheck" component={BagCheck} />
       <DrawerStack.Screen name="RollCheck" component={RollCheck} />
       <DrawerStack.Screen name="StockCheck" component={StockCheck} />

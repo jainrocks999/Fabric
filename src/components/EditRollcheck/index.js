@@ -6,89 +6,23 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  ToastAndroid,
-  Clipboard,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import CustomHeader from '../CustomHeader';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-
 import colors from '../../assets/colors';
-import storage from '../../utils/storageService';
-import Api from '../../Redux/Api';
-import {Dropdown} from 'react-native-element-dropdown';
-const product = {
-  entno: '000001',
-  ENTDT: '2023-04-19 00:00:00',
-  Party: 'Ibf(Invictor Supplier)',
-  partyid: 3358,
-  Quality: 'RION...',
-  qualityid: '2462',
-  DESIGN: 'RION...',
-  DESIGNid: '4952',
-  SHADE: '713',
-  shadeid: '713',
-  qty: '50.0000',
-  SABROWID: '24701181',
-  barcode: '760000186',
-  COMPANY: 'Invictor Clothing Llp',
-  COMPANYid: 8,
-  rate: '.0000',
-  color: 'Haldi',
-};
 
 const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
   const newdata = data;
-  const [isLoading, setIsLoading] = useState(false);
   const [qty, setQty] = useState('');
   useEffect(() => {
     setQty(newdata.qty ?? '');
   }, [data]);
   const complete = async () => {
-    try {
-      if (qty == '') {
-        ToastAndroid.show('Please Enter Quantity', ToastAndroid.SHORT);
-        return;
-      }
-      const token = await storage.getItem(storage.TOKEN);
-      const salesman = await storage.getItem(storage.USER);
-      const endpoint = addRole ? 'roll-check-barcode' : `update-roll-by-id`;
-      const data = new FormData();
-
-      if (addRole) {
-        data.append('partyid', newdata.partyid);
-        data.append('qualityid', newdata.qualityid);
-        data.append('designid', newdata.DESIGNid);
-        data.append('shadeid', newdata.shadeid);
-        data.append('quantity', qty);
-        data.append('companyid', newdata.COMPANYid);
-        data.append('barcode', newdata.barcode);
-        data.append('entry_date', newdata.ENTDT);
-        data.append('salesmanid', salesman.salesmanid);
-      } else {
-        data.append('barcode', newdata.barcode);
-        data.append('partyid', newdata.partyid);
-        data.append('companyid', newdata.companyid);
-        data.append('qualityid', newdata.qualityid);
-        data.append('designid', newdata.designid);
-        data.append('shadeid', newdata.shadeid);
-        data.append('salesmanid', salesman.salesmanid);
-        data.append('entryDate', newdata?.entryDate);
-        data.append('quantity', qty);
-        data.append('id', newdata?.id);
-      }
-      const res = await Api.postRequest(endpoint, data, token);
-      onComplete();
-      ToastAndroid.show(res?.msg ?? res?.message, ToastAndroid.SHORT);
-    } catch (error) {
-      onComplete();
-      console.log('thius alossosso', error);
-      ToastAndroid.show(error.message, ToastAndroid.SHORT);
-    } finally {
-    }
+    onComplete({...newdata, qty: qty});
   };
 
   return (
@@ -115,7 +49,7 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
               justifyContent: 'center',
             }}>
             <TouchableOpacity
-              onPress={() => onComplete()}
+              onPress={() => onComplete(false)}
               style={{
                 position: 'absolute',
                 top: '1%',

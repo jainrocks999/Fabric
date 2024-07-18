@@ -21,10 +21,11 @@ import Tts from 'react-native-tts';
 import storage from '../../../utils/storageService';
 import {useDispatch, useSelector} from 'react-redux';
 import SelectModal from '../../../components/CustomHeader/SelectModal';
+import Loader from '../../../components/Loader';
 // import Voice from '@react-native-voice/voice';
 
 const HomeScreen = () => {
-  const {Rndata} = useSelector(state => state);
+  const {Rndata, isFetching} = useSelector(state => state);
   const [setdata, setSedata] = useState([]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -128,11 +129,10 @@ const HomeScreen = () => {
     } else if (title == 'Stock Check') {
       navigation.navigate('StockCheck');
       // setVisibles(true)
-    } else if (title == 'Update Stock') {
+    } else if (title == 'Updated Stock') {
       navigation.navigate('UpdateStock');
-      // setVisibles(true)
-    } else if (title == 'Change Company') {
-      navigation.navigate('LandingPage');
+    } else if (title == 'Order History') {
+      navigation.navigate('History');
     }
   };
   useEffect(() => {
@@ -176,6 +176,7 @@ const HomeScreen = () => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      {false && <Loader />}
       <SelectModal
         onClose={value => {
           setVisible(value);
@@ -204,6 +205,9 @@ const HomeScreen = () => {
         <View style={{marginTop: 20, paddingHorizontal: 10}}>
           <View style={{paddingHorizontal: 10}}>
             <Text
+              // onPress={() => {
+              //   navigation.navigate('test');
+              // }}
               style={{
                 fontSize: 18,
                 fontFamily: 'Montserrat-Bold',
@@ -279,7 +283,7 @@ const HomeScreen = () => {
                 style={{
                   // backgroundColor:'#1505f5',
                   backgroundColor:
-                    selected == item.selected ? '#0e305d' : '#d1d8e2',
+                    selected == item.selected ? '#0e305d' : '#a0a2a3', //d1d8e3
                   width: '45%',
                   height: 150,
                   alignItems: 'center',
@@ -363,13 +367,14 @@ const data = [
   },
   {
     img: require('../../../assets/LocalImage/image19.png'),
-    name: 'Update Stock',
+    name: 'Updated Stock',
     selected: 5,
   },
-  // {
-  //     img: require('../../../assets/LocalImage/image20.png'),
-  //     name: 'Change Company'
-  // },
+  {
+    img: require('../../../assets/LocalImage/image20.png'),
+    name: 'Order History',
+    elected: 6,
+  },
   // {
   //     img:require('../../../assets/LocalImage/image23.png'),
   //     name:'Order Copies'

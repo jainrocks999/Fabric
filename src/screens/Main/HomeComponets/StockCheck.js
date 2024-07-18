@@ -88,6 +88,9 @@ const Punchorder = () => {
   const setdata1 = data => {
     navigation.navigate('StockDetailScreen', {data: data[0]});
   };
+  const test = (value = false) => {
+    return value;
+  };
   return (
     <View style={styles.container}>
       {loading && <Loader />}

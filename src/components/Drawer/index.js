@@ -23,6 +23,14 @@ const Drawer = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [visible, setVisibles] = useState(false);
+  const [name, setName] = useState('');
+  useEffect(() => {
+    getUserName();
+  }, []);
+  const getUserName = async () => {
+    const name = await storage.getItem(storage.USER);
+    setName(name?.salesman ?? '');
+  };
 
   const manageDashboard = () => {
     navigation.dispatch(DrawerActions.closeDrawer());
@@ -133,7 +141,7 @@ const Drawer = () => {
               fontFamily: 'Montserrat-Medium',
               marginLeft: 15,
             }}>
-            User Name
+            {name}
           </Text>
         </View>
         <TouchableOpacity

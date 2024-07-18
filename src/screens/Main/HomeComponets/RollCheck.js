@@ -21,170 +21,6 @@ import EditRoll from '../../../components/EditRollcheck';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
-const data2 = [
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-  {
-    entno: '000001',
-    ENTDT: '2023-04-19 00:00:00',
-    Party: 'Ibf(Invictor Supplier)',
-    partyid: 3358,
-    Quality: 'RION...',
-    qualityid: '2462',
-    DESIGN: 'RION...',
-    DESIGNid: '4952',
-    SHADE: '713',
-    shadeid: '713',
-    qty: '50.0000',
-    SABROWID: '24701181',
-    barcode: '760000186',
-    COMPANY: 'Invictor Clothing Llp',
-    COMPANYid: 8,
-    rate: '.0000',
-  },
-];
 const Punchorder = ({route}) => {
   const visbles = route.params?.visible;
   const navigation = useNavigation();
@@ -198,26 +34,6 @@ const Punchorder = ({route}) => {
   const [searched, setSeached] = useState('');
   const defferedValue = useDeferredValue(searched);
   const [manuvisble, setMenuVisible] = useState(false);
-  const somedata = [
-    {
-      barcode: '760000186',
-      company_name: 'Invictor Clothing Llp',
-      companyid: 8,
-      design_name: 'RION...',
-      designid: 4952,
-      entryDate: '2023-04-19 00:00:00',
-      id: 33,
-      party_name: 'Ibf(Invictor Supplier)',
-      partyid: 3358,
-      quality_name: 'RION...',
-      qualityid: 2462,
-      quantity: '505.0000',
-      salesman_name: 'Aatish Singh',
-      salesmanid: 1,
-      shade_name: 'Haldi',
-      shadeid: 713,
-    },
-  ];
   useEffect(() => {
     setVisibles(visbles ?? false);
   }, [visbles]);
@@ -232,11 +48,11 @@ const Punchorder = ({route}) => {
     const lowersearch = value.toLowerCase();
     const newData = data.filter(item => {
       return (
-        item.party_name.toLowerCase().includes(lowersearch) ||
-        item.design_name.includes(lowersearch) ||
-        item.quality_name.includes(lowersearch) ||
-        item.shade_name.includes(lowersearch) ||
-        item.quantity.includes(value) ||
+        item.Party.toLowerCase().includes(lowersearch) ||
+        item.DESIGN.toLowerCase().includes(lowersearch) ||
+        item.Quality.toLowerCase().includes(lowersearch) ||
+        item.SHADE.toLowerCase().includes(lowersearch) ||
+        item.qty.includes(value) ||
         item.barcode.includes(value)
       );
     });
@@ -254,14 +70,20 @@ const Punchorder = ({route}) => {
       const has = data.some(item => {
         return item.barcode == e.data;
       });
-      const res = await Api.getRequest(endpoint, token);
-      if (res.status) {
-        setScannedData(res.data[0]);
-
-        setEditable(true);
-        setAddRolle(true);
+      if (!has) {
+        const res = await Api.getRequest(endpoint, token);
+        if (res.status) {
+          setScannedData(res.data[0]);
+          setEditable(true);
+          setAddRolle(true);
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.LONG);
+        }
       } else {
-        ToastAndroid.show(res.message, ToastAndroid.LONG);
+        setEditable(true);
+        setAddRolle(false);
+        const item = data.find(item => item.barcode == e.data);
+        setScannedData(item);
       }
     } catch (err) {
       ToastAndroid.show('Error with Scanning QR code', ToastAndroid.LONG);
@@ -272,65 +94,63 @@ const Punchorder = ({route}) => {
       setMenuVisible(false);
     }
   };
-  useEffect(() => {
-    RolleList();
-  }, []);
 
-  const RolleList = async () => {
-    const salesman = await storage.getItem(storage.USER);
-    const endpoint = `roll-check-list/${salesman.salesmanid}`;
-    fetData(endpoint, 'roleList');
+  const deleteRoll = value => {
+    setData(prev => {
+      return prev.filter(item => item.barcode != value.barcode);
+    });
   };
-  const getRollesForEdit = item => {
-    const endpoint = `edit-roll-by-id/${item.id}`;
 
-    fetData(endpoint, 'editRolle', item);
-  };
-  const fetData = async (endpoint, type, item) => {
-    setLoading(true);
+  const onSubmit = async () => {
     try {
-      const token = await storage.getItem(storage.TOKEN);
-      const res = await Api.getRequest(endpoint, token);
-
+      setLoading(true);
+      const salesman = (await storage.getItem(storage.USER))?.salesmanid ?? '';
+      const token = (await storage.getItem(storage.TOKEN)) ?? '';
+      const formData = new FormData();
+      data.forEach((item, index) => {
+        formData.append(`rollCheckArray[${index}][partyid]`, item.partyid);
+        formData.append(`rollCheckArray[${index}][qualityid]`, item.qualityid);
+        formData.append(`rollCheckArray[${index}][designid]`, item.DESIGNid);
+        formData.append(`rollCheckArray[${index}][shadeid]`, item.shadeid);
+        formData.append(`rollCheckArray[${index}][quantity]`, item.qty);
+        formData.append(`rollCheckArray[${index}][companyid]`, item.COMPANYid);
+        formData.append(`rollCheckArray[${index}][barcode]`, item.barcode);
+        formData.append(`rollCheckArray[${index}][entry_date]`, item.ENTDT);
+        formData.append(`rollCheckArray[${index}][salesmanid]`, salesman);
+      });
+      const res = await Api.postRequest('roll-check-barcode', formData, token);
       if (res.status) {
-        setdata(res.data, type, item);
-      } else {
-        ToastAndroid.show(res.message, ToastAndroid.LONG);
+        setData([]);
       }
+      ToastAndroid.show(res.msg, ToastAndroid.LONG);
     } catch (err) {
-      console.log('is error here', err);
+      console.log(err);
+      ToastAndroid.show(err.message, ToastAndroid.LONG);
     } finally {
       setLoading(false);
-      setMenuVisible(false);
     }
   };
-  const setdata = (data, type, item) => {
-    if (type == 'roleList') {
-      setData(data);
-    }
-    if (type == 'editRolle') {
-      console.log('this is data', data);
-      setScannedData({
-        ...data,
-        Party: item.party_name,
-        DESIGN: item.design_name,
-        SHADE: item.shade_name,
-        qty: item.quantity,
-        ...item,
-      });
-      setEditable(true);
-      setAddRolle(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <EditRoll
         dataList={data}
         addRole={addRole}
-        onComplete={() => {
-          setEditable(false);
-          RolleList();
+        onComplete={value => {
+          if (addRole) {
+            setEditable(false);
+            setData([...data, {...value}]);
+          } else {
+            const newdata = data.map(item => {
+              if (item.barcode == value.barcode) {
+                return value;
+              } else {
+                return item;
+              }
+            });
+            setData(newdata);
+            setEditable(false);
+            setAddRolle(true);
+          }
         }}
         data={scanneddata}
         visible={editable}
@@ -391,38 +211,43 @@ const Punchorder = ({route}) => {
             Scan Barcode
           </Text>
         </TouchableOpacity>
-        <FlatList
-          data={filteredData}
-          style={{marginTop: 20}}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: hp(18),
-          }}
-          renderItem={({item}) => (
-            <View
-              style={{
-                borderWidth: 1,
-                width: '100%',
-                marginBottom: 10,
-                borderRadius: 6,
-                padding: 10,
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  getRollesForEdit(item);
-                }}
-                style={{right: '3%', position: 'absolute', top: '3%'}}>
-                <Text
+        <View style={{height: hp(60)}}>
+          <FlatList
+            data={filteredData}
+            style={{marginTop: 20}}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{}}
+            renderItem={({item}) => (
+              <View
+                style={{
+                  borderWidth: 1,
+                  width: '100%',
+                  marginBottom: 10,
+                  borderRadius: 6,
+                  padding: 10,
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteRoll(item);
+                  }}
                   style={{
-                    fontSize: 14,
-                    color: colors.color1,
-                    fontFamily: 'Montserrat-SemiBold',
-                    width: '100%',
+                    right: '0%',
+                    position: 'absolute',
+                    top: '1%',
+                    margin: '2%',
+                    alignItems: 'center',
                   }}>
-                  Edit
-                </Text>
-              </TouchableOpacity>
-              {/* <View style={{flexDirection: 'row', width: '100%'}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: colors.color1,
+                      fontFamily: 'Montserrat-SemiBold',
+                      width: '100%',
+                    }}>
+                    Remove
+                  </Text>
+                </TouchableOpacity>
+                {/* <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
                   <Text
                     style={{
@@ -452,128 +277,128 @@ const Punchorder = ({route}) => {
                   {item?.party_name.substring(0, 30) + '..'}
                 </Text>
               </View> */}
-              <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Barcode'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      fontSize: 14,
+                      marginLeft: 10,
                       color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
                     }}>
-                    {'Barcode'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.barcode}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
-                    }}>
-                    {'Design'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
+                    {item?.barcode}
                   </Text>
                 </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.design_name}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Design'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      fontSize: 14,
+                      marginLeft: 10,
                       color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
                     }}>
-                    {'Quality'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.quality_name}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
-                    }}>
-                    {'Shade'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
+                    {item?.DESIGN}
                   </Text>
                 </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.shade_name}
-                </Text>
-              </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Quality'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.Quality}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Shade'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.SHADE}
+                  </Text>
+                </View>
 
-              {/* <View style={{flexDirection: 'row', width: '100%'}}>
+                {/* <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
                   <Text
                     style={{
@@ -603,37 +428,37 @@ const Punchorder = ({route}) => {
                   {item?.rate}
                 </Text>
               </View> */}
-              <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Qty'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      fontSize: 14,
+                      marginLeft: 10,
                       color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
                     }}>
-                    {'Qty'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
+                    {item?.qty}
                   </Text>
                 </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.quantity}
-                </Text>
-              </View>
-              {/* <View style={{flexDirection: 'row', width: '100%'}}>
+                {/* <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
                   <Text
                     style={{
@@ -663,9 +488,34 @@ const Punchorder = ({route}) => {
                   {item?.SHADE}
                 </Text>
               </View> */}
-            </View>
-          )}
-        />
+              </View>
+            )}
+          />
+        </View>
+
+        {data.length > 0 && (
+          <TouchableOpacity
+            onPress={() => onSubmit()}
+            style={{
+              height: hp(5.3),
+              alignSelf: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: hp(3),
+              width: wp(91),
+              backgroundColor: colors.color1,
+              borderRadius: wp(2),
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Montserrat-Bold',
+                color: '#fff',
+                fontSize: 15,
+              }}>
+              Submit
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <Modal

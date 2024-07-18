@@ -75,7 +75,6 @@ export default async value => {
   const data = new FormData();
   const salesman = await storage.getItem(storage.USER);
   data.append(`firstArray[party]`, value[0].customerName.Partyid);
-  data.append(`firstArray[remark]`, value[0].remark1);
   data.append(`firstArray[entdt]`, '');
   data.append(`firstArray[pono]`, '');
   data.append(`firstArray[refdt]`, '');
@@ -86,7 +85,7 @@ export default async value => {
   data.append(`firstArray[bkth]`, '');
   data.append(`firstArray[trsp]`, '');
   data.append(`firstArray[deldate]`, '');
-  data.append(`firstArray[rem]`, '');
+  data.append(`firstArray[rem]`, value[0].remark1);
   data.append(`firstArray[sample1]`, '');
   data.append(`firstArray[srem]`, '');
   data.append(`firstArray[comp]`, value[0].compId);
@@ -95,21 +94,21 @@ export default async value => {
   data.append('firstArray[add]', value[0].address);
   value.forEach((item, index) => {
     data.append(`secondArray[${index}][Gradeid]`, item.grade);
-    data.append(`secondArray[${index}][prodid]`, item.quality.Qualityid);
+    data.append(`secondArray[${index}][prodid]`, item.quality.Qualityid); //
     data.append(`secondArray[${index}][dsnoid]`, item.design.Designid);
     data.append(`secondArray[${index}][shade]`, item.shade.shadeid);
     data.append(`secondArray[${index}][color]`, item.color.colorid);
     data.append(`secondArray[${index}][pcs]`, '');
     data.append(`secondArray[${index}][qty]`, ' ');
     data.append(`secondArray[${index}][cutper]`, item.cut);
-    data.append(`secondArray[${index}][rate]`, item.quality.rate);
+    data.append(`secondArray[${index}][rate]`, item.design.rate); // design rate
     data.append(`secondArray[${index}][sabrowid]`, '');
     data.append(`secondArray[${index}][unit]`, '');
     data.append(`secondArray[${index}][amount]`, item.price);
     data.append(`secondArray[${index}][comp]`, item.compId);
     data.append(`secondArray[${index}][rowid]`, '');
     data.append(`secondArray[${index}][sabid]`, '');
-    data.append(`secondArray[${index}][udate]`, '');
+    data.append(`secondArray[${index}][udate]`, item.currentDate); //current date
     data.append(`secondArray[${index}][remark]`, item.remark);
   });
   return data;

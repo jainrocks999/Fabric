@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -91,6 +92,20 @@ const Punchorder = () => {
       }
     }
   };
+  function handleBackButtonClick() {
+    // navigation.reset({index: 0, routes: [{name: 'Home'}]});
+    return false;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, []);
 
   return (
     <View style={styles.container}>

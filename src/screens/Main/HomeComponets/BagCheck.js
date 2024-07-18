@@ -97,10 +97,10 @@ const Punchorder = ({route}) => {
           payload: [],
         });
       }
-      dispatch({
-        type: 'bag_check_success',
-        payload: [],
-      });
+      // dispatch({
+      //   type: 'bag_check_success',
+      //   payload: [],
+      // });
       dispatch({
         type: 'setFetching',
         payload: false,

@@ -16,12 +16,14 @@ const Splash = () => {
   }, []);
 
   const initial = async () => {
-    let Token = await AsyncStorage.getItem('loginToken');
+    
+    let Token = await AsyncStorage.getItem('token');
+    console.log('hjnhjdndnd',Token);
     if (!Token) {
       setTimeout(() =>
        navigation.replace('Login'),2000);
     } else {
-      // setTimeout(() => navigation.replace('Home'), 2000);
+       setTimeout(() => navigation.replace('Home'), 2000);
     }
   };
   return (

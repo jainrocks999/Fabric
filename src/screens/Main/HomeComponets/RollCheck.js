@@ -21,19 +21,21 @@ import EditRoll from '../../../components/EditRollcheck';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
+import {useDispatch, useSelector} from 'react-redux';
 const Punchorder = ({route}) => {
+  const data = useSelector(state => state.rollelist);
   const visbles = route.params?.visible;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visible, setVisibles] = useState(false);
   const [scanneddata, setScannedData] = useState({});
-  const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [editable, setEditable] = useState(false);
   const [addRole, setAddRolle] = useState(true);
   const [searched, setSeached] = useState('');
   const defferedValue = useDeferredValue(searched);
   const [manuvisble, setMenuVisible] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     setVisibles(visbles ?? false);
   }, [visbles]);
@@ -67,9 +69,11 @@ const Punchorder = ({route}) => {
     try {
       const token = await storage.getItem(storage.TOKEN);
       const endpoint = `barcode/${e.data}`;
-      const has = data.some(item => {
-        return item.barcode == e.data;
-      });
+      const has =
+        Array.isArray(data) &&
+        data.some(item => {
+          return item.barcode == e.data;
+        });
       if (!has) {
         const res = await Api.getRequest(endpoint, token);
         if (res.status) {
@@ -96,8 +100,11 @@ const Punchorder = ({route}) => {
   };
 
   const deleteRoll = value => {
-    setData(prev => {
-      return prev.filter(item => item.barcode != value.barcode);
+    const newdata = data.filter(item => item.barcode != value.barcode);
+
+    dispatch({
+      type: 'add_role_list',
+      payload: newdata,
     });
   };
 
@@ -120,7 +127,10 @@ const Punchorder = ({route}) => {
       });
       const res = await Api.postRequest('roll-check-barcode', formData, token);
       if (res.status) {
-        setData([]);
+        dispatch({
+          type: 'add_role_list',
+          payload: [],
+        });
       }
       ToastAndroid.show(res.msg, ToastAndroid.LONG);
     } catch (err) {
@@ -136,20 +146,37 @@ const Punchorder = ({route}) => {
         dataList={data}
         addRole={addRole}
         onComplete={value => {
-          if (addRole) {
-            setEditable(false);
-            setData([...data, {...value}]);
-          } else {
-            const newdata = data.map(item => {
-              if (item.barcode == value.barcode) {
-                return value;
+          try {
+            console.log('this is value', value);
+            if (value) {
+              console.log('this is new data');
+              if (addRole) {
+                console.log('this is new data');
+                setEditable(false);
+                const newData = Array.isArray(data)
+                  ? [...data, {...value}]
+                  : [value];
+                console.log('this is new datagjvvjvvjvvjv', newData);
+
+                dispatch({
+                  type: 'add_role_list',
+                  payload: newData,
+                });
               } else {
-                return item;
+                const newData = data.map(item =>
+                  item.barcode === value.barcode ? value : item,
+                );
+
+                dispatch({
+                  type: 'add_role_list',
+                  payload: newData,
+                });
               }
-            });
-            setData(newdata);
+            }
             setEditable(false);
             setAddRolle(true);
+          } catch (err) {
+            console.log('this is error', err);
           }
         }}
         data={scanneddata}
@@ -493,7 +520,7 @@ const Punchorder = ({route}) => {
           />
         </View>
 
-        {data.length > 0 && (
+        {data?.length > 0 && (
           <TouchableOpacity
             onPress={() => onSubmit()}
             style={{

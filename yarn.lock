@@ -6108,6 +6108,13 @@ react-native-date-picker@^4.3.7:
   resolved "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-4.3.7.tgz"
   integrity sha512-0FunP9uDdRHH7VmGTdwUvDQMC9heifxvrNLiASxaO5tv6imvcE7U/Ic2btfQPUYCxs46BEZXpT6HeqXlHf07kQ==
 
+react-native-drawer-layout@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.npmjs.org/react-native-drawer-layout/-/react-native-drawer-layout-3.3.2.tgz"
+  integrity sha512-Xr2qNT+v6lbVlWSuijx9D6p1NX6d2rE9wa7/Vpg9wy9EtSZGRP71F8XTkug9kgG+KlsxNcdWhqMFm/0lbPmlpQ==
+  dependencies:
+    use-latest-callback "^0.2.1"
+
 react-native-element-dropdown@^2.10.0:
   version "2.10.0"
   resolved "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.10.0.tgz"
@@ -7294,6 +7301,11 @@ use-latest-callback@^0.1.5, use-latest-callback@^0.1.7:
   version "0.1.7"
   resolved "https://registry.npmjs.org/use-latest-callback/-/use-latest-callback-0.1.7.tgz"
   integrity sha512-Hlrl0lskgZZpo2vIpZ4rA7qA/rAGn2PcDvDH1M47AogqMPB0qlGEdsa66AVkIUiEEDpfxA9/N6hY6MqtaNoqWA==
+
+use-latest-callback@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/use-latest-callback/-/use-latest-callback-0.2.1.tgz"
+  integrity sha512-QWlq8Is8BGWBf883QOEQP5HWYX/kMI+JTbJ5rdtvJLmXTIh9XoHIO3PQcmQl8BU44VKxow1kbQUHa6mQSMALDQ==
 
 use-sync-external-store@^1.0.0:
   version "1.2.0"

@@ -5,9 +5,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   ToastAndroid,
-  Alert,
+  StatusBar,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Eye from '../../../assets/Icon/eye.svg';
@@ -30,8 +29,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const HandaleLogin = async () => {
-    // data.append('email', 'aatish@gmail.com');
-    // data.append('password', '12345678');
     if (re.test(email) == '') {
       Toast.show('Please enter the valid email');
       return;
@@ -74,7 +71,6 @@ const Login = () => {
                 ToastAndroid.SHORT,
               );
             }
-            Alert.alert(String(err));
             throw err;
           })
           .finally(() => {
@@ -82,7 +78,6 @@ const Login = () => {
           });
       } catch (error) {
         setLoading(false);
-        Alert.alert(String(error));
         console.log('error,,', error);
       }
     }
@@ -90,6 +85,7 @@ const Login = () => {
 
   return (
     <LinearGradient colors={['#FFF', '#FFF8']} style={{flex: 1}}>
+      <StatusBar backgroundColor={'#fff'} />
       <KeyboardAwareScrollView
         style={{flex: 1}}
         extraScrollHeight={0}

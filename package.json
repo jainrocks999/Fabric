@@ -24,7 +24,6 @@
     "react-native": "0.72.6",
     "react-native-camera": "^4.2.1",
     "react-native-date-picker": "^4.3.7",
-    "react-native-drawer-layout": "^3.3.2",
     "react-native-element-dropdown": "^2.10.0",
     "react-native-gesture-handler": "^2.13.4",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

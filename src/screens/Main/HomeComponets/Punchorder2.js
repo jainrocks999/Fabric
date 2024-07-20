@@ -92,10 +92,24 @@ const Punchorder = ({route}) => {
       if (res.status) {
         setdata(res.data, type);
       } else {
+        if (type === 'quality') {
+          setQaulityList([]);
+        } else if (type === 'design') {
+          setDesignList([]);
+        } else if (type === 'colorshade') {
+          setColorShadeList([]);
+        }
         ToastAndroid.show(res.message, ToastAndroid.SHORT);
       }
     } catch (err) {
       console.log(err);
+      if (type === 'quality') {
+        setQaulityList([]);
+      } else if (type === 'design') {
+        setDesignList([]);
+      } else if (type === 'colorshade') {
+        setColorShadeList([]);
+      }
       ToastAndroid.show(err.message, ToastAndroid.SHORT);
     } finally {
       setIsLoading(false);
@@ -127,6 +141,18 @@ const Punchorder = ({route}) => {
       currentDate: dateFromate(),
       id: newId,
       compId: companyid,
+      color: inputs?.color?.colorid
+        ? inputs?.color
+        : {
+            colorid: '',
+            color: 'NA',
+          },
+      shade: inputs.shade?.shadeid
+        ? inputs.shade
+        : {
+            shadeid: '',
+            shade: 'NA',
+          },
     };
     array.push(newItem);
     await storage.setItem(storage.CART, array);
@@ -137,8 +163,8 @@ const Punchorder = ({route}) => {
     const messages = {
       quality: 'Please select Quality',
       design: 'Please select Design',
-      shade: 'Please select Shade',
-      color: 'Please select Color',
+      // shade: 'Please select Shade',
+      // color: 'Please select Color',
       cut: 'Please enter Cut',
       price: 'Please enter Price',
     };
@@ -173,8 +199,21 @@ const Punchorder = ({route}) => {
           ...inputs,
           currentDate: dateFromate(),
           compId: companyid,
+          color: inputs?.color?.colorid
+            ? inputs?.color
+            : {
+                colorid: '',
+                color: 'NA',
+              },
+          shade: inputs.shade?.shadeid
+            ? inputs.shade
+            : {
+                shadeid: '',
+                shade: 'NA',
+              },
         },
       ]);
+
       const res = await Api.postRequest(endpoint, formData, token);
       ToastAndroid.show(res.message, ToastAndroid.LONG);
       console.log(res);
@@ -213,7 +252,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search
+                search={qualityList.length > 0}
                 data={qualityList}
                 inputSearchStyle={{
                   borderRadius: 10,
@@ -270,7 +309,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search
+                search={designList.length > 4}
                 data={designList}
                 inputSearchStyle={{
                   borderRadius: 10,
@@ -327,7 +366,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search
+                search={colorshadeList.length > 5}
                 data={colorshadeList}
                 inputSearchStyle={{
                   borderRadius: 10,
@@ -383,7 +422,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search
+                search={colorshadeList.length > 5}
                 data={colorshadeList}
                 inputSearchStyle={{
                   borderRadius: 10,

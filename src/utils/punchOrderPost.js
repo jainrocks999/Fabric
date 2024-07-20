@@ -72,6 +72,7 @@ const data1 = [
   },
 ];
 export default async value => {
+  console.log(value);
   const data = new FormData();
   const salesman = await storage.getItem(storage.USER);
   data.append(`firstArray[party]`, value[0].customerName.Partyid);

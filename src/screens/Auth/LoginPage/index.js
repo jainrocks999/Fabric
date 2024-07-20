@@ -35,6 +35,9 @@ const Login = () => {
     } else if (password == '') {
       Toast.show('Please enter the valid password');
       return;
+    } else if (password.length < 8) {
+      Toast.show('Password length must be 8 charectors');
+      return;
     } else {
       try {
         let data = new FormData();
@@ -65,7 +68,7 @@ const Login = () => {
             }
           })
           .catch(err => {
-            if (err.response.status === 400) {
+            if (err.response.status === 401) {
               ToastAndroid.show(
                 'invalid username or password',
                 ToastAndroid.SHORT,

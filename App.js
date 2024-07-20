@@ -1,14 +1,5 @@
-import React, {Fragment, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  LogBox,
-  Button,
-  Platform,
-  SafeAreaView,
-  FlatList,
-} from 'react-native';
+import React, {Fragment} from 'react';
+import {LogBox, Platform, SafeAreaView} from 'react-native';
 import 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import Store from './src/Redux/Store';
@@ -34,7 +25,6 @@ const App = () => {
         <Provider store={Store}>
           <RootApp />
         </Provider>
-        {/* <StatusBar /> */}
       </SafeAreaView>
     </Fragment>
   );

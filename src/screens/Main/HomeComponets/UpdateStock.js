@@ -102,7 +102,7 @@ const Punchorder = () => {
       <Header title={'Update Stock'} onPress={() => navigation.openDrawer()} />
       <View style={{height: hp(10), justifyContent: 'center'}}>
         <TextInput
-          placeholder="Search"
+          placeholder="Search for results"
           value={search}
           onChangeText={setSearch}
           style={{
@@ -140,8 +140,10 @@ const Punchorder = () => {
                 borderWidth: 1,
                 padding: '2%',
                 marginTop: '5%',
-                width: '99%',
+                width: '95%',
                 alignSelf: 'center',
+                borderRadius: 10,
+                marginHorizontal: 15,
               }}>
               {/* <View style={{flexDirection: 'row', marginTop: 5}}>
             <Text

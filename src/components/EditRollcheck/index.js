@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
@@ -19,10 +20,15 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
   const newdata = data;
   const [qty, setQty] = useState('');
   useEffect(() => {
-    setQty(newdata.qty ?? '');
+    // setQty(newdata.qty ?? '');
   }, [data]);
   const complete = async () => {
-    onComplete({...newdata, qty: qty});
+    if (qty !== '') {
+      setQty('');
+      onComplete({...newdata, qty: qty});
+    } else {
+      ToastAndroid.show('Please Enter Quanity', ToastAndroid.SHORT);
+    }
   };
 
   return (
@@ -49,7 +55,10 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
               justifyContent: 'center',
             }}>
             <TouchableOpacity
-              onPress={() => onComplete(false)}
+              onPress={() => {
+                setQty('');
+                onComplete(false);
+              }}
               style={{
                 position: 'absolute',
                 top: '1%',

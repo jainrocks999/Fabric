@@ -119,8 +119,15 @@ const Punchorder = ({route}) => {
   const setdata = (data, type) => {
     if (type === 'quality') {
       setQaulityList(data);
+      setDesignList([]);
     } else if (type === 'design') {
       setDesignList(data);
+      setColorShadeList([]);
+      setInputs(prev => ({
+        ...prev,
+        color: '',
+        shade: '',
+      }));
     } else if (type === 'colorshade') {
       setColorShadeList(data);
     }
@@ -366,7 +373,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={colorshadeList.length > 5}
+                search={colorshadeList?.length > 1}
                 data={colorshadeList}
                 inputSearchStyle={{
                   borderRadius: 10,
@@ -422,7 +429,7 @@ const Punchorder = ({route}) => {
                 }}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={colorshadeList.length > 5}
+                search={colorshadeList.length > 1}
                 data={colorshadeList}
                 inputSearchStyle={{
                   borderRadius: 10,
@@ -485,6 +492,7 @@ const Punchorder = ({route}) => {
                 onChangeText={value => {
                   handleInputs('cut', value);
                 }}
+                keyboardType="number-pad"
               />
             </View>
           </View>

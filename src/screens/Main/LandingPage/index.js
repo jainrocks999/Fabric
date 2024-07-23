@@ -179,7 +179,7 @@ const LandingPage = () => {
         }}>
         <Text
           style={{
-            color: '#a0a0a0',
+            color: companyName ? 'black' : '#a0a0a0',
             fontSize: 13,
             // marginTop: 2,
             fontFamily: 'Montserrat-Medium',

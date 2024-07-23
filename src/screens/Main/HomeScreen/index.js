@@ -205,9 +205,6 @@ const HomeScreen = () => {
         <View style={{marginTop: 20, paddingHorizontal: 10}}>
           <View style={{paddingHorizontal: 10}}>
             <Text
-              // onPress={() => {
-              //   navigation.navigate('test');
-              // }}
               style={{
                 fontSize: 18,
                 fontFamily: 'Montserrat-Bold',

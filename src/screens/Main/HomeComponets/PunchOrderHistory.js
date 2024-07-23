@@ -103,6 +103,10 @@ const PunchOrderHistory = () => {
     } finally {
     }
   };
+  const getDate = d => {
+    var date = new Date(d);
+    return date.toDateString();
+  };
   return (
     <View style={{flex: 1}}>
       {loading && <Loader />}
@@ -111,7 +115,7 @@ const PunchOrderHistory = () => {
       <View style={{marginHorizontal: '1%'}}>
         <View style={{paddingBottom: wp(5)}}>
           <TextInput
-            placeholder="Search"
+            placeholder="Search for results"
             onChangeText={value => {
               setSeached(value);
             }}
@@ -134,6 +138,8 @@ const PunchOrderHistory = () => {
               fontSize: 14,
               elevation: 3,
               justifyContent: 'center',
+              width: '95%',
+              alignSelf: 'center',
             }}
           />
         </View>
@@ -145,10 +151,11 @@ const PunchOrderHistory = () => {
             <View
               style={{
                 borderWidth: 1,
-                width: '100%',
+                width: '95%',
                 marginBottom: 10,
-                borderRadius: 6,
+                borderRadius: 10,
                 padding: 10,
+                alignSelf: 'center',
               }}>
               <View style={{flexDirection: 'row', width: '100%'}}>
                 <View style={{width: '40%', flexDirection: 'row'}}>
@@ -478,7 +485,7 @@ const PunchOrderHistory = () => {
                     fontFamily: 'Montserrat-Regular',
                     fontSize: 13,
                   }}>
-                  {item?.udate}
+                  {getDate(item?.udate)}
                 </Text>
               </View>
             </View>

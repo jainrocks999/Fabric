@@ -27,8 +27,9 @@ const StockDetailScreen = ({route}) => {
             borderWidth: 1,
             padding: '2%',
             marginTop: '5%',
-            width: '99%',
+            width: '95%',
             alignSelf: 'center',
+            borderRadius: 10,
           }}>
           {/* <View style={{flexDirection: 'row', marginTop: 5}}>
           <Text

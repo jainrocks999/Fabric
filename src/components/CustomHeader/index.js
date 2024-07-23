@@ -65,7 +65,7 @@ const CustomHeader = ({
     if (value != company) {
       console.log('called');
       Alert.alert(
-        'Warning',
+        'Warning!',
         'If you change company, all your previous tasks will be removed', // Fixed typos
         [
           {

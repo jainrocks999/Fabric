@@ -47,6 +47,10 @@ const LandingPage = () => {
     const company = await storage.getItem(storage.COMPANY);
     const companyName = await storage.getItem(storage.COMPANY_NAME);
     setCompany(company);
+    setSelectedItem({
+      label: companyName,
+      value: company,
+    });
     setCompanyName(companyName);
   };
   const dispatch = useDispatch();
@@ -81,7 +85,7 @@ const LandingPage = () => {
     if (value != company && company != null) {
       console.log('called');
       Alert.alert(
-        'Warning',
+        'Warning!',
         'If you change company, all your previous tasks will be removed', // Fixed typos
         [
           {

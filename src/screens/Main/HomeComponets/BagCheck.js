@@ -52,10 +52,7 @@ const Punchorder = ({route}) => {
       }
     });
   };
-  useEffect(() => {
-    setVisibles(visbles ?? false);
-    // navigation.setParams({visible: false});
-  }, [visbles]);
+
   const FormateDate = da => {
     const date = new Date(da);
     const options = {day: '2-digit', month: 'short', year: 'numeric'};

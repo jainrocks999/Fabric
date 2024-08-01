@@ -36,9 +36,7 @@ const Punchorder = ({route}) => {
   const defferedValue = useDeferredValue(searched);
   const [manuvisble, setMenuVisible] = useState(false);
   const dispatch = useDispatch();
-  useEffect(() => {
-    setVisibles(visbles ?? false);
-  }, [visbles]);
+
   useEffect(() => {
     filter(defferedValue, data);
   }, [defferedValue, data]);

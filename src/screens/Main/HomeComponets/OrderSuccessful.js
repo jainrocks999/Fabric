@@ -53,7 +53,7 @@ const Success = () => {
         </Text>
         <TouchableOpacity
           //  onPress={()=>navigation.}
-          onPress={() => navigation.push('DashBoard')}
+          onPress={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
           style={{
             backgroundColor: colors.color1,
             width: 90,

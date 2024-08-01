@@ -6,6 +6,7 @@ class StorageService {
   COMPANY = 'company_id';
   COMPANY_NAME = 'company_name';
   CART = 'cart';
+  CUSTOMER = 'customer';
   setItem = async (action, data) => {
     const value = JSON.stringify({data});
     await AsyncStorage.setItem(action, value);

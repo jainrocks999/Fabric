@@ -35,7 +35,9 @@ const Punchorder = () => {
   const fetchData = async () => {
     try {
       const token = await storage.getItem(storage.TOKEN);
-      const endpoint = 'stock-list';
+      const company = await storage.getItem(storage.COMPANY);
+
+      const endpoint = `stock-list/${company}`;
       setIsLoading(true);
       const res = await Api.getRequest(endpoint, token);
       if (res.status) {

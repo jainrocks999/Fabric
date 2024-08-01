@@ -1,5 +1,13 @@
 import React, {useDeferredValue, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Image, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
+
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import colors from '../../../assets/colors';
 import Loading from '../../../components/Loader';
@@ -40,12 +48,15 @@ const LandingPage = () => {
     const company = await storage.getItem(storage.COMPANY);
     const companyName = await storage.getItem(storage.COMPANY_NAME);
     setCompany(company);
+    setSelectedItem({
+      label: companyName,
+      value: company,
+    });
     setCompanyName(companyName);
   };
   const dispatch = useDispatch();
   const GetData = async () => {
     const Token = await storage.getItem(storage.TOKEN);
-    const User = await storage.getItem(storage.USER);
 
     try {
       setLoader(true);
@@ -75,7 +86,7 @@ const LandingPage = () => {
     if (value != company && company != null) {
       console.log('called');
       Alert.alert(
-        'Warning',
+        'Warning!',
         'If you change company, all your previous tasks will be removed', // Fixed typos
         [
           {
@@ -173,7 +184,7 @@ const LandingPage = () => {
         }}>
         <Text
           style={{
-            color: '#a0a0a0',
+            color: companyName ? 'black' : '#a0a0a0',
             fontSize: 13,
             // marginTop: 2,
             fontFamily: 'Montserrat-Medium',
@@ -188,59 +199,19 @@ const LandingPage = () => {
           }}
           source={require('../../../assets/Icon/F.png')}
         />
-        {/* <RNPickerSelect
-          // onValueChange={(value) => console.log('hhihih',value)}
-          items={Rndata}
-          value={id}
-          onValueChange={async value => {
-            setId(value);
-          }}
-          useNativeAndroidPickerStyle={false}
-          placeholder={{label: 'Please select', value: 'Please select'}}
-          style={{
-            inputAndroid: {
-              color: '#000',
-            },
-            inputIOS: {color: '#000'},
-            placeholder: {
-              color: '#a0a0a0',
-              fontSize: 13,
-              marginTop: 2,
-              fontFamily: 'Montserrat-Medium',
-            },
-          }}
-          modalProps={{
-            style: {
-              backgroundColor: 'red',
-            },
-          }}
-          Icon={() => {
-            return (
-              <Image
-                tintColor={'grey'}
-                style={{
-                  height: 10,
-                  width: 17,
-
-                  marginTop: '80%',
-                }}
-                source={require('../../../assets/Icon/F.png')}
-              />
-            );
-          }}
-        /> */}
       </TouchableOpacity>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity
           onPress={async () => {
-            dispatch({
-              type: 'bag_check_success',
-              payload: [],
-            });
-            // const lable = Rndata.find(item => item.value == id);
-            // await storage.setItem(storage.COMPANY, id);
-            // await storage.setItem(storage.COMPANY_NAME, lable.label);
-            onProceed(selectedItem);
+            if (selectedItem.value) {
+              dispatch({
+                type: 'bag_check_success',
+                payload: [],
+              });
+              onProceed(selectedItem);
+            } else {
+              ToastAndroid.show('Please select company', 500);
+            }
           }}
           style={{
             backgroundColor: colors.color1,

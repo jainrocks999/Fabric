@@ -6,6 +6,7 @@ import {
   FlatList,
   Clipboard,
   ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
@@ -17,13 +18,40 @@ import colors from '../../../assets/colors';
 import storage from '../../../utils/storageService';
 import punchOrderPost from '../../../utils/punchOrderPost';
 import Api from '../../../Redux/Api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Trash from '../../../assets/Icon/trash.svg';
+import PenCile from '../../../assets/Icon/pencil.svg';
+import {useDispatch, useSelector} from 'react-redux';
 const PunchorderList = () => {
+  const {remark, customer, address, id} = useSelector(state => state.customer);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [carts, setCarts] = useState([]);
-  Clipboard.setString(JSON.stringify(carts));
-  // console.log(carts);
+  const [customers, setCustomer] = useState([]);
+  useEffect(() => {
+    getItems();
+  });
+  const getItems = async () => {
+    await storage.getItem(storage.CUSTOMER);
+    setCustomer(customers);
+  };
+  useEffect(() => {
+    const backAction = () => {
+      dispatch({
+        type: 'setCustomer',
+        payload: {
+          remark,
+          customer,
+          address,
+          id: undefined,
+        },
+      });
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     getCarts();
@@ -56,11 +84,34 @@ const PunchorderList = () => {
       console.log(error);
     }
   };
+  const handleDelete = async item => {
+    setCarts(prev => {
+      const newdata = prev.filter(items => items.id !== item.id);
+      return newdata;
+    });
+    try {
+      const newdata = carts.filter(items => items.id !== item.id);
+      await storage.setItem(storage.CART, newdata);
+    } catch (error) {
+      console.error('Error storing data:', error);
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <Header
         title={'Punch Order List'}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          dispatch({
+            type: 'setCustomer',
+            payload: {
+              remark,
+              customer,
+              address,
+              id: undefined,
+            },
+          });
+          navigation.replace('Punchorder2');
+        }}
         arrow={true}
       />
       <View style={{padding: 15}}>
@@ -77,52 +128,66 @@ const PunchorderList = () => {
                   borderRadius: 6,
                   padding: 10,
                 }}>
-                <View
+                <TouchableOpacity
+                  onPress={async () => {
+                    handleDelete(item);
+                  }}
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: '100%',
+                    right: '2%',
+                    position: 'absolute',
+                    top: '1%',
+                    padding: '2%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  <View style={{flexDirection: 'row', width: '75%'}}>
+                  <Trash height={18} width={18} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch({
+                      type: 'setCustomer',
+                      payload: {
+                        remark: item?.remark,
+                        customer: item?.customerName,
+                        address: item?.address,
+                        id: item.id,
+                      },
+                    });
+                    navigation.replace('Punchorder2');
+                  }}
+                  style={{
+                    right: '2%',
+                    position: 'absolute',
+                    top: '26%',
+                    padding: '2%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 5,
+                  }}>
+                  <PenCile height={18} width={18} />
+                </TouchableOpacity>
+
+                <View
+                  style={{flexDirection: 'row', width: '100%', marginTop: 0}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Customer Name'}
+                    </Text>
                     <Text
                       style={{
                         fontSize: 14,
                         color: '#000',
                         fontFamily: 'Montserrat-SemiBold',
                       }}>
-                      {'Customer Name : '}
-                    </Text>
-                    <Text
-                      style={{
-                        marginLeft: 10,
-                        color: '#000',
-                        fontFamily: 'Montserrat-Regular',
-                        fontSize: 13,
-                      }}>
-                      {item?.customerName?.Partyname?.substring(0, 20)}
+                      {':'}
                     </Text>
                   </View>
-                  <View style={{alignItems: 'flex-end'}}>
-                    <Text
-                      style={{
-                        color: '#000',
-                        fontFamily: 'Montserrat-Regular',
-                        fontSize: 13,
-                      }}>
-                      {item?.date}
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {'Color : '}
-                  </Text>
                   <Text
                     style={{
                       marginLeft: 10,
@@ -130,18 +195,31 @@ const PunchorderList = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.color.color}
+                    {item?.customerName?.Partyname?.length > 13
+                      ? item.customerName.Partyname.substring(0, 13) + '...'
+                      : item.customerName.Partyname}
                   </Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {'Design : '}
-                  </Text>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Design'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
                       marginLeft: 10,
@@ -152,15 +230,26 @@ const PunchorderList = () => {
                     {item?.design?.Design}
                   </Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {'Price : '}
-                  </Text>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Color'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
                       marginLeft: 10,
@@ -168,18 +257,59 @@ const PunchorderList = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.price}
+                    {item?.color.color}
                   </Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Shade'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      fontSize: 14,
+                      marginLeft: 10,
                       color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
                     }}>
-                    {'Cut : '}
+                    {item?.shade?.shade}
                   </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Cut'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
                       marginLeft: 10,
@@ -190,15 +320,26 @@ const PunchorderList = () => {
                     {item?.cut}
                   </Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {'Shade : '}
-                  </Text>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Price'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
                   <Text
                     style={{
                       marginLeft: 10,
@@ -206,7 +347,37 @@ const PunchorderList = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.shade?.shade}
+                    {item?.price}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Remark'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.remark}
                   </Text>
                 </View>
               </View>

@@ -71,13 +71,11 @@ const Punchorder = () => {
     }
   };
   const getPartyName = async page_number => {
+    const company = await storage.getItem(storage.COMPANY);
     if (isFetching) {
       return;
     }
-
-    const endpoint =
-      //`party-names/${page_number}`;
-      `party-names?searchParty=`;
+    const endpoint = `party-names/${company}`;
     const token = await storage.getItem(storage.TOKEN);
     fetchData(endpoint, token);
     setPage(page_number);
@@ -148,9 +146,7 @@ const Punchorder = () => {
                 valueField="Partyid"
                 placeholder="Customer Name"
                 value={customer?.Partyid}
-                onScrollEndDrag={() => {
-                  alert('called');
-                }}
+                onScrollEndDrag={() => {}}
                 renderItem={item =>
                   item.Partyname === customer?.Partyname ? (
                     <View
@@ -193,15 +189,13 @@ const Punchorder = () => {
 
           <View style={styles.Main}>
             <Text style={styles.inputText}>Address</Text>
-            <View>
+            <View style={styles.dropdown2}>
               <TextInput
-                style={styles.dropdown}
+                placeholderTextColor={'grey'}
                 placeholder="Address"
-                value={
-                  address.length > 45
-                    ? `${address.substring(0, 45)}...`
-                    : address
-                }
+                style={{color: 'black'}}
+                multiline
+                value={address}
                 onChangeText={setAddress}
               />
             </View>
@@ -209,11 +203,13 @@ const Punchorder = () => {
 
           <View style={styles.Main}>
             <Text style={styles.inputText}>Remark</Text>
-            <View>
+            <View style={styles.dropdown2}>
               <TextInput
-                style={styles.dropdown}
                 placeholder="Remark"
+                style={{color: '#000'}}
                 value={remark}
+                placeholderTextColor={'grey'}
+                multiline
                 onChangeText={value => {
                   setRemark(value);
                 }}
@@ -223,14 +219,24 @@ const Punchorder = () => {
 
           <View style={styles.buttonView}>
             <TouchableOpacity
-              onPress={() => {
-                console.log(customer?.Partyname);
+              onPress={async () => {
                 if (customer != '') {
-                  navigation.navigate('Punchorder2', {
+                  await storage.setItem(storage.CUSTOMER, {
                     remark,
                     customer,
                     address,
                   });
+                  await storage.removeItem(storage.CART);
+                  dispatch({
+                    type: 'setCustomer',
+                    payload: {
+                      remark,
+                      customer,
+                      address,
+                      id: undefined,
+                    },
+                  });
+                  navigation.navigate('Punchorder2');
                 } else {
                   ToastAndroid.show(
                     'Please Select Customer',
@@ -295,7 +301,6 @@ const styles = StyleSheet.create({
   Main: {marginHorizontal: wp(3), marginTop: wp(3.5)},
   inputText: {
     fontSize: wp(3.5),
-    // marginLeft: wp(1),
     fontWeight: '700',
     color: '#000',
   },
@@ -344,6 +349,25 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     borderBottomLeftRadius: 80,
     borderBottomRightRadius: 40,
+  },
+  dropdown2: {
+    marginTop: wp(2),
+    borderWidth: 1,
+    borderColor: '#979998',
+    color: '#000',
+    height: hp(15),
+    backgroundColor: 'white',
+    borderRadius: wp(2),
+    paddingHorizontal: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    fontSize: 14,
+    elevation: 3,
   },
 });
 export default Punchorder;

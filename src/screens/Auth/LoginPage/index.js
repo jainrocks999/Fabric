@@ -35,6 +35,9 @@ const Login = () => {
     } else if (password == '') {
       Toast.show('Please enter the valid password');
       return;
+    } else if (password.length < 8) {
+      Toast.show('Password length must be 8 charectors');
+      return;
     } else {
       try {
         let data = new FormData();
@@ -48,11 +51,12 @@ const Login = () => {
           headers: {},
           data: data,
         };
-
+        console.log('Login Url:-', Constants.mainUrl + '/login');
         axios
           .request(config)
           .then(response => {
-            if (response.data.status == 200) {
+            console.log('thisisisi', response.data);
+            if (response?.data?.status == 200) {
               setLoading(false);
 
               storage.setItem(storage.TOKEN, response.data.token);
@@ -65,7 +69,7 @@ const Login = () => {
             }
           })
           .catch(err => {
-            if (err.response.status === 400) {
+            if (err.response.status === 401) {
               ToastAndroid.show(
                 'invalid username or password',
                 ToastAndroid.SHORT,
@@ -78,6 +82,7 @@ const Login = () => {
           });
       } catch (error) {
         setLoading(false);
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
         console.log('error,,', error);
       }
     }

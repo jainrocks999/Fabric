@@ -20,20 +20,24 @@ import Punchorder2 from '../screens/Main/HomeComponets/Punchorder2';
 import PunchorderList from '../screens/Main/HomeComponets/PunchorderList';
 import OrderSuccessful from '../screens/Main/HomeComponets/OrderSuccessful';
 import {navigationRef} from '../utils/navigationService';
-import Test from '../screens/Main/HomeScreen/Test';
 import PunchOrderHistory from '../screens/Main/HomeComponets/PunchOrderHistory';
 
 const Stack = createNativeStackNavigator();
 function Navigate() {
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      onStateChange={state => {
+        const name = state?.routes[state.index].name;
+        const fullname = state?.routes;
+        console.log('thsis is fullname', JSON.stringify(name));
+      }}
+      ref={navigationRef}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Home" component={MyDrawer} />
         <Stack.Screen name="Login" component={Login} />
-
         <Stack.Screen name="LandingPage" component={LandingPage} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -46,11 +50,17 @@ function Home() {
     <Stack1.Navigator
       initialRouteName="DashBoard"
       screenOptions={{headerShown: false}}>
-      <Stack1.Screen name="DashBoard" component={MyDrawer} />
+      <Stack1.Screen name="DashBoard" component={HomeScreen} />
       <Stack1.Screen name="Punchorder2" component={Punchorder2} />
       <Stack1.Screen name="PunchorderList" component={PunchorderList} />
       <Stack1.Screen name="StockDetailScreen" component={StockDetailScreen} />
       <Stack1.Screen name="OrderSuccessful" component={OrderSuccessful} />
+      <Stack1.Screen name="PunchOrder" component={PunchOrder} />
+      <Stack1.Screen name="History" component={PunchOrderHistory} />
+      <Stack1.Screen name="BagCheck" component={BagCheck} />
+      <Stack1.Screen name="RollCheck" component={RollCheck} />
+      <Stack1.Screen name="StockCheck" component={StockCheck} />
+      <Stack1.Screen name="UpdateStock" component={UpdateStock} />
     </Stack1.Navigator>
   );
 }
@@ -61,14 +71,7 @@ function MyDrawer() {
     <DrawerStack.Navigator
       screenOptions={{headerShown: false}}
       drawerContent={() => <Drawer />}>
-      <DrawerStack.Screen name="Home1" component={HomeScreen} />
-      <DrawerStack.Screen name="test" component={Test} />
-      <DrawerStack.Screen name="PunchOrder" component={PunchOrder} />
-      <DrawerStack.Screen name="History" component={PunchOrderHistory} />
-      <DrawerStack.Screen name="BagCheck" component={BagCheck} />
-      <DrawerStack.Screen name="RollCheck" component={RollCheck} />
-      <DrawerStack.Screen name="StockCheck" component={StockCheck} />
-      <DrawerStack.Screen name="UpdateStock" component={UpdateStock} />
+      <DrawerStack.Screen name="Home1" component={Home} />
     </DrawerStack.Navigator>
   );
 }

@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import storage from '../../utils/storageService';
 import {useSelector} from 'react-redux';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
-
+import * as navigationService from '../../utils/navigationService';
 const CustomHeader = ({
   title,
   onPress,
@@ -65,7 +65,7 @@ const CustomHeader = ({
     if (value != company) {
       console.log('called');
       Alert.alert(
-        'Warning',
+        'Warning!',
         'If you change company, all your previous tasks will be removed', // Fixed typos
         [
           {
@@ -84,8 +84,8 @@ const CustomHeader = ({
                 setCompany(value);
                 setCompanyName(item.label);
                 setVisible(false);
-
                 await storage.removeItem(storage.CART);
+                navigationService.reset('Home');
               } else {
                 console.error('Label not found for the selected value');
                 setVisible(false);

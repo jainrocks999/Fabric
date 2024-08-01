@@ -85,7 +85,7 @@ const CustomHeader = ({
                 setCompanyName(item.label);
                 setVisible(false);
                 await storage.removeItem(storage.CART);
-                naviagationService.reset('Login');
+                navigationService.reset('Home');
               } else {
                 console.error('Label not found for the selected value');
                 setVisible(false);

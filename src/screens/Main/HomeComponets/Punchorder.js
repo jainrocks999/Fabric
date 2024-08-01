@@ -195,11 +195,7 @@ const Punchorder = () => {
                 placeholder="Address"
                 style={{color: 'black'}}
                 multiline
-                value={
-                  // address.length > 45
-                  //   ? `${address.substring(0, 45)}...`:
-                  address
-                }
+                value={address}
                 onChangeText={setAddress}
               />
             </View>
@@ -213,7 +209,7 @@ const Punchorder = () => {
                 style={{color: '#000'}}
                 value={remark}
                 placeholderTextColor={'grey'}
-                multilineggkg
+                multiline
                 onChangeText={value => {
                   setRemark(value);
                 }}
@@ -224,7 +220,6 @@ const Punchorder = () => {
           <View style={styles.buttonView}>
             <TouchableOpacity
               onPress={async () => {
-                console.log(customer?.Partyname);
                 if (customer != '') {
                   await storage.setItem(storage.CUSTOMER, {
                     remark,
@@ -232,11 +227,16 @@ const Punchorder = () => {
                     address,
                   });
                   await storage.removeItem(storage.CART);
-                  navigation.navigate('Punchorder2', {
-                    remark,
-                    customer,
-                    address,
+                  dispatch({
+                    type: 'setCustomer',
+                    payload: {
+                      remark,
+                      customer,
+                      address,
+                      id: undefined,
+                    },
                   });
+                  navigation.navigate('Punchorder2');
                 } else {
                   ToastAndroid.show(
                     'Please Select Customer',

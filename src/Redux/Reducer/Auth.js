@@ -5,6 +5,12 @@ initialstate = {
   bagdata: {},
   Rndata: [],
   rollelist: [],
+  customer: {
+    remark: '',
+    customer: '',
+    address: '',
+    id: undefined,
+  },
 };
 export default (state = initialstate, action) => {
   switch (action.type) {
@@ -41,6 +47,9 @@ export default (state = initialstate, action) => {
       return {...state, isFetching: action.payload};
     case 'add_role_list':
       return {...state, rollelist: action.payload};
+    case 'setCustomer': {
+      return {...state, customer: action.payload};
+    }
     default:
       return state;
   }

@@ -33,11 +33,12 @@ const Punchorder = () => {
     getUpdatedStock(1);
   }, []);
 
-  const getUpdatedStock = page_number => {
+  const getUpdatedStock = async page_number => {
+    const company = await storage.getItem(storage.COMPANY);
     if (loading) {
       return;
     }
-    const endpoint = `updated-stock/${page_number}`;
+    const endpoint = `updated-stock/${page_number}?companyId=${company}`;
     fetData(endpoint);
     setPage(page_number);
   };
@@ -165,7 +166,7 @@ const Punchorder = () => {
           </View> */}
 
               <View style={{flexDirection: 'row', marginTop: 5, width: '100%'}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -193,7 +194,7 @@ const Punchorder = () => {
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -221,7 +222,7 @@ const Punchorder = () => {
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -249,7 +250,7 @@ const Punchorder = () => {
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -295,7 +296,7 @@ const Punchorder = () => {
             </Text>
           </View> */}
               {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -323,7 +324,7 @@ const Punchorder = () => {
                 </Text>
               </View> */}
               <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '42%'}}>
+                <View style={{width: '35%'}}>
                   <Text
                     style={{
                       fontSize: 15,

@@ -6,6 +6,7 @@ import {
   FlatList,
   Clipboard,
   ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
@@ -19,11 +20,38 @@ import punchOrderPost from '../../../utils/punchOrderPost';
 import Api from '../../../Redux/Api';
 import Trash from '../../../assets/Icon/trash.svg';
 import PenCile from '../../../assets/Icon/pencil.svg';
+import {useDispatch, useSelector} from 'react-redux';
 const PunchorderList = () => {
+  const {remark, customer, address, id} = useSelector(state => state.customer);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [carts, setCarts] = useState([]);
-
-  // console.log(carts);
+  const [customers, setCustomer] = useState([]);
+  useEffect(() => {
+    getItems();
+  });
+  const getItems = async () => {
+    await storage.getItem(storage.CUSTOMER);
+    setCustomer(customers);
+  };
+  useEffect(() => {
+    const backAction = () => {
+      dispatch({
+        type: 'setCustomer',
+        payload: {
+          remark,
+          customer,
+          address,
+          id: undefined,
+        },
+      });
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     getCarts();
@@ -72,7 +100,18 @@ const PunchorderList = () => {
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <Header
         title={'Punch Order List'}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          dispatch({
+            type: 'setCustomer',
+            payload: {
+              remark,
+              customer,
+              address,
+              id: undefined,
+            },
+          });
+          navigation.replace('Punchorder2');
+        }}
         arrow={true}
       />
       <View style={{padding: 15}}>
@@ -105,12 +144,16 @@ const PunchorderList = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.replace('Punchorder2', {
-                      remark: item?.remark,
-                      customer: item?.customerName,
-                      address: item?.address,
-                      id: item.id,
+                    dispatch({
+                      type: 'setCustomer',
+                      payload: {
+                        remark: item?.remark,
+                        customer: item?.customerName,
+                        address: item?.address,
+                        id: item.id,
+                      },
                     });
+                    navigation.replace('Punchorder2');
                   }}
                   style={{
                     right: '2%',

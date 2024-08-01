@@ -23,6 +23,10 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
     // setQty(newdata.qty ?? '');
   }, [data]);
   const complete = async () => {
+    if (qty === '' || isNaN(Number(qty))) {
+      ToastAndroid.show('Please Enter a valid Quanity', ToastAndroid.SHORT);
+      return;
+    }
     if (qty !== '') {
       setQty('');
       onComplete({...newdata, qty: qty});
@@ -251,6 +255,7 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
               <TextInput
                 style={styles.dropdown}
                 editable={true}
+                keyboardType="number-pad"
                 value={qty}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {

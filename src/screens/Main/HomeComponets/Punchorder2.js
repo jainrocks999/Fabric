@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -22,17 +23,18 @@ import Api from '../../../Redux/Api';
 import storage from '../../../utils/storageService';
 import Loading from '../../../components/Loader';
 import punchOrderPost from '../../../utils/punchOrderPost';
-import {err} from 'react-native-svg/lib/typescript/xml';
+import {useSelector} from 'react-redux';
 
 const Punchorder = ({route}) => {
-  const {remark, customer, address} = route.params;
-  const id = route.params?.id;
+  const {remark, customer, address, id} = useSelector(state => state.customer);
+
   const navigation = useNavigation();
   const [qualityList, setQaulityList] = useState([]);
   const [designList, setDesignList] = useState([]);
   const [colorshadeList, setColorShadeList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [carts, setCats] = useState([]);
   const initialstate = {
     customerName: customer ?? '',
     grade: '',
@@ -53,8 +55,8 @@ const Punchorder = ({route}) => {
       return {
         ...prev,
         customerName: customer,
-        address: address,
-        remark1: remark,
+        address: address ?? 'NA',
+        remark1: remark ?? 'NA',
       };
     });
   }, []);
@@ -65,34 +67,34 @@ const Punchorder = ({route}) => {
     setInputs(prev => ({...prev, [text]: input}));
   };
   useEffect(() => {
-    fetchQuality();
+    id == undefined && fetchQuality();
   }, []);
-  const fetchQuality = async () => {
+  const fetchQuality = async item => {
     const {TOKEN, COMPANY} = storage;
     const items = await storage.getMultipleItems([TOKEN, COMPANY]);
     const token = items.find(([key]) => key === TOKEN)?.[1];
     const company = items.find(([key]) => key === COMPANY)?.[1];
     const endpoint = `quality/${company}`;
-    fetchData(endpoint, token, 'quality');
+    fetchData(endpoint, token, 'quality', item);
   };
 
-  const fetchDesign = async id => {
+  const fetchDesign = async (id, item) => {
     const token = await storage.getItem(storage.TOKEN);
     const endpoint = `design/${id}`;
-    fetchData(endpoint, token, 'design');
+    fetchData(endpoint, token, 'design', item);
   };
-  const fetchColorShade = async id => {
+  const fetchColorShade = async (id, item) => {
     const token = await storage.getItem(storage.TOKEN);
     const endpoint = `shade/color/${id}`;
-    fetchData(endpoint, token, 'colorshade');
+    fetchData(endpoint, token, 'colorshade', item);
   };
 
-  const fetchData = async (endpoint, token, type) => {
+  const fetchData = async (endpoint, token, type, item) => {
     try {
       setIsLoading(true);
       const res = await Api.getRequest(endpoint, token);
       if (res.status) {
-        setdata(res.data, type);
+        setdata(res.data, type, item);
       } else {
         if (type === 'quality') {
           setQaulityList([]);
@@ -104,7 +106,7 @@ const Punchorder = ({route}) => {
         ToastAndroid.show(res.message, ToastAndroid.SHORT);
       }
     } catch (err) {
-      console.log(err);
+      console.log(endpoint, err);
       if (type === 'quality') {
         setQaulityList([]);
       } else if (type === 'design') {
@@ -114,29 +116,28 @@ const Punchorder = ({route}) => {
       }
       ToastAndroid.show(err.message, ToastAndroid.SHORT);
     } finally {
-      setIsLoading(false);
+      !item && setIsLoading(false);
     }
   };
   useEffect(() => {
-    getEditData();
+    id && getEditData();
   }, []);
   const getEditData = async () => {
-    const orderItem = (await storage.getItem(storage.CART)).filter(
-      items => items.id == id,
-    );
-    console.log('this is qualityid', orderItem[0]?.quality?.Qualityid);
-    // fetchDesign(orderItem[0]?.quality?.Qualityid);
-    setInputs(prev => ({
-      ...prev,
-      ...orderItem[0],
-    }));
+    const cartData = await storage.getItem(storage.CART);
+    setCats(cartData);
+    const orderItem = cartData.find(items => items.id == id);
+    fetchEdit(orderItem);
   };
-
-  const setdata = (data, type) => {
+  const fetchEdit = item => {
+    fetchQuality(item);
+  };
+  const setdata = (data, type, item) => {
     if (type === 'quality') {
+      item && fetchDesign(item.quality?.Qualityid, item);
       setQaulityList(data);
       setDesignList([]);
     } else if (type === 'design') {
+      item && fetchColorShade(item?.design?.Designid, item);
       setDesignList(data);
       setColorShadeList([]);
       setInputs(prev => ({
@@ -146,6 +147,11 @@ const Punchorder = ({route}) => {
       }));
     } else if (type === 'colorshade') {
       setColorShadeList(data);
+      setInputs(prev => ({
+        ...prev,
+        ...item,
+      }));
+      item && setIsLoading(false);
     }
   };
   const addToCart = async () => {
@@ -179,32 +185,67 @@ const Punchorder = ({route}) => {
     };
     array.push(newItem);
     await storage.setItem(storage.CART, array);
+    const mycart = await storage.getItem(storage.CART);
+    setCats(mycart);
+
     ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
     setInputs(initialstate);
   };
-  const validate = bool => {
+  const validate = async bool => {
     const messages = {
       quality: 'Please select Quality',
       design: 'Please select Design',
-      // shade: 'Please select Shade',
-      // color: 'Please select Color',
-      cut: 'Please enter Cut',
-      price: 'Please enter Price',
+      cut: 'Please enter a valid Cut',
+      price: 'Please enter a valid Price',
     };
 
+    // Check if 'cut' is a valid number
+    if (inputs.cut === '' || isNaN(Number(inputs.cut))) {
+      ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
+      return;
+    }
+
+    // Check if 'price' is a valid number
+    if (inputs.price === '' || isNaN(Number(inputs.price))) {
+      ToastAndroid.show(messages.price, ToastAndroid.SHORT);
+      return;
+    }
+
+    // Check if required fields are filled
     for (const key in messages) {
-      const value = inputs[key];
-      if (!value || (typeof value === 'string' && value.trim() === '')) {
+      if (
+        !inputs[key] ||
+        (typeof inputs[key] === 'string' && inputs[key].trim() === '')
+      ) {
         ToastAndroid.show(messages[key], ToastAndroid.SHORT);
         return;
       }
     }
-    if (bool) {
-      addToCart();
-    } else {
-      punchorder();
+
+    if (id == undefined)
+      if (bool) {
+        addToCart();
+      } else {
+        punchorder();
+      }
+    else {
+      const newcart = carts.map(item => {
+        if (item.id == id) {
+          return inputs;
+        } else {
+          return item;
+        }
+      });
+
+      await storage.setItem(storage.CART, newcart);
+      ToastAndroid.show('Order Updated', ToastAndroid.SHORT);
+      setInputs(initialstate);
+      setTimeout(() => {
+        navigation.navigate('PunchorderList');
+      }, 500);
     }
   };
+
   const dateFromate = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split('T')[0];
@@ -237,6 +278,7 @@ const Punchorder = ({route}) => {
         },
       ]);
 
+      console.log('this is formdata', JSON.stringify(formData));
       const res = await Api.postRequest(endpoint, formData, token);
       ToastAndroid.show(res.message, ToastAndroid.LONG);
       console.log(res);
@@ -384,6 +426,7 @@ const Punchorder = ({route}) => {
             <Text style={styles.inputText}>Color</Text>
             <View style={styles.dropdown}>
               <Dropdown
+                disable
                 style={{
                   height: 22,
                 }}
@@ -430,10 +473,7 @@ const Punchorder = ({route}) => {
                     </View>
                   )
                 }
-                onChange={item => {
-                  handleInputs('color', item);
-                  handleInputs('shade', item);
-                }}
+                onChange={item => {}}
               />
             </View>
             {/* <View>
@@ -447,7 +487,6 @@ const Punchorder = ({route}) => {
             <Text style={styles.inputText}>Shade</Text>
             <View style={styles.dropdown}>
               <Dropdown
-                disable
                 style={{
                   height: 22,
                 }}
@@ -495,6 +534,7 @@ const Punchorder = ({route}) => {
                   )
                 }
                 onChange={item => {
+                  handleInputs('color', item);
                   handleInputs('shade', item);
                 }}
               />
@@ -535,6 +575,7 @@ const Punchorder = ({route}) => {
             <View
               style={[styles.dropdown, {height: hp(15), justifyContent: null}]}>
               <TextInput
+                multiline
                 placeholderTextColor={'grey'}
                 style={{
                   color: '#000',
@@ -559,40 +600,42 @@ const Punchorder = ({route}) => {
                 fontFamily: 'Montserrat-Bold',
                 fontSize: 15,
               }}>
-              Add To Cart
+              {!id ? 'Add To Cart' : 'Edit Order'}
             </Text>
           </TouchableOpacity>
-          <View style={styles.buttonView}>
-            <TouchableOpacity
-              onPress={() => {
-                validate(false);
-              }}
-              style={styles.buttonOpen}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat-Bold',
-                  fontSize: 15,
+          {!id && (
+            <View style={styles.buttonView}>
+              <TouchableOpacity
+                onPress={() => {
+                  validate(false);
+                }}
+                style={styles.buttonOpen}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'Montserrat-Bold',
+                    fontSize: 15,
+                  }}>
+                  Punch Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonOpen}
+                onPress={() => {
+                  navigation.replace('PunchorderList');
+                  setInputs(initialstate);
                 }}>
-                Punch Order
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonOpen}
-              onPress={() => {
-                navigation.navigate('PunchorderList');
-                setInputs(initialstate);
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat-Bold',
-                  fontSize: 15,
-                }}>
-                View Cart
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'Montserrat-Bold',
+                    fontSize: 15,
+                  }}>
+                  {`View Cart ${carts.length}`}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </ScrollView>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>

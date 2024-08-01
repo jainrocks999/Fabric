@@ -89,8 +89,9 @@ const PunchOrderHistory = () => {
     try {
       setLoading(true);
       const salesman = (await storage.getItem(storage.USER)).salesmanid;
+      const company = await storage.getItem(storage.COMPANY);
       const token = await storage.getItem(storage.TOKEN);
-      const endpoint = `user-orders/${salesman}?companyId=6`;
+      const endpoint = `user-orders/${salesman}?companyId=${company}`;
       const res = await Api.getRequest(endpoint, token);
       if (res.status) {
         setData(res.data);
@@ -204,6 +205,7 @@ const PunchOrderHistory = () => {
                       color: '#000',
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
+                      width: '57%',
                     }}>
                     {item?.Partyname}
                   </Text>
@@ -507,6 +509,37 @@ const PunchOrderHistory = () => {
                       fontSize: 13,
                     }}>
                     {getDate(item?.udate)}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Remark'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                      width: '50%',
+                    }}>
+                    {item?.remark}
                   </Text>
                 </View>
               </View>

@@ -90,7 +90,7 @@ const PunchOrderHistory = () => {
       setLoading(true);
       const salesman = (await storage.getItem(storage.USER)).salesmanid;
       const token = await storage.getItem(storage.TOKEN);
-      const endpoint = `user-orders/${salesman}`;
+      const endpoint = `user-orders/${salesman}?companyId=6`;
       const res = await Api.getRequest(endpoint, token);
       if (res.status) {
         setData(res.data);

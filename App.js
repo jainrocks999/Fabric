@@ -5,6 +5,7 @@ import {Provider} from 'react-redux';
 import Store from './src/Redux/Store';
 import RootApp from './src/navigation';
 import colors from './src/assets/colors';
+import Datas from './indexx';
 
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();

@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import storage from '../../utils/storageService';
 import {useSelector} from 'react-redux';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
-
+import * as navigationService from '../../utils/navigationService';
 const CustomHeader = ({
   title,
   onPress,
@@ -84,8 +84,8 @@ const CustomHeader = ({
                 setCompany(value);
                 setCompanyName(item.label);
                 setVisible(false);
-
                 await storage.removeItem(storage.CART);
+                naviagationService.reset('Login');
               } else {
                 console.error('Label not found for the selected value');
                 setVisible(false);

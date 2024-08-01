@@ -26,6 +26,7 @@ import {err} from 'react-native-svg/lib/typescript/xml';
 
 const Punchorder = ({route}) => {
   const {remark, customer, address} = route.params;
+  const id = route.params?.id;
   const navigation = useNavigation();
   const [qualityList, setQaulityList] = useState([]);
   const [designList, setDesignList] = useState([]);
@@ -57,6 +58,7 @@ const Punchorder = ({route}) => {
       };
     });
   }, []);
+
   console.log(inputs.remark);
 
   const handleInputs = (text, input) => {
@@ -114,6 +116,20 @@ const Punchorder = ({route}) => {
     } finally {
       setIsLoading(false);
     }
+  };
+  useEffect(() => {
+    getEditData();
+  }, []);
+  const getEditData = async () => {
+    const orderItem = (await storage.getItem(storage.CART)).filter(
+      items => items.id == id,
+    );
+    console.log('this is qualityid', orderItem[0]?.quality?.Qualityid);
+    // fetchDesign(orderItem[0]?.quality?.Qualityid);
+    setInputs(prev => ({
+      ...prev,
+      ...orderItem[0],
+    }));
   };
 
   const setdata = (data, type) => {
@@ -365,9 +381,73 @@ const Punchorder = ({route}) => {
             </View>
           </View>
           <View style={styles.Main}>
+            <Text style={styles.inputText}>Color</Text>
+            <View style={styles.dropdown}>
+              <Dropdown
+                style={{
+                  height: 22,
+                }}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={{color: '#000', fontSize: 14}}
+                search={colorshadeList.length > 1}
+                data={colorshadeList}
+                inputSearchStyle={{
+                  borderRadius: 10,
+                  backgroundColor: '#f0f0f0',
+                }}
+                itemTextStyle={{color: '#474747'}}
+                searchPlaceholder="search.."
+                maxHeight={250}
+                labelField="color"
+                valueField="colorid"
+                placeholder="Color"
+                value={inputs.color?.colorid}
+                renderItem={item =>
+                  item.colorid === inputs.color?.colorid ? (
+                    <View
+                      style={{
+                        padding: 17,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: 'grey',
+                      }}>
+                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
+                        {item.color}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        padding: 17,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
+                        {item.color}
+                      </Text>
+                    </View>
+                  )
+                }
+                onChange={item => {
+                  handleInputs('color', item);
+                  handleInputs('shade', item);
+                }}
+              />
+            </View>
+            {/* <View>
+              <TextInput
+                style={styles.dropdown}
+                placeholder="Color"
+              />
+            </View> */}
+          </View>
+          <View style={styles.Main}>
             <Text style={styles.inputText}>Shade</Text>
             <View style={styles.dropdown}>
               <Dropdown
+                disable
                 style={{
                   height: 22,
                 }}
@@ -420,68 +500,7 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-          <View style={styles.Main}>
-            <Text style={styles.inputText}>Color</Text>
-            <View style={styles.dropdown}>
-              <Dropdown
-                style={{
-                  height: 22,
-                }}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={colorshadeList.length > 1}
-                data={colorshadeList}
-                inputSearchStyle={{
-                  borderRadius: 10,
-                  backgroundColor: '#f0f0f0',
-                }}
-                itemTextStyle={{color: '#474747'}}
-                searchPlaceholder="search.."
-                maxHeight={250}
-                labelField="color"
-                valueField="colorid"
-                placeholder="Color"
-                value={inputs.color?.colorid}
-                renderItem={item =>
-                  item.colorid === inputs.color?.colorid ? (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: 'grey',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  )
-                }
-                onChange={item => {
-                  handleInputs('color', item);
-                }}
-              />
-            </View>
-            {/* <View>
-              <TextInput
-                style={styles.dropdown}
-                placeholder="Color"
-              />
-            </View> */}
-          </View>
+
           <View style={styles.Main}>
             <Text style={styles.inputText}>Cut</Text>
             <View>
@@ -513,9 +532,13 @@ const Punchorder = ({route}) => {
           </View>
           <View style={styles.Main}>
             <Text style={styles.inputText}>Remark</Text>
-            <View>
+            <View
+              style={[styles.dropdown, {height: hp(15), justifyContent: null}]}>
               <TextInput
-                style={styles.dropdown}
+                placeholderTextColor={'grey'}
+                style={{
+                  color: '#000',
+                }}
                 value={inputs.remark == 'NA' ? '' : inputs.remark}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {

@@ -22,6 +22,7 @@ import storage from '../../../utils/storageService';
 import {useDispatch, useSelector} from 'react-redux';
 import SelectModal from '../../../components/CustomHeader/SelectModal';
 import Loader from '../../../components/Loader';
+import axios from 'axios';
 // import Voice from '@react-native-voice/voice';
 
 const HomeScreen = () => {
@@ -37,8 +38,33 @@ const HomeScreen = () => {
   const [company, setCompany] = useState('');
   const focus = useIsFocused();
   useEffect(() => {
+    test();
     setSedata(Rndata);
   }, [Rndata]);
+
+  const test = () => {
+    console.log('this isi callled');
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'http://203.123.38.118:8080/admin/index.php/api/user-orders/1?companyId=6',
+      headers: {
+        Authorization:
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QiLCJpYXQiOjE3MjI0MTkyNDMsImV4cCI6MTcyMjQyMjg0MywidWlkIjoxfQ.OyrWPUcgu2lZGM8tnyQ1sUi988UWl8amCIzFykwEVT0',
+      },
+    };
+
+    axios
+      .request(config)
+      .then(response => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    console.log('this isis ednd');
+  };
   useEffect(() => {
     getCompanyName();
   }, [focus]);

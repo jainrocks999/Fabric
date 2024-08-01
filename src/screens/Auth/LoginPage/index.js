@@ -51,11 +51,12 @@ const Login = () => {
           headers: {},
           data: data,
         };
-
+        console.log('Login Url:-', Constants.mainUrl + '/login');
         axios
           .request(config)
           .then(response => {
-            if (response.data.status == 200) {
+            console.log('thisisisi', response.data);
+            if (response?.data?.status == 200) {
               setLoading(false);
 
               storage.setItem(storage.TOKEN, response.data.token);
@@ -81,6 +82,7 @@ const Login = () => {
           });
       } catch (error) {
         setLoading(false);
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
         console.log('error,,', error);
       }
     }

@@ -15,7 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import colors from '../../../assets/colors';
 import QRCodeScanner from '../../../components/QRCodeScanner';
 import Modal from 'react-native-modal';
@@ -35,6 +35,14 @@ const Punchorder = ({route}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [carts, setCats] = useState([]);
+
+  useEffect(() => {
+    getCarts();
+  }, [useIsFocused()]);
+  const getCarts = async () => {
+    const data = await storage.getItem(storage.CART);
+    setCats(data == null ? [] : data);
+  };
   const initialstate = {
     customerName: customer ?? '',
     grade: '',
@@ -60,8 +68,6 @@ const Punchorder = ({route}) => {
       };
     });
   }, []);
-
-  console.log(inputs.remark);
 
   const handleInputs = (text, input) => {
     setInputs(prev => ({...prev, [text]: input}));
@@ -251,6 +257,7 @@ const Punchorder = ({route}) => {
     const formattedDate = currentDate.toISOString().split('T')[0];
     return formattedDate;
   };
+  console.log('thdiududu');
   const punchorder = async () => {
     try {
       setIsLoading(true);
@@ -422,7 +429,7 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Color</Text>
             <View style={styles.dropdown}>
               <Dropdown
@@ -476,12 +483,22 @@ const Punchorder = ({route}) => {
                 onChange={item => {}}
               />
             </View>
-            {/* <View>
+           
+          </View> */}
+          <View style={styles.Main}>
+            <Text style={styles.inputText}>Color</Text>
+            <View>
               <TextInput
+                editable={false}
                 style={styles.dropdown}
+                value={inputs?.color?.color}
+                onChangeText={value => {
+                  // handleInputs('prcolorice', value);
+                }}
                 placeholder="Color"
+                keyboardType="number-pad"
               />
-            </View> */}
+            </View>
           </View>
           <View style={styles.Main}>
             <Text style={styles.inputText}>Shade</Text>
@@ -620,7 +637,7 @@ const Punchorder = ({route}) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.buttonOpen}
+                style={[styles.buttonOpen, {flexDirection: 'row'}]}
                 onPress={() => {
                   navigation.replace('PunchorderList');
                   setInputs(initialstate);
@@ -631,8 +648,34 @@ const Punchorder = ({route}) => {
                     fontFamily: 'Montserrat-Bold',
                     fontSize: 15,
                   }}>
-                  {`View Cart ${carts.length}`}
+                  {`View Cart` + ' ' + '('}
+                  <Text style={{fontSize: 12}}>{`${carts.length}`}</Text>
+                  <Text>{')'}</Text>
                 </Text>
+                {/* <View
+                  style={{
+                    marginLeft: '5%',
+                    height: 24,
+                    width: 24,
+                    backgroundColor: '#fff',
+                    borderRadius: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: 5,
+                    position: 'absolute',
+                    right: -10,
+                    top: -10,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontFamily: 'Montserrat-Bold',
+                      fontSize: 15,
+                      marginTop: -3,
+                    }}>
+                    {carts.length}
+                  </Text>
+                </View> */}
               </TouchableOpacity>
             </View>
           )}

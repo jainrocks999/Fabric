@@ -51,7 +51,7 @@ const StockDetailScreen = ({route}) => {
         </View> */}
 
           <View style={{flexDirection: 'row', marginTop: 5, width: '100%'}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -79,7 +79,7 @@ const StockDetailScreen = ({route}) => {
             </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -107,7 +107,7 @@ const StockDetailScreen = ({route}) => {
             </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -135,7 +135,7 @@ const StockDetailScreen = ({route}) => {
             </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -181,7 +181,7 @@ const StockDetailScreen = ({route}) => {
           </Text>
         </View> */}
           <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -205,11 +205,11 @@ const StockDetailScreen = ({route}) => {
                 color: '#000',
                 fontFamily: 'Montserrat-Medium',
               }}>
-              {'  ' + data?.rate}
+              {'  ' + parseFloat(data?.rate ?? '0.00').toFixed(2)}
             </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '42%'}}>
+            <View style={{width: '35%'}}>
               <Text
                 style={{
                   fontSize: 15,
@@ -233,7 +233,7 @@ const StockDetailScreen = ({route}) => {
                 color: '#000',
                 fontFamily: 'Montserrat-Medium',
               }}>
-              {'  ' + data?.qty}
+              {'  ' + parseFloat(data?.qty ?? '0.000').toFixed(2)}
             </Text>
           </View>
           {/* <View style={{marginTop: 5}}>

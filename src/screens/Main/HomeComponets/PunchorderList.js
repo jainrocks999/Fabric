@@ -75,7 +75,7 @@ const PunchorderList = () => {
       if (res.status) {
         await storage.removeItem(storage.CART);
         setCarts([]);
-        navigation.navigate('OrderSuccessful');
+        navigation.navigate('OrderSuccessful', {data: res});
       }
       setIsLoading(false);
     } catch (error) {

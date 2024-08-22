@@ -71,9 +71,12 @@ const Login = () => {
           .catch(err => {
             if (err.response.status === 401) {
               ToastAndroid.show(
-                'invalid username or password',
+                'Invalid username or password',
                 ToastAndroid.SHORT,
               );
+            } else if (err.response.status === 403) {
+              ToastAndroid.show('Account is inactive', ToastAndroid.SHORT);
+              // console.log(err);
             }
             throw err;
           })

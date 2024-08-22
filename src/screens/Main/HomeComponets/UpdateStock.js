@@ -105,6 +105,7 @@ const Punchorder = () => {
         <TextInput
           placeholder="Search for results"
           value={search}
+          placeholderTextColor={'grey'}
           onChangeText={setSearch}
           style={{
             marginTop: wp(-1),

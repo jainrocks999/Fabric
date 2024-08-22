@@ -38,7 +38,6 @@ const HomeScreen = () => {
   const [company, setCompany] = useState('');
   const focus = useIsFocused();
   useEffect(() => {
-    test();
     setSedata(Rndata);
   }, [Rndata]);
 

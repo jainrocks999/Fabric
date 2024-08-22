@@ -45,16 +45,17 @@ const Punchorder = ({route}) => {
       setFilteredData(data);
       return;
     }
+
     const lowersearch = value.toLowerCase();
     const newData = data.filter(item => {
-      return (
-        item.Party.toLowerCase().includes(lowersearch) ||
-        item.DESIGN.toLowerCase().includes(lowersearch) ||
-        item.Quality.toLowerCase().includes(lowersearch) ||
-        item.SHADE.toLowerCase().includes(lowersearch) ||
-        item.qty.includes(value) ||
-        item.barcode.includes(value)
-      );
+      return isNaN(value)
+        ? item.Party.toLowerCase().includes(lowersearch) ||
+            item.DESIGN.toLowerCase().includes(lowersearch) ||
+            item.Quality.toLowerCase().includes(lowersearch) ||
+            item.SHADE.toLowerCase().includes(lowersearch) ||
+            item.qty.includes(value) ||
+            item.barcode.includes(value)
+        : item.barcode.includes(value) || item.qty.includes(value);
     });
     setFilteredData(newData);
   };
@@ -133,7 +134,8 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(res.msg, ToastAndroid.LONG);
     } catch (err) {
       console.log(err);
-      ToastAndroid.show(err.message, ToastAndroid.LONG);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       setLoading(false);
     }
@@ -190,6 +192,7 @@ const Punchorder = ({route}) => {
         <View style={{}}>
           <TextInput
             placeholder="Search"
+            placeholderTextColor={'grey'}
             onChangeText={value => {
               setSeached(value);
             }}

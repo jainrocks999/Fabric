@@ -10,6 +10,7 @@ import {
   Image,
   ToastAndroid,
   BackHandler,
+  Alert,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -50,6 +51,23 @@ const Punchorder = () => {
   const [address, setAddress] = useState('');
   const [remark, setRemark] = useState('');
   const [page, setPage] = useState(1);
+  const [party, setParty] = useState('');
+  useEffect(() => {
+    getParty();
+  }, []);
+  const getParty = async () => {
+    const parties = await storage.getItem(storage.CUSTOMER);
+    if (parties != null) {
+      setParty(parties);
+    }
+  };
+  useEffect(() => {
+    if (party != '') {
+      setCustomer(party?.customer);
+      setAddress(party?.address);
+      setRemark(party?.remark);
+    }
+  }, [partyList]);
   useEffect(() => {
     getPartyName(page);
   }, []);
@@ -64,14 +82,15 @@ const Punchorder = () => {
         ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
       }
     } catch (err) {
-      console.log(err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       setIsFetching(false);
     }
   };
   const getPartyName = async page_number => {
     const company = await storage.getItem(storage.COMPANY);
+    console.log('this is comapny', company);
     if (isFetching) {
       return;
     }
@@ -104,6 +123,97 @@ const Punchorder = () => {
       );
     };
   }, []);
+  const handleCustomerSelection = async () => {
+    const prevcustomer = await storage.getItem(storage.CUSTOMER);
+    const cart = await storage.getItem(storage.CART);
+
+    if (
+      prevcustomer == null ||
+      prevcustomer?.customer?.Partyid !== customer?.Partyid
+    ) {
+      if (
+        prevcustomer != null &&
+        prevcustomer?.customer?.Partyid !== customer?.Partyid &&
+        cart != null
+      ) {
+        // Show alert if prevcustomer is not null and differs from the new customer
+        Alert.alert(
+          'Change Customer',
+          'Your previous data will be cleared. Do you want to change the customer?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => {
+                // Navigate normally if the user cancels the change
+                navigation.navigate('Punchorder2');
+              },
+              style: 'cancel',
+            },
+            {
+              text: 'OK',
+              onPress: async () => {
+                // Clear previous data and set new customer if user confirms
+                await storage.setItem(storage.CUSTOMER, {
+                  remark,
+                  customer,
+                  address,
+                });
+                await storage.removeItem(storage.CART);
+                dispatch({
+                  type: 'setCustomer',
+                  payload: {
+                    remark,
+                    customer,
+                    address,
+                    id: undefined,
+                  },
+                });
+                navigation.navigate('Punchorder2');
+              },
+            },
+          ],
+        );
+      } else {
+        // Handle normally if there is no previous customer or the customer has not changed
+        if (customer != '') {
+          await storage.setItem(storage.CUSTOMER, {
+            remark,
+            customer,
+            address,
+          });
+          await storage.removeItem(storage.CART);
+          dispatch({
+            type: 'setCustomer',
+            payload: {
+              remark,
+              customer,
+              address,
+              id: undefined,
+            },
+          });
+          navigation.navigate('Punchorder2');
+        } else {
+          ToastAndroid.show('Please Select Customer', ToastAndroid.SHORT);
+        }
+      }
+    } else {
+      await storage.setItem(storage.CUSTOMER, {
+        remark,
+        customer,
+        address,
+      });
+      dispatch({
+        type: 'setCustomer',
+        payload: {
+          remark,
+          customer,
+          address,
+          id: undefined,
+        },
+      });
+      navigation.navigate('Punchorder2');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -182,6 +292,7 @@ const Punchorder = () => {
                     .join(' ');
                   console.log('now I am on address', address);
                   setAddress(address === '' ? 'NA' : address);
+                  setRemark('');
                 }}
               />
             </View>
@@ -219,30 +330,8 @@ const Punchorder = () => {
 
           <View style={styles.buttonView}>
             <TouchableOpacity
-              onPress={async () => {
-                if (customer != '') {
-                  await storage.setItem(storage.CUSTOMER, {
-                    remark,
-                    customer,
-                    address,
-                  });
-                  await storage.removeItem(storage.CART);
-                  dispatch({
-                    type: 'setCustomer',
-                    payload: {
-                      remark,
-                      customer,
-                      address,
-                      id: undefined,
-                    },
-                  });
-                  navigation.navigate('Punchorder2');
-                } else {
-                  ToastAndroid.show(
-                    'Please Select Customer',
-                    ToastAndroid.SHORT,
-                  );
-                }
+              onPress={() => {
+                handleCustomerSelection();
               }}
               style={styles.buttonOpen}>
               <Text

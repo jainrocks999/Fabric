@@ -73,6 +73,8 @@ const LandingPage = () => {
         setLoader(false);
       }
     } catch (error) {
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
       setLoader(false);
       console.log(error);
     }

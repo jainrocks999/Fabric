@@ -52,7 +52,7 @@ const Punchorder = ({route}) => {
     price: '',
     matchoption: '',
     cut: '',
-    remark: 'NA',
+    remark: remark ?? 'NA',
     remark1: remark ?? 'NA',
     quality: '',
     address: address ?? '',
@@ -120,7 +120,8 @@ const Punchorder = ({route}) => {
       } else if (type === 'colorshade') {
         setColorShadeList([]);
       }
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       !item && setIsLoading(false);
     }
@@ -198,24 +199,20 @@ const Punchorder = ({route}) => {
     setInputs(initialstate);
   };
   const validate = async bool => {
+    const customerdata = await storage.getItem(storage.CUSTOMER);
+    await storage.setItem(storage.CUSTOMER, {
+      ...customerdata,
+      remark: inputs.remark,
+    });
     const messages = {
       quality: 'Please select Quality',
       design: 'Please select Design',
+      shade: 'Please select shade',
       cut: 'Please enter a valid Cut',
       price: 'Please enter a valid Price',
     };
 
     // Check if 'cut' is a valid number
-    if (inputs.cut === '' || isNaN(Number(inputs.cut))) {
-      ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
-      return;
-    }
-
-    // Check if 'price' is a valid number
-    if (inputs.price === '' || isNaN(Number(inputs.price))) {
-      ToastAndroid.show(messages.price, ToastAndroid.SHORT);
-      return;
-    }
 
     // Check if required fields are filled
     for (const key in messages) {
@@ -226,6 +223,17 @@ const Punchorder = ({route}) => {
         ToastAndroid.show(messages[key], ToastAndroid.SHORT);
         return;
       }
+    }
+
+    if (inputs.cut === '' || isNaN(Number(inputs.cut))) {
+      ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
+      return;
+    }
+
+    // Check if 'price' is a valid number
+    if (inputs.price === '' || isNaN(Number(inputs.price))) {
+      ToastAndroid.show(messages.price, ToastAndroid.SHORT);
+      return;
     }
 
     if (id == undefined)
@@ -290,6 +298,7 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(res.message, ToastAndroid.LONG);
       console.log(res);
       if (res.status) {
+        navigation.navigate('OrderSuccessful', {data: res});
         setInputs(initialstate);
       }
       setIsLoading(false);

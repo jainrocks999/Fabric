@@ -49,7 +49,8 @@ const Punchorder = () => {
       }
     } catch (err) {
       console.log(err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       setIsLoading(false);
     }

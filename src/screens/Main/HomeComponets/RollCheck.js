@@ -22,6 +22,7 @@ import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
 import {useDispatch, useSelector} from 'react-redux';
+import TableComponent from '../../../components/Rollecheck/table';
 const Punchorder = ({route}) => {
   const data = useSelector(state => state.rollelist);
   const visbles = route.params?.visible;
@@ -240,7 +241,7 @@ const Punchorder = ({route}) => {
           </Text>
         </TouchableOpacity>
         <View style={{height: hp(60)}}>
-          <FlatList
+          {/* <FlatList
             data={filteredData}
             style={{marginTop: 20}}
             showsVerticalScrollIndicator={false}
@@ -275,36 +276,7 @@ const Punchorder = ({route}) => {
                     Remove
                   </Text>
                 </TouchableOpacity>
-                {/* <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
-                    }}>
-                    {'Customer Name  '}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.party_name.substring(0, 30) + '..'}
-                </Text>
-              </View> */}
+
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
@@ -426,36 +398,6 @@ const Punchorder = ({route}) => {
                   </Text>
                 </View>
 
-                {/* <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
-                    }}>
-                    {'Price'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.rate}
-                </Text>
-              </View> */}
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
@@ -486,39 +428,10 @@ const Punchorder = ({route}) => {
                     {item?.qty}
                   </Text>
                 </View>
-                {/* <View style={{flexDirection: 'row', width: '100%'}}>
-                <View style={{width: '40%', flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                      width: '100%',
-                    }}>
-                    {'Shade'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {':'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Regular',
-                    fontSize: 13,
-                  }}>
-                  {item?.SHADE}
-                </Text>
-              </View> */}
               </View>
             )}
-          />
+          /> */}
+          <TableComponent />
         </View>
 
         {data?.length > 0 && (
@@ -580,23 +493,6 @@ const Punchorder = ({route}) => {
           </View>
         </Modal>
       </View>
-      {/* <View style={{position: 'absolute', bottom: 20, left: 20}}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 40,
-            backgroundColor: colors.color1,
-            borderTopLeftRadius: 80,
-            borderTopRightRadius: 40,
-            borderBottomLeftRadius: 80,
-            borderBottomRightRadius: 40,
-          }}>
-          <BackArrow />
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 };

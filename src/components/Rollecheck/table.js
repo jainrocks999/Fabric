@@ -62,11 +62,14 @@ const TableComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 0,
     backgroundColor: '#f9f9f9',
+    marginTop: '5%',
   },
   tableHeader: {
-    backgroundColor: '#6200ee',
+    backgroundColor: 'grey',
+    borderWidth: 0.5,
+    borderColor: 'black',
   },
   headerText: {
     color: '#ffffff',

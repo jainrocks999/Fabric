@@ -14,6 +14,7 @@
       android:theme="@style/AppTheme"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       android:usesCleartextTraffic="true"
       android:networkSecurityConfig="@xml/network_security_config" 
 =======
@@ -24,6 +25,10 @@
 
       android:usesCleartextTraffic="true"
 >>>>>>> second
+=======
+      android:usesCleartextTraffic="true"
+    
+>>>>>>> 474e514487dd2c88ac90daf4d05d7df3f3a0d7c0
       >
       <activity
         android:name=".MainActivity"

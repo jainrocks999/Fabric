@@ -33,6 +33,7 @@ const Punchorder = ({route}) => {
   const navigation = useNavigation();
   const visbles = route.params?.visible;
   const {isFetching, bagdata} = useSelector(state => state);
+  console.log('thissis', bagdata[0]);
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -625,6 +626,37 @@ const Punchorder = ({route}) => {
                     {item?.barcode}
                   </Text>
                 </View>
+
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Design'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.DESIGN}
+                  </Text>
+                </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
@@ -664,7 +696,7 @@ const Punchorder = ({route}) => {
                         fontFamily: 'Montserrat-SemiBold',
                         width: '100%',
                       }}>
-                      {'Design'}
+                      {'Shade'}
                     </Text>
                     <Text
                       style={{
@@ -682,7 +714,7 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.DESIGN}
+                    {item?.SHADE}
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -742,7 +774,7 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.qty}
+                    {parseFloat(item?.qty ?? '0.000').toFixed(2)}
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -754,7 +786,7 @@ const Punchorder = ({route}) => {
                         fontFamily: 'Montserrat-SemiBold',
                         width: '100%',
                       }}>
-                      {'Shade'}
+                      {'Date'}
                     </Text>
                     <Text
                       style={{
@@ -772,7 +804,7 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.SHADE}
+                    {dob}
                   </Text>
                 </View>
               </View>

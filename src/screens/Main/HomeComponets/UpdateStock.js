@@ -105,6 +105,7 @@ const Punchorder = () => {
         <TextInput
           placeholder="Search for results"
           value={search}
+          placeholderTextColor={'grey'}
           onChangeText={setSearch}
           style={{
             marginTop: wp(-1),
@@ -348,7 +349,7 @@ const Punchorder = () => {
                     color: '#000',
                     fontFamily: 'Montserrat-Medium',
                   }}>
-                  {'  ' + item?.qty}
+                  {'  ' + parseFloat(item?.qty ?? '0.000').toFixed(2)}
                 </Text>
               </View>
               {/* <View style={{marginTop: 5}}>

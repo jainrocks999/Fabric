@@ -75,7 +75,7 @@ const PunchorderList = () => {
       if (res.status) {
         await storage.removeItem(storage.CART);
         setCarts([]);
-        navigation.navigate('OrderSuccessful');
+        navigation.navigate('OrderSuccessful', {data: res});
       }
       setIsLoading(false);
     } catch (error) {
@@ -83,6 +83,11 @@ const PunchorderList = () => {
       setIsLoading(false);
       console.log(error);
     }
+  };
+  const [showFullText, setShowFullText] = useState(-1);
+
+  const toggleTextDisplay = index => {
+    setShowFullText(index);
   };
   const handleDelete = async item => {
     setCarts(prev => {
@@ -119,7 +124,7 @@ const PunchorderList = () => {
           <FlatList
             data={carts}
             style={{marginBottom: 100}}
-            renderItem={({item}) => (
+            renderItem={({item, index}) => (
               <View
                 style={{
                   borderWidth: 1,
@@ -135,7 +140,7 @@ const PunchorderList = () => {
                   style={{
                     right: '2%',
                     position: 'absolute',
-                    top: '1%',
+                    top: 5,
                     padding: '2%',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -158,7 +163,7 @@ const PunchorderList = () => {
                   style={{
                     right: '2%',
                     position: 'absolute',
-                    top: '26%',
+                    top: 45,
                     padding: '2%',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -370,15 +375,33 @@ const PunchorderList = () => {
                       {':'}
                     </Text>
                   </View>
-                  <Text
-                    style={{
-                      marginLeft: 10,
-                      color: '#000',
-                      fontFamily: 'Montserrat-Regular',
-                      fontSize: 13,
-                    }}>
-                    {item?.remark}
-                  </Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        marginLeft: 10,
+                        color: '#000',
+                        fontFamily: 'Montserrat-Regular',
+                        fontSize: 13,
+                        width: '75%',
+                      }}>
+                      {showFullText == index
+                        ? item.remark
+                        : item.remark.substring(0, 30) + '...'}
+                      {item.remark.length > 30 && showFullText != index && (
+                        <Text
+                          onPress={() => toggleTextDisplay(index)}
+                          style={{
+                            color: 'blue',
+                            marginLeft: 10,
+                            fontFamily: 'Montserrat-Medium',
+                            fontSize: 13,
+                            width: '75%',
+                          }}>
+                          {'More'}
+                        </Text>
+                      )}
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}

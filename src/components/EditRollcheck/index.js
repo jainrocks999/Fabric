@@ -92,27 +92,27 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
             </Text>
             <View style={{height: '5%'}} />
             <View style={{width: '100%'}}>
-              <Text style={styles.inputText}>Customer Name</Text>
+              <Text style={styles.inputText}>Product Name</Text>
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data?.Party}
+                value={''}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
-                placeholder="Remark"
+                placeholder="Product Name"
               />
               <View style={{height: '4%'}} />
-              <Text style={styles.inputText}>Design</Text>
+              <Text style={styles.inputText}>Color No.</Text>
               <TextInput
                 style={styles.dropdown}
                 editable={false}
-                value={data?.DESIGN}
+                value={newdata?.color}
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
-                placeholder="Remark"
+                placeholder="Product Name"
               />
 
-              <View style={{height: '4%'}} />
+              {/* <View style={{height: '4%'}} />
               <Text style={styles.inputText}>Shade</Text>
               <TextInput
                 style={styles.dropdown}
@@ -121,7 +121,7 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
                 // placeholderTextColor='#C7C7CD'
                 onChangeText={value => {}}
                 placeholder="Remark"
-              />
+              /> */}
               {/* <View style={styles.dropdown}>
                   <Dropdown
                     style={{
@@ -250,7 +250,7 @@ const EditRoll = ({visible, data, dataList, onComplete, addRole}) => {
 
               <View style={{height: '4%'}} />
               <Text style={styles.inputText}>
-                Qty <Text style={{color: 'red'}}>*</Text>
+                Qty{'( meter )'} <Text style={{color: 'red'}}>*</Text>
               </Text>
               <TextInput
                 style={styles.dropdown}

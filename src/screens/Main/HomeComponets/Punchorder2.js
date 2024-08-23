@@ -15,7 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import colors from '../../../assets/colors';
 import QRCodeScanner from '../../../components/QRCodeScanner';
 import Modal from 'react-native-modal';
@@ -35,6 +35,14 @@ const Punchorder = ({route}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [carts, setCats] = useState([]);
+
+  useEffect(() => {
+    getCarts();
+  }, [useIsFocused()]);
+  const getCarts = async () => {
+    const data = await storage.getItem(storage.CART);
+    setCats(data == null ? [] : data);
+  };
   const initialstate = {
     customerName: customer ?? '',
     grade: '',
@@ -44,7 +52,7 @@ const Punchorder = ({route}) => {
     price: '',
     matchoption: '',
     cut: '',
-    remark: 'NA',
+    remark: remark ?? 'NA',
     remark1: remark ?? 'NA',
     quality: '',
     address: address ?? '',
@@ -60,8 +68,6 @@ const Punchorder = ({route}) => {
       };
     });
   }, []);
-
-  console.log(inputs.remark);
 
   const handleInputs = (text, input) => {
     setInputs(prev => ({...prev, [text]: input}));
@@ -114,7 +120,8 @@ const Punchorder = ({route}) => {
       } else if (type === 'colorshade') {
         setColorShadeList([]);
       }
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       !item && setIsLoading(false);
     }
@@ -192,24 +199,20 @@ const Punchorder = ({route}) => {
     setInputs(initialstate);
   };
   const validate = async bool => {
+    const customerdata = await storage.getItem(storage.CUSTOMER);
+    await storage.setItem(storage.CUSTOMER, {
+      ...customerdata,
+      remark: inputs.remark,
+    });
     const messages = {
       quality: 'Please select Quality',
       design: 'Please select Design',
+      shade: 'Please select shade',
       cut: 'Please enter a valid Cut',
       price: 'Please enter a valid Price',
     };
 
     // Check if 'cut' is a valid number
-    if (inputs.cut === '' || isNaN(Number(inputs.cut))) {
-      ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
-      return;
-    }
-
-    // Check if 'price' is a valid number
-    if (inputs.price === '' || isNaN(Number(inputs.price))) {
-      ToastAndroid.show(messages.price, ToastAndroid.SHORT);
-      return;
-    }
 
     // Check if required fields are filled
     for (const key in messages) {
@@ -220,6 +223,17 @@ const Punchorder = ({route}) => {
         ToastAndroid.show(messages[key], ToastAndroid.SHORT);
         return;
       }
+    }
+
+    if (inputs.cut === '' || isNaN(Number(inputs.cut))) {
+      ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
+      return;
+    }
+
+    // Check if 'price' is a valid number
+    if (inputs.price === '' || isNaN(Number(inputs.price))) {
+      ToastAndroid.show(messages.price, ToastAndroid.SHORT);
+      return;
     }
 
     if (id == undefined)
@@ -251,6 +265,7 @@ const Punchorder = ({route}) => {
     const formattedDate = currentDate.toISOString().split('T')[0];
     return formattedDate;
   };
+  console.log('thdiududu');
   const punchorder = async () => {
     try {
       setIsLoading(true);
@@ -283,6 +298,7 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(res.message, ToastAndroid.LONG);
       console.log(res);
       if (res.status) {
+        navigation.navigate('OrderSuccessful', {data: res});
         setInputs(initialstate);
       }
       setIsLoading(false);
@@ -308,7 +324,7 @@ const Punchorder = ({route}) => {
       />
       <ScrollView style={{marginBottom: 0}}>
         <View style={{paddingHorizontal: 5, marginBottom: 80}}>
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Quality</Text>
             <View style={styles.dropdown}>
               <Dropdown
@@ -364,10 +380,10 @@ const Punchorder = ({route}) => {
                 }}
               />
             </View>
-          </View>
+          </View> */}
           <View style={styles.Main}>
             <Text style={styles.inputText}>Design</Text>
-            <View style={styles.dropdown}>
+            {/* <View style={styles.dropdown}>
               <Dropdown
                 style={{
                   height: 22,
@@ -420,9 +436,17 @@ const Punchorder = ({route}) => {
                   fetchColorShade(item.Designid);
                 }}
               />
-            </View>
+            </View> */}
+            <TextInput
+              style={styles.dropdown}
+              value={inputs.design}
+              placeholder="Design"
+              onChangeText={value => {
+                handleInputs('design', value);
+              }}
+            />
           </View>
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Color</Text>
             <View style={styles.dropdown}>
               <Dropdown
@@ -476,16 +500,26 @@ const Punchorder = ({route}) => {
                 onChange={item => {}}
               />
             </View>
-            {/* <View>
+           
+          </View> */}
+          {/* <View style={styles.Main}>
+            <Text style={styles.inputText}>Color</Text>
+            <View>
               <TextInput
+                editable={false}
                 style={styles.dropdown}
+                value={inputs?.color?.color}
+                onChangeText={value => {
+                  // handleInputs('prcolorice', value);
+                }}
                 placeholder="Color"
+                keyboardType="number-pad"
               />
-            </View> */}
-          </View>
+            </View>
+          </View> */}
           <View style={styles.Main}>
-            <Text style={styles.inputText}>Shade</Text>
-            <View style={styles.dropdown}>
+            <Text style={styles.inputText}>Color</Text>
+            {/* <View style={styles.dropdown}>
               <Dropdown
                 style={{
                   height: 22,
@@ -501,12 +535,12 @@ const Punchorder = ({route}) => {
                 itemTextStyle={{color: '#474747'}}
                 searchPlaceholder="search.."
                 maxHeight={250}
-                labelField="shade"
-                valueField="shadeid"
-                placeholder="Shade"
-                value={inputs.shade?.shadeid}
+                labelField="color"
+                valueField="colorid"
+                placeholder="Color"
+                value={inputs.color?.colorid}
                 renderItem={item =>
-                  item.shadeid === inputs.shade?.shadeid ? (
+                  item.color === inputs.color?.colorid ? (
                     <View
                       style={{
                         padding: 17,
@@ -516,7 +550,7 @@ const Punchorder = ({route}) => {
                         backgroundColor: 'grey',
                       }}>
                       <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.shade}
+                        {item.color}
                       </Text>
                     </View>
                   ) : (
@@ -528,7 +562,7 @@ const Punchorder = ({route}) => {
                         alignItems: 'center',
                       }}>
                       <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.shade}
+                        {item.color}
                       </Text>
                     </View>
                   )
@@ -538,20 +572,33 @@ const Punchorder = ({route}) => {
                   handleInputs('shade', item);
                 }}
               />
-            </View>
+              
+            </View> */}
+            <TextInput
+              style={styles.dropdown}
+              value={inputs.color}
+              placeholder="Color"
+              onChangeText={value => {
+                handleInputs('color', value);
+              }}
+            />
           </View>
 
           <View style={styles.Main}>
-            <Text style={styles.inputText}>Cut</Text>
+            <Text style={styles.inputText}>Cut{' ( in meter )'}</Text>
             <View>
               <TextInput
                 style={styles.dropdown}
                 value={inputs.cut}
                 placeholder="Cut"
                 onChangeText={value => {
-                  handleInputs('cut', value);
+                  // Only allow numbers and a single decimal point
+                  const regex = /^\d*\.?\d{0,2}$/;
+                  if (regex.test(value)) {
+                    handleInputs('cut', value);
+                  }
                 }}
-                keyboardType="number-pad"
+                keyboardType="decimal-pad"
               />
             </View>
           </View>
@@ -620,7 +667,7 @@ const Punchorder = ({route}) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.buttonOpen}
+                style={[styles.buttonOpen, {flexDirection: 'row'}]}
                 onPress={() => {
                   navigation.replace('PunchorderList');
                   setInputs(initialstate);
@@ -631,8 +678,34 @@ const Punchorder = ({route}) => {
                     fontFamily: 'Montserrat-Bold',
                     fontSize: 15,
                   }}>
-                  {`View Cart ${carts.length}`}
+                  {`View Cart` + ' ' + '('}
+                  <Text style={{fontSize: 12}}>{`${carts.length}`}</Text>
+                  <Text>{')'}</Text>
                 </Text>
+                {/* <View
+                  style={{
+                    marginLeft: '5%',
+                    height: 24,
+                    width: 24,
+                    backgroundColor: '#fff',
+                    borderRadius: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: 5,
+                    position: 'absolute',
+                    right: -10,
+                    top: -10,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontFamily: 'Montserrat-Bold',
+                      fontSize: 15,
+                      marginTop: -3,
+                    }}>
+                    {carts.length}
+                  </Text>
+                </View> */}
               </TouchableOpacity>
             </View>
           )}

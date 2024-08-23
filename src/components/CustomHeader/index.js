@@ -25,6 +25,8 @@ const CustomHeader = ({
   scanner,
   onPress2,
   nocompany,
+  Hisorry,
+  gotoHistory,
 }) => {
   const navigation = useNavigation();
   const {Rndata} = useSelector(state => state);
@@ -251,7 +253,7 @@ const CustomHeader = ({
       {!arrow && !home ? (
         <TouchableOpacity
           onPress={() => {
-            navigation.goBack();
+            Hisorry ? gotoHistory() : navigation.goBack();
           }}
           style={{
             alignItems: 'center',

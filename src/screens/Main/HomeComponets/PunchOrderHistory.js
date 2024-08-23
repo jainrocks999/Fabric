@@ -1,4 +1,6 @@
 import {
+  Alert,
+  BackHandler,
   FlatList,
   StyleSheet,
   Text,
@@ -23,6 +25,18 @@ const PunchOrderHistory = () => {
   const [searched, setSeached] = useState('');
   const [data, setData] = useState([]);
   const defferedValue = useDeferredValue(searched);
+  useEffect(() => {
+    const backAction = () => {
+      navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
   useEffect(() => {
     filter(defferedValue, data);
   }, [defferedValue, data]);
@@ -100,7 +114,8 @@ const PunchOrderHistory = () => {
       }
       setLoading(false);
     } catch (err) {
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      if (err.response.status != 401)
+        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
       console.log(err);
       setLoading(false);
     } finally {
@@ -127,6 +142,10 @@ const PunchOrderHistory = () => {
         onPress={() => {
           navigation.openDrawer();
         }}
+        Hisorry={true}
+        gotoHistory={() => {
+          navigation.reset({index: 0, routes: [{name: 'Home'}]});
+        }}
       />
 
       <View style={{marginHorizontal: '1%'}}>
@@ -136,6 +155,7 @@ const PunchOrderHistory = () => {
             onChangeText={value => {
               setSeached(value);
             }}
+            placeholderTextColor={'grey'}
             style={{
               marginTop: wp(2),
               borderWidth: 1,
@@ -179,6 +199,37 @@ const PunchOrderHistory = () => {
                   padding: 10,
                   alignSelf: 'center',
                 }}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Order Id'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Medium',
+                      fontSize: 13,
+                      width: '57%',
+                    }}>
+                    {'#' + item?.order_up_id}
+                  </Text>
+                </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text

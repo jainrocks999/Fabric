@@ -1,10 +1,18 @@
 import React, {useEffect} from 'react';
-import {View, Text, Image, BackHandler, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  BackHandler,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
 import colors from '../../../assets/colors';
 
-const Success = () => {
+const Success = ({route}) => {
   const navigation = useNavigation();
+  const {data} = route?.params;
 
   function handleBackButtonClick() {
     // navigation.push('DashBoard');
@@ -33,14 +41,16 @@ const Success = () => {
           style={{height: 50, width: 50}}
           source={require('../../../assets/Icon/save.png')}
         />
-        <Text
-          style={{
-            fontSize: 16,
-            color: '#000',
-            fontFamily: 'Montserrat-SemiBold',
-            marginTop: 10,
-          }}>
-          Your Order has been punched.
+        <Text style={styles.text}>
+          {`Your Order - #`}
+          <Text
+            style={styles.clickableText}
+            onPress={() => {
+              navigation.navigate('History');
+            }}>
+            {data?.last_id}
+          </Text>
+          {` has been punched.`}
         </Text>
         <Text
           style={{
@@ -77,3 +87,17 @@ const Success = () => {
   );
 };
 export default Success;
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    color: '#000',
+    fontFamily: 'Montserrat-SemiBold',
+    marginTop: 10,
+  },
+  clickableText: {
+    fontSize: 16,
+    color: 'blue', // Change the color to indicate it's clickable
+    fontFamily: 'Montserrat-SemiBold',
+    textDecorationLine: 'underline', // Optional: Add underline for better indication
+  },
+});

@@ -146,10 +146,12 @@ const PunchOrderHistory = () => {
     setExpandedItem(expandedItem === index ? null : index);
   };
 
-  const renderItem = ({item, index}) => {
+
+  
+  const renderItem = ({ item, index, expandedItem, toggleExpand }) => {
     const isExpanded = expandedItem === index;
     const isInitiallyVisible = index < 3;
-
+  
     return (
       <View
         style={{
@@ -162,6 +164,81 @@ const PunchOrderHistory = () => {
         }}
        >
        <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Status'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                      width: '58%',
+                    }}>
+                    {'Your order has been waiting for approval'}
+                  </Text>
+                </View>
+            
+           {isExpanded ==false?   <TouchableOpacity style={{alignSelf:'flex-end',marginTop:7}}  onPress={() => toggleExpand(index)}>
+           <Text style={{
+                        fontSize: 11,
+                        color: '#77bced',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>View more...</Text>
+          </TouchableOpacity>:null}
+
+        {isInitiallyVisible && (
+          <Collapsible collapsed={!isExpanded}>
+   <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Order Id'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                      width: '57%',
+                    }}>
+                    {item?.order_up_id}
+                  </Text>
+                </View>
+
+                <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
                       style={{
@@ -343,18 +420,6 @@ const PunchOrderHistory = () => {
                     {item?.color}
                   </Text>
                 </View>
-          <TouchableOpacity style={{alignSelf:'flex-end'}}  onPress={() => toggleExpand(index)}>
-           <Text style={{
-                        fontSize: 14,
-                        color: '#000',
-                        fontFamily: 'Montserrat-SemiBold',
-                        width: '100%',
-                      }}>Show more</Text>
-          </TouchableOpacity>
-
-        {isInitiallyVisible && (
-          <Collapsible collapsed={!isExpanded}>
-            
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
@@ -364,7 +429,13 @@ const PunchOrderHistory = () => {
                         fontFamily: 'Montserrat-SemiBold',
                         width: '100%',
                       }}>
-                      {'Cut'}
+                      {'Cut '}
+                      <Text style={{
+                        fontSize: 11,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>{'(In meter)'}</Text>
                     </Text>
                     <Text
                       style={{
@@ -382,7 +453,8 @@ const PunchOrderHistory = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.cutper}
+                      {parseFloat(item?.cutper)?.toFixed(2)}
+                   
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -412,7 +484,8 @@ const PunchOrderHistory = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.rate}
+                      {parseFloat(item?.rate)?.toFixed(2)}
+                    
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -442,7 +515,7 @@ const PunchOrderHistory = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.qty}
+                   {parseFloat(item?.qty)?.toFixed(2)}
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -472,7 +545,7 @@ const PunchOrderHistory = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.amount}
+                   {parseFloat(item?.amount)?.toFixed(2)}
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
@@ -599,7 +672,8 @@ const PunchOrderHistory = () => {
       data={filteredData}
       contentContainerStyle={{paddingBottom: hp(21)}}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={renderItem}
+      renderItem={({ item, index }) => renderItem({ item, index, expandedItem, toggleExpand })}
+      // renderItem={ renderItem({ item, index, expandedItem, toggleExpand })}
     />
 
         {/* <FlatList

@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   ToastAndroid,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useDeferredValue, useEffect, useState} from 'react';
@@ -11,6 +12,7 @@ import Header from '../../../components/CustomHeader';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
+import Collapsible from 'react-native-collapsible';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -119,6 +121,419 @@ const PunchOrderHistory = () => {
 
     return `${day}-${month}-${year}`;
   };
+
+
+
+
+  const [expandedItem, setExpandedItem] = useState(null);
+
+  const toggleExpand = (index) => {
+    setExpandedItem(expandedItem === index ? null : index);
+  };
+
+  const renderItem = ({item, index}) => {
+    const isExpanded = expandedItem === index;
+    const isInitiallyVisible = index < 3;
+
+    return (
+      <View
+        style={{
+          borderWidth: 1,
+          width: '95%',
+          marginBottom: 10,
+          borderRadius: 10,
+          padding: 10,
+          alignSelf: 'center',
+        }}
+       >
+       <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Party Name'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                      width: '57%',
+                    }}>
+                    {item?.Partyname}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Company'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.company}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Design'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.Design}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Quality'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.Quality}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Shade'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.shade}
+                  </Text>
+                </View>
+
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Color'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.color}
+                  </Text>
+                </View>
+          <TouchableOpacity style={{alignSelf:'flex-end'}}  onPress={() => toggleExpand(index)}>
+           <Text style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>Show more</Text>
+          </TouchableOpacity>
+
+        {isInitiallyVisible && (
+          <Collapsible collapsed={!isExpanded}>
+            
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Cut'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.cutper}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Rate'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.rate}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Qty'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.qty}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Amount'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {item?.amount}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Order Date'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                    }}>
+                    {getDate(item?.udate)}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', width: '100%'}}>
+                  <View style={{width: '40%', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                        width: '100%',
+                      }}>
+                      {'Remark'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#000',
+                        fontFamily: 'Montserrat-SemiBold',
+                      }}>
+                      {':'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontFamily: 'Montserrat-Regular',
+                      fontSize: 13,
+                      width: '50%',
+                    }}>
+                    {item?.remark}
+                  </Text>
+                </View>
+            {/* Add other text views in a similar manner */}
+          </Collapsible>
+        )}
+      </View>
+    );
+  };
+
+
+
+
+
+
+
   return (
     <View style={{flex: 1}}>
       {loading && <Loader />}
@@ -161,6 +576,13 @@ const PunchOrderHistory = () => {
           />
         </View>
         <FlatList
+      data={filteredData}
+      contentContainerStyle={{paddingBottom: hp(21)}}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={renderItem}
+    />
+
+        {/* <FlatList
           data={filteredData}
           contentContainerStyle={{paddingBottom: hp(21)}}
           keyExtractor={(item, index) => index.toString()}
@@ -170,7 +592,7 @@ const PunchOrderHistory = () => {
             );
 
             return (
-              <View
+              <TouchableOpacity
                 style={{
                   borderWidth: 1,
                   width: '95%',
@@ -542,10 +964,10 @@ const PunchOrderHistory = () => {
                     {item?.remark}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           }}
-        />
+        /> */}
       </View>
     </View>
   );

@@ -324,7 +324,7 @@ const Punchorder = ({route}) => {
       />
       <ScrollView style={{marginBottom: 0}}>
         <View style={{paddingHorizontal: 5, marginBottom: 80}}>
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Quality</Text>
             <View style={styles.dropdown}>
               <Dropdown
@@ -380,10 +380,10 @@ const Punchorder = ({route}) => {
                 }}
               />
             </View>
-          </View>
+          </View> */}
           <View style={styles.Main}>
             <Text style={styles.inputText}>Design</Text>
-            <View style={styles.dropdown}>
+            {/* <View style={styles.dropdown}>
               <Dropdown
                 style={{
                   height: 22,
@@ -436,7 +436,15 @@ const Punchorder = ({route}) => {
                   fetchColorShade(item.Designid);
                 }}
               />
-            </View>
+            </View> */}
+            <TextInput
+              style={styles.dropdown}
+              value={inputs.design}
+              placeholder="Design"
+              onChangeText={value => {
+                handleInputs('design', value);
+              }}
+            />
           </View>
           {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Color</Text>
@@ -494,7 +502,7 @@ const Punchorder = ({route}) => {
             </View>
            
           </View> */}
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Color</Text>
             <View>
               <TextInput
@@ -508,10 +516,10 @@ const Punchorder = ({route}) => {
                 keyboardType="number-pad"
               />
             </View>
-          </View>
+          </View> */}
           <View style={styles.Main}>
-            <Text style={styles.inputText}>Shade</Text>
-            <View style={styles.dropdown}>
+            <Text style={styles.inputText}>Color</Text>
+            {/* <View style={styles.dropdown}>
               <Dropdown
                 style={{
                   height: 22,
@@ -527,12 +535,12 @@ const Punchorder = ({route}) => {
                 itemTextStyle={{color: '#474747'}}
                 searchPlaceholder="search.."
                 maxHeight={250}
-                labelField="shade"
-                valueField="shadeid"
-                placeholder="Shade"
-                value={inputs.shade?.shadeid}
+                labelField="color"
+                valueField="colorid"
+                placeholder="Color"
+                value={inputs.color?.colorid}
                 renderItem={item =>
-                  item.shadeid === inputs.shade?.shadeid ? (
+                  item.color === inputs.color?.colorid ? (
                     <View
                       style={{
                         padding: 17,
@@ -542,7 +550,7 @@ const Punchorder = ({route}) => {
                         backgroundColor: 'grey',
                       }}>
                       <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.shade}
+                        {item.color}
                       </Text>
                     </View>
                   ) : (
@@ -554,7 +562,7 @@ const Punchorder = ({route}) => {
                         alignItems: 'center',
                       }}>
                       <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.shade}
+                        {item.color}
                       </Text>
                     </View>
                   )
@@ -564,20 +572,33 @@ const Punchorder = ({route}) => {
                   handleInputs('shade', item);
                 }}
               />
-            </View>
+              
+            </View> */}
+            <TextInput
+              style={styles.dropdown}
+              value={inputs.color}
+              placeholder="Color"
+              onChangeText={value => {
+                handleInputs('color', value);
+              }}
+            />
           </View>
 
           <View style={styles.Main}>
-            <Text style={styles.inputText}>Cut</Text>
+            <Text style={styles.inputText}>Cut{' ( in meter )'}</Text>
             <View>
               <TextInput
                 style={styles.dropdown}
                 value={inputs.cut}
                 placeholder="Cut"
                 onChangeText={value => {
-                  handleInputs('cut', value);
+                  // Only allow numbers and a single decimal point
+                  const regex = /^\d*\.?\d{0,2}$/;
+                  if (regex.test(value)) {
+                    handleInputs('cut', value);
+                  }
                 }}
-                keyboardType="number-pad"
+                keyboardType="decimal-pad"
               />
             </View>
           </View>

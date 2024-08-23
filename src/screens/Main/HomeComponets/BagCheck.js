@@ -33,6 +33,7 @@ const Punchorder = ({route}) => {
   const navigation = useNavigation();
   const visbles = route.params?.visible;
   const {isFetching, bagdata} = useSelector(state => state);
+  console.log('thissis', bagdata[0]);
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useDeferredValue} from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import storage from '../../../utils/storageService';
 import Loading from '../../../components/Loader';
 import punchOrderPost from '../../../utils/punchOrderPost';
 import {useSelector} from 'react-redux';
+import Autocomplete from '../../../components/AutoComplete';
 
 const Punchorder = ({route}) => {
   const {remark, customer, address, id} = useSelector(state => state.customer);
@@ -35,6 +36,8 @@ const Punchorder = ({route}) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [carts, setCats] = useState([]);
+  const [filteredDesigns, setFilteredDesigns] = useState([]);
+  const [filteredColored, setFilteredColors] = useState([]);
 
   useEffect(() => {
     getCarts();
@@ -50,7 +53,7 @@ const Punchorder = ({route}) => {
     shade: '',
     color: '',
     price: '',
-    piece:'',
+    piece: '',
     matchoption: '',
     cut: '',
     remark: remark ?? 'NA',
@@ -74,7 +77,7 @@ const Punchorder = ({route}) => {
     setInputs(prev => ({...prev, [text]: input}));
   };
   useEffect(() => {
-    id == undefined && fetchQuality();
+    id == undefined && fetchDesign();
   }, []);
   const fetchQuality = async item => {
     const {TOKEN, COMPANY} = storage;
@@ -86,8 +89,11 @@ const Punchorder = ({route}) => {
   };
 
   const fetchDesign = async (id, item) => {
-    const token = await storage.getItem(storage.TOKEN);
-    const endpoint = `design/${id}`;
+    const {TOKEN, COMPANY} = storage;
+    const items = await storage.getMultipleItems([TOKEN, COMPANY]);
+    const token = items.find(([key]) => key === TOKEN)?.[1];
+    const company = items.find(([key]) => key === COMPANY)?.[1];
+    const endpoint = `design/${company}`;
     fetchData(endpoint, token, 'design', item);
   };
   const fetchColorShade = async (id, item) => {
@@ -103,28 +109,17 @@ const Punchorder = ({route}) => {
       if (res.status) {
         setdata(res.data, type, item);
       } else {
-        if (type === 'quality') {
-          setQaulityList([]);
-        } else if (type === 'design') {
-          setDesignList([]);
-        } else if (type === 'colorshade') {
-          setColorShadeList([]);
-        }
+        setIsLoading(false);
         ToastAndroid.show(res.message, ToastAndroid.SHORT);
       }
     } catch (err) {
       console.log(endpoint, err);
-      if (type === 'quality') {
-        setQaulityList([]);
-      } else if (type === 'design') {
-        setDesignList([]);
-      } else if (type === 'colorshade') {
-        setColorShadeList([]);
-      }
+      setIsLoading(false);
+
       if (err.response.status != 401)
         ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
-      !item && setIsLoading(false);
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -141,25 +136,11 @@ const Punchorder = ({route}) => {
   };
   const setdata = (data, type, item) => {
     if (type === 'quality') {
-      item && fetchDesign(item.quality?.Qualityid, item);
       setQaulityList(data);
-      setDesignList([]);
     } else if (type === 'design') {
-      item && fetchColorShade(item?.design?.Designid, item);
       setDesignList(data);
-      setColorShadeList([]);
-      setInputs(prev => ({
-        ...prev,
-        color: '',
-        shade: '',
-      }));
     } else if (type === 'colorshade') {
       setColorShadeList(data);
-      setInputs(prev => ({
-        ...prev,
-        ...item,
-      }));
-      item && setIsLoading(false);
     }
   };
   const addToCart = async () => {
@@ -197,6 +178,7 @@ const Punchorder = ({route}) => {
     setCats(mycart);
 
     ToastAndroid.show('Data added to cart', ToastAndroid.SHORT);
+
     setInputs(initialstate);
   };
   const validate = async bool => {
@@ -206,17 +188,13 @@ const Punchorder = ({route}) => {
       remark: inputs.remark,
     });
     const messages = {
-      quality: 'Please select Quality',
       design: 'Please select Design',
-      shade: 'Please select shade',
+      color: 'Please select color',
       cut: 'Please enter a valid Cut',
       price: 'Please enter a valid Price',
-      piece:'Please enter a valid piece'
+      piece: 'Please enter a valid piece',
     };
 
-    // Check if 'cut' is a valid number
-
-    // Check if required fields are filled
     for (const key in messages) {
       if (
         !inputs[key] ||
@@ -235,7 +213,7 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(messages.piece, ToastAndroid.SHORT);
       return;
     }
-    // Check if 'price' is a valid number
+
     if (inputs.price === '' || isNaN(Number(inputs.price))) {
       ToastAndroid.show(messages.price, ToastAndroid.SHORT);
       return;
@@ -315,7 +293,39 @@ const Punchorder = ({route}) => {
       setIsLoading(false);
     }
   };
+  const deffered = useDeferredValue(inputs.design);
+  useEffect(() => {
+    filterDesigns(deffered);
+  }, [deffered]);
+  const filterDesigns = async query => {
+    console.log('this is called');
+    if (query) {
+      const token = await storage.getItem(storage.TOKEN);
+      const compay = await storage.getItem(storage.COMPANY);
+      const endpoint = `search-design/${compay}/${query}`;
 
+      // Check if the query is numeric
+      if (query.length > 2) {
+        const filtered = await Api.getRequest(endpoint, token);
+        setFilteredDesigns(filtered.data);
+      }
+      // console.log(filtered);
+    } else {
+      setFilteredDesigns([]);
+    }
+  };
+  console.log('this is shade color list', colorshadeList);
+  const filterColor = query => {
+    if (query && !isNaN(query)) {
+      const filtered = colorshadeList.filter(item =>
+        item.colorid.toString().includes(query),
+      );
+      setFilteredColors(filtered);
+    } else {
+      setFilteredColors([]);
+    }
+  };
+  console.log(colorshadeList);
   return (
     <View style={styles.container}>
       {isLoading && <Loading />}
@@ -329,263 +339,49 @@ const Punchorder = ({route}) => {
       />
       <ScrollView style={{marginBottom: 0}}>
         <View style={{paddingHorizontal: 5, marginBottom: 80}}>
-          {/* <View style={styles.Main}>
-            <Text style={styles.inputText}>Quality</Text>
-            <View style={styles.dropdown}>
-              <Dropdown
-                style={{
-                  height: 22,
-                }}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={qualityList.length > 0}
-                data={qualityList}
-                inputSearchStyle={{
-                  borderRadius: 10,
-                  backgroundColor: '#f0f0f0',
-                }}
-                itemTextStyle={{color: '#474747'}}
-                searchPlaceholder="search.."
-                maxHeight={250}
-                labelField="Quality"
-                valueField="Qualityid"
-                placeholder="Quality"
-                value={inputs.quality?.Qualityid}
-                renderItem={item =>
-                  item.Qualityid === inputs.quality?.Qualityid ? (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: 'grey',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.Quality}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.Quality}
-                      </Text>
-                    </View>
-                  )
-                }
-                onChange={item => {
-                  handleInputs('quality', item);
-                  fetchDesign(item.Qualityid);
-                }}
-              />
-            </View>
-          </View> */}
           <View style={styles.Main}>
             <Text style={styles.inputText}>Design</Text>
-            {/* <View style={styles.dropdown}>
-              <Dropdown
-                style={{
-                  height: 22,
-                }}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={designList.length > 4}
-                data={designList}
-                inputSearchStyle={{
-                  borderRadius: 10,
-                  backgroundColor: '#f0f0f0',
-                }}
-                itemTextStyle={{color: '#474747'}}
-                searchPlaceholder="search.."
-                maxHeight={250}
-                labelField="Design"
-                valueField="Designid"
-                placeholder="Design"
-                value={inputs.design?.Designid}
-                renderItem={item =>
-                  item.Designid === inputs.design?.Designid ? (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: 'grey',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.Design}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.Design}
-                      </Text>
-                    </View>
-                  )
-                }
-                onChange={item => {
-                  handleInputs('design', item);
-                  fetchColorShade(item.Designid);
-                }}
-              />
-            </View> */}
-            <TextInput
-              style={styles.dropdown}
-              value={inputs.design}
-              placeholder="Design"
-              onChangeText={value => {
-                handleInputs('design', value);
+            <Autocomplete
+              autoCapitalize="none"
+              listContainerStyle={{
+                zIndex: 12,
               }}
+              autoCorrect={false}
+              data={filteredDesigns}
+              defaultValue={inputs.design}
+              valuekey="Design"
+              onChangeText={text => {
+                handleInputs('design', text);
+              }}
+              onPress={item => {
+                console.log('this is item', item);
+                setFilteredDesigns([]);
+                handleInputs('design', item.Designid);
+                fetchColorShade(item.Designid);
+              }}
+              placeholder="Design"
             />
           </View>
-          {/* <View style={styles.Main}>
-            <Text style={styles.inputText}>Color</Text>
-            <View style={styles.dropdown}>
-              <Dropdown
-                disable
-                style={{
-                  height: 22,
-                }}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={colorshadeList.length > 1}
-                data={colorshadeList}
-                inputSearchStyle={{
-                  borderRadius: 10,
-                  backgroundColor: '#f0f0f0',
-                }}
-                itemTextStyle={{color: '#474747'}}
-                searchPlaceholder="search.."
-                maxHeight={250}
-                labelField="color"
-                valueField="colorid"
-                placeholder="Color"
-                value={inputs.color?.colorid}
-                renderItem={item =>
-                  item.colorid === inputs.color?.colorid ? (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: 'grey',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  )
-                }
-                onChange={item => {}}
-              />
-            </View>
-           
-          </View> */}
-          {/* <View style={styles.Main}>
-            <Text style={styles.inputText}>Color</Text>
-            <View>
-              <TextInput
-                editable={false}
-                style={styles.dropdown}
-                value={inputs?.color?.color}
-                onChangeText={value => {
-                  // handleInputs('prcolorice', value);
-                }}
-                placeholder="Color"
-                keyboardType="number-pad"
-              />
-            </View>
-          </View> */}
+
           <View style={styles.Main}>
             <Text style={styles.inputText}>Color</Text>
-            {/* <View style={styles.dropdown}>
-              <Dropdown
-                style={{
-                  height: 22,
-                }}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={{color: '#000', fontSize: 14}}
-                search={colorshadeList?.length > 1}
-                data={colorshadeList}
-                inputSearchStyle={{
-                  borderRadius: 10,
-                  backgroundColor: '#f0f0f0',
-                }}
-                itemTextStyle={{color: '#474747'}}
-                searchPlaceholder="search.."
-                maxHeight={250}
-                labelField="color"
-                valueField="colorid"
-                placeholder="Color"
-                value={inputs.color?.colorid}
-                renderItem={item =>
-                  item.color === inputs.color?.colorid ? (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: 'grey',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#fff'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        padding: 17,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[styles.selectedTextStyle, {color: '#000'}]}>
-                        {item.color}
-                      </Text>
-                    </View>
-                  )
-                }
-                onChange={item => {
-                  handleInputs('color', item);
-                  handleInputs('shade', item);
-                }}
-              />
-              
-            </View> */}
-            <TextInput
-              style={styles.dropdown}
-              value={inputs.color}
-              placeholder="Color"
-              onChangeText={value => {
-                handleInputs('color', value);
+
+            <Autocomplete
+              autoCapitalize="none"
+              autoCorrect={false}
+              data={filteredColored}
+              defaultValue={inputs.color}
+              valuekey="colorid"
+              onChangeText={text => {
+                handleInputs('color', text);
+                filterColor(text);
               }}
+              onPress={item => {
+                console.log('this is item', item);
+                setFilteredColors([]);
+                handleInputs('color', item.Designid);
+              }}
+              placeholder="Color"
             />
           </View>
 
@@ -597,7 +393,6 @@ const Punchorder = ({route}) => {
                 value={inputs.cut}
                 placeholder="Cut"
                 onChangeText={value => {
-                  // Only allow numbers and a single decimal point
                   const regex = /^\d*\.?\d{0,2}$/;
                   if (regex.test(value)) {
                     handleInputs('cut', value);
@@ -635,25 +430,7 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-          {/* <View style={styles.Main}>
-            <Text style={styles.inputText}>Remark</Text>
-            <View
-              style={[styles.dropdown, {height: hp(15), justifyContent: null}]}>
-              <TextInput
-                multiline
-                placeholderTextColor={'grey'}
-                style={{
-                  color: '#000',
-                }}
-                value={inputs.remark == 'NA' ? '' : inputs.remark}
-                // placeholderTextColor='#C7C7CD'
-                onChangeText={value => {
-                  handleInputs('remark', value == '' ? 'NA' : value);
-                }}
-                placeholder="Remark"
-              />
-            </View>
-          </View> */}
+
           <TouchableOpacity
             onPress={() => {
               validate(true);
@@ -700,30 +477,6 @@ const Punchorder = ({route}) => {
                   <Text style={{fontSize: 12}}>{`${carts.length}`}</Text>
                   <Text>{')'}</Text>
                 </Text>
-                {/* <View
-                  style={{
-                    marginLeft: '5%',
-                    height: 24,
-                    width: 24,
-                    backgroundColor: '#fff',
-                    borderRadius: 12,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: 5,
-                    position: 'absolute',
-                    right: -10,
-                    top: -10,
-                  }}>
-                  <Text
-                    style={{
-                      color: 'black',
-                      fontFamily: 'Montserrat-Bold',
-                      fontSize: 15,
-                      marginTop: -3,
-                    }}>
-                    {carts.length}
-                  </Text>
-                </View> */}
               </TouchableOpacity>
             </View>
           )}
@@ -831,6 +584,14 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  autocompleteContainer: {
+    flex: 1,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1,
   },
 });
 export default Punchorder;

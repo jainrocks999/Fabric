@@ -15,6 +15,7 @@ import storage from '../../../utils/storageService';
 import {useDispatch} from 'react-redux';
 import Api from '../../../Redux/Api';
 import SelectModal from '../../../components/CustomHeader/SelectModal';
+import Autocomplete from 'react-native-autocomplete-input';
 const LandingPage = () => {
   const [Rndata, setRndata] = useState([]);
   const [setdata, setSedata] = useState([]);
@@ -57,11 +58,13 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const GetData = async () => {
     const Token = await storage.getItem(storage.TOKEN);
+    const user = await storage.getItem(storage.USER);
+    console.log('this is user', user);
 
     try {
       setLoader(true);
-
-      const response = await Api.getRequest('companies', Token);
+      const endpoint = `companies/${user?.salesmanid}`;
+      const response = await Api.getRequest(endpoint, Token);
       if (response?.status == true) {
         setLoader(false);
         const result = response?.data?.map(item => {

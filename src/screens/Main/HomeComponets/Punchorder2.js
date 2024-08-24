@@ -50,6 +50,7 @@ const Punchorder = ({route}) => {
     shade: '',
     color: '',
     price: '',
+    piece:'',
     matchoption: '',
     cut: '',
     remark: remark ?? 'NA',
@@ -210,6 +211,7 @@ const Punchorder = ({route}) => {
       shade: 'Please select shade',
       cut: 'Please enter a valid Cut',
       price: 'Please enter a valid Price',
+      piece:'Please enter a valid piece'
     };
 
     // Check if 'cut' is a valid number
@@ -229,7 +231,10 @@ const Punchorder = ({route}) => {
       ToastAndroid.show(messages.cut, ToastAndroid.SHORT);
       return;
     }
-
+    if (inputs.piece === '' || isNaN(Number(inputs.piece))) {
+      ToastAndroid.show(messages.piece, ToastAndroid.SHORT);
+      return;
+    }
     // Check if 'price' is a valid number
     if (inputs.price === '' || isNaN(Number(inputs.price))) {
       ToastAndroid.show(messages.price, ToastAndroid.SHORT);
@@ -318,7 +323,7 @@ const Punchorder = ({route}) => {
         title={'Punch Order'}
         onPress={() => navigation.goBack()}
         arrow={true}
-        scanner={false}
+        scanner={true}
         onPress2={() => setVisible(true)}
         nocompany
       />
@@ -602,7 +607,20 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-
+          <View style={styles.Main}>
+            <Text style={styles.inputText}>Piece</Text>
+            <View>
+              <TextInput
+                style={styles.dropdown}
+                value={inputs.piece}
+                onChangeText={value => {
+                  handleInputs('piece', value);
+                }}
+                placeholder="Piece"
+                keyboardType="number-pad"
+              />
+            </View>
+          </View>
           <View style={styles.Main}>
             <Text style={styles.inputText}>Price</Text>
             <View>
@@ -617,7 +635,7 @@ const Punchorder = ({route}) => {
               />
             </View>
           </View>
-          <View style={styles.Main}>
+          {/* <View style={styles.Main}>
             <Text style={styles.inputText}>Remark</Text>
             <View
               style={[styles.dropdown, {height: hp(15), justifyContent: null}]}>
@@ -635,7 +653,7 @@ const Punchorder = ({route}) => {
                 placeholder="Remark"
               />
             </View>
-          </View>
+          </View> */}
           <TouchableOpacity
             onPress={() => {
               validate(true);

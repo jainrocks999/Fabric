@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import storage from '../../../utils/storageService';
 import Api from '../../../Redux/Api';
 import Loader from '../../../components/Loader';
+import colors from '../../../assets/colors';
 
 const StockDetailScreen = ({route}) => {
   const [loading, setIsLoading] = useState(false);
@@ -21,6 +22,7 @@ const StockDetailScreen = ({route}) => {
         onPress={() => navigation.goBack()}
         arrow={true}
       />
+
       {!loading ? (
         <View
           style={{
@@ -31,26 +33,7 @@ const StockDetailScreen = ({route}) => {
             alignSelf: 'center',
             borderRadius: 10,
           }}>
-          {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-SemiBold',
-            }}>
-            {'Name : '}
-          </Text>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-Medium',
-            }}>
-            {'Lorem Ipsum'}
-          </Text>
-        </View> */}
-
-          <View style={{flexDirection: 'row', marginTop: 5, width: '100%'}}>
+          {/* <View style={{flexDirection: 'row', marginTop: 5, width: '100%'}}>
             <View style={{width: '35%'}}>
               <Text
                 style={{
@@ -105,6 +88,34 @@ const StockDetailScreen = ({route}) => {
               }}>
               {'  ' + data?.COMPANY}
             </Text>
+          </View> */}
+          <View style={{flexDirection: 'row', marginTop: 5}}>
+            <View style={{width: '35%'}}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: '#000',
+                  fontFamily: 'Montserrat-SemiBold',
+                }}>
+                {'Color'}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 15,
+                color: '#000',
+                fontFamily: 'Montserrat-SemiBold',
+              }}>
+              {':'}
+            </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                color: '#000',
+                fontFamily: 'Montserrat-Medium',
+              }}>
+              {'  ' + data?.color}
+            </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
             <View style={{width: '35%'}}>
@@ -134,53 +145,26 @@ const StockDetailScreen = ({route}) => {
               {'  ' + data?.SHADE}
             </Text>
           </View>
-          <View style={{flexDirection: 'row', marginTop: 5}}>
-            <View style={{width: '35%'}}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: '#000',
-                  fontFamily: 'Montserrat-SemiBold',
-                }}>
-                {'Color'}
-              </Text>
-            </View>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-SemiBold',
-              }}>
-              {':'}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-Medium',
-              }}>
-              {'  ' + data?.color}
-            </Text>
-          </View>
+
           {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-SemiBold',
-            }}>
-            {'Cut : '}
-          </Text>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-Medium',
-            }}>
-            {'Lorem Ipsum'}
-          </Text>
-        </View> */}
-          <View style={{flexDirection: 'row', marginTop: 5}}>
+    <Text
+      style={{
+        fontSize: 15,
+        color: '#000',
+        fontFamily: 'Montserrat-SemiBold',
+      }}>
+      {'Cut : '}
+    </Text>
+    <Text
+      style={{
+        fontSize: 15,
+        color: '#000',
+        fontFamily: 'Montserrat-Medium',
+      }}>
+      {'Lorem Ipsum'}
+    </Text>
+  </View> */}
+          {/* <View style={{flexDirection: 'row', marginTop: 5}}>
             <View style={{width: '35%'}}>
               <Text
                 style={{
@@ -235,30 +219,118 @@ const StockDetailScreen = ({route}) => {
               }}>
               {'  ' + parseFloat(data?.qty ?? '0.000').toFixed(2)}
             </Text>
-          </View>
-          {/* <View style={{marginTop: 5}}>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-SemiBold',
-            }}>
-            {'Description : '}
-          </Text>
-          <Text
-            style={{
-              fontSize: 15,
-              color: '#000',
-              fontFamily: 'Montserrat-Regular',
-            }}>
-            {
-              'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
-            }
-          </Text>
-        </View> */}
+          </View> */}
         </View>
       ) : null}
     </View>
   );
 };
 export default StockDetailScreen;
+
+// {!loading ? (
+//   <View
+//     style={{
+//       borderWidth: 1,
+
+//       marginTop: '5%',
+
+//       width: '95%',
+//       alignSelf: 'center',
+//       borderRadius: 10,
+//     }}>
+
+//     <View
+//       style={{
+//         flexDirection: 'row',
+
+//       }}>
+//       <View
+//         style={{
+//           width: '35%',
+//           paddingVertical: '2%',
+//           backgroundColor: colors.color1,
+//           borderTopLeftRadius: 10,
+//           alignItems: 'center',
+//           justifyContent: 'center',
+//         }}>
+//         <Text
+//           style={{
+//             fontSize: 15,
+//             color: '#fff',
+//             fontFamily: 'Montserrat-SemiBold',
+//           }}>
+//           {'Color'}
+//         </Text>
+//       </View>
+
+//       <View
+//         style={{borderWidth: 1, borderColor: 'grey', marginLeft: '0%'}}
+//       />
+//       <View
+//         style={{
+//           alignItems: 'center',
+//           width: '65%',
+//           justifyContent: 'center',
+//           alignSelf: 'center',
+//         }}>
+//         <Text
+//           style={{
+//             fontSize: 15,
+//             color: '#000',
+//             fontFamily: 'Montserrat-Medium',
+//           }}>
+//           {'  ' + data?.color}
+//         </Text>
+//       </View>
+//     </View>
+
+//     <View
+//       style={{borderWidth: 0.5, opacity: 0.5, backgroundColor: '#000'}}
+//     />
+//     <View
+//       style={{
+//         flexDirection: 'row',
+
+//       }}>
+//       <View
+//         style={{
+//           width: '35%',
+//           paddingVertical: '2%',
+//           backgroundColor: colors.color1,
+//           borderBottomLeftRadius: 10,
+//           alignItems: 'center',
+//           justifyContent: 'center',
+//         }}>
+//         <Text
+//           style={{
+//             fontSize: 15,
+//             color: '#fff',
+//             fontFamily: 'Montserrat-SemiBold',
+//           }}>
+//           {'Shade'}
+//         </Text>
+//       </View>
+
+//       <View
+//         style={{borderWidth: 1, borderColor: 'grey', marginLeft: '0%'}}
+//       />
+//       <View
+//         style={{
+//           alignItems: 'center',
+//           width: '65%',
+//           justifyContent: 'center',
+//           alignSelf: 'center',
+//         }}>
+//         <Text
+//           style={{
+//             fontSize: 15,
+//             color: '#000',
+//             fontFamily: 'Montserrat-Medium',
+//             textAlign: 'center',
+//           }}>
+//           {'  ' + data?.SHADE}
+//         </Text>
+//       </View>
+//     </View>
+//   </View>
+// ) : null}

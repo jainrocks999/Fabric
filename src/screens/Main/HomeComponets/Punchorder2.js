@@ -38,6 +38,7 @@ const Punchorder = ({route}) => {
   const [carts, setCats] = useState([]);
   const [filteredDesigns, setFilteredDesigns] = useState([]);
   const [filteredColored, setFilteredColors] = useState([]);
+  console.log('filteredDesigns>>>>', filteredDesigns);
 
   useEffect(() => {
     getCarts();
@@ -106,6 +107,7 @@ const Punchorder = ({route}) => {
     try {
       setIsLoading(true);
       const res = await Api.getRequest(endpoint, token);
+      // console.log('log......', res);
       if (res.status) {
         setdata(res.data, type, item);
       } else {
@@ -148,7 +150,7 @@ const Punchorder = ({route}) => {
     let array = [];
 
     const cartList = await storage.getItem(storage.CART);
-
+    console.log('dfbjshjsbjsvbjvmvmv', cartList);
     let newId = 1;
     if (cartList != null && cartList.length > 0) {
       newId = Math.max(...cartList.map(item => item.id)) + 1;
@@ -159,21 +161,15 @@ const Punchorder = ({route}) => {
       currentDate: dateFromate(),
       id: newId,
       compId: companyid,
-      color: inputs?.color?.colorid
-        ? inputs?.color
-        : {
-            colorid: '',
-            color: 'NA',
-          },
-      shade: inputs.shade?.shadeid
-        ? inputs.shade
-        : {
-            shadeid: '',
-            shade: 'NA',
-          },
+      color: inputs?.color,
+
+      shade: inputs.shade,
     };
     array.push(newItem);
+
+    console.log('virenrtssr,,,,, ', array);
     await storage.setItem(storage.CART, array);
+
     const mycart = await storage.getItem(storage.CART);
     setCats(mycart);
 
@@ -196,6 +192,7 @@ const Punchorder = ({route}) => {
     };
 
     for (const key in messages) {
+      console.log('ssjngjksnskjnsdkf', inputs);
       if (
         !inputs[key] ||
         (typeof inputs[key] === 'string' && inputs[key].trim() === '')
@@ -261,18 +258,20 @@ const Punchorder = ({route}) => {
           ...inputs,
           currentDate: dateFromate(),
           compId: companyid,
-          color: inputs?.color?.colorid
-            ? inputs?.color
-            : {
-                colorid: '',
-                color: 'NA',
-              },
-          shade: inputs.shade?.shadeid
-            ? inputs.shade
-            : {
-                shadeid: '',
-                shade: 'NA',
-              },
+          color: inputs?.color,
+          // ?.colorid
+          //   ? inputs?.color
+          //   : {
+          //       colorid: '',
+          //       color: 'NA',
+          //     },
+          shade: inputs.shade,
+          // ?.shadeid
+          //   ? inputs.shade
+          //   : {
+          //       shadeid: '',
+          //       shade: 'NA',
+          //     },
         },
       ]);
 
@@ -294,6 +293,7 @@ const Punchorder = ({route}) => {
     }
   };
   const deffered = useDeferredValue(inputs.design);
+  console.log('dfgdfdfd', inputs.design);
   useEffect(() => {
     filterDesigns(deffered);
   }, [deffered]);
@@ -314,7 +314,6 @@ const Punchorder = ({route}) => {
       setFilteredDesigns([]);
     }
   };
-  console.log('this is shade color list', colorshadeList);
   const filterColor = query => {
     if (query && !isNaN(query)) {
       const filtered = colorshadeList.filter(item =>
@@ -377,9 +376,11 @@ const Punchorder = ({route}) => {
                 filterColor(text);
               }}
               onPress={item => {
-                console.log('this is item', item);
                 setFilteredColors([]);
-                handleInputs('color', item.Designid);
+
+                console.log('gfdgddhdh???????', item);
+
+                handleInputs('color', item.colorid);
               }}
               placeholder="Color"
             />

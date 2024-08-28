@@ -25,7 +25,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import TableComponent from '../../../components/Rollecheck/table';
 const Punchorder = ({route}) => {
   const data = useSelector(state => state.rollelist);
+  console.log('dsksdksdkfjs', data);
   const visbles = route.params?.visible;
+  const [data2, setData] = useState([]);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visible, setVisibles] = useState(false);
@@ -40,15 +42,15 @@ const Punchorder = ({route}) => {
 
   useEffect(() => {
     filter(defferedValue, data);
-  }, [defferedValue, data]);
+  }, [defferedValue, data2]);
   const filter = (value, data) => {
     if (value == '') {
-      setFilteredData(data);
+      setFilteredData(data2);
       return;
     }
 
     const lowersearch = value.toLowerCase();
-    const newData = data.filter(item => {
+    const newData = data2.filter(item => {
       return isNaN(value)
         ? item.Party.toLowerCase().includes(lowersearch) ||
             item.DESIGN.toLowerCase().includes(lowersearch) ||
@@ -74,10 +76,19 @@ const Punchorder = ({route}) => {
         data.some(item => {
           return item.barcode == e.data;
         });
+
       if (!has) {
         const res = await Api.getRequest(endpoint, token);
+
         if (res.status) {
-          setScannedData(res.data[0]);
+          const newItem = res.data[0];
+
+          // Push the new item into the array if it doesn't exist
+          setData(prevData => [...prevData, newItem]);
+
+          setScannedData(newItem);
+          // setScannedData(res.data);
+
           setEditable(true);
           setAddRolle(true);
         } else {
@@ -114,7 +125,7 @@ const Punchorder = ({route}) => {
       const salesman = (await storage.getItem(storage.USER))?.salesmanid ?? '';
       const token = (await storage.getItem(storage.TOKEN)) ?? '';
       const formData = new FormData();
-      data.forEach((item, index) => {
+      data2.forEach((item, index) => {
         formData.append(`rollCheckArray[${index}][partyid]`, item.partyid);
         formData.append(`rollCheckArray[${index}][qualityid]`, item.qualityid);
         formData.append(`rollCheckArray[${index}][designid]`, item.DESIGNid);
@@ -125,6 +136,7 @@ const Punchorder = ({route}) => {
         formData.append(`rollCheckArray[${index}][entry_date]`, item.ENTDT);
         formData.append(`rollCheckArray[${index}][salesmanid]`, salesman);
       });
+      console.log('sffsgsgfss', formData);
       const res = await Api.postRequest('roll-check-barcode', formData, token);
       if (res.status) {
         dispatch({
@@ -143,7 +155,7 @@ const Punchorder = ({route}) => {
   };
   return (
     <View style={styles.container}>
-      <EditRoll
+      {/* <EditRoll
         dataList={data}
         addRole={addRole}
         onComplete={value => {
@@ -182,7 +194,7 @@ const Punchorder = ({route}) => {
         }}
         data={scanneddata}
         visible={editable}
-      />
+      /> */}
       {loading && <Loader />}
       <Header
         title={'Roll Check'}
@@ -431,10 +443,12 @@ const Punchorder = ({route}) => {
               </View>
             )}
           /> */}
-          <TableComponent />
+
+          {console.log('itemsddssmd', scanneddata)}
+          {data2?.length > 0 && <TableComponent data1={data2} />}
         </View>
 
-        {data?.length > 0 && (
+        {data2?.length > 0 && (
           <TouchableOpacity
             onPress={() => onSubmit()}
             style={{

@@ -67,6 +67,7 @@ function* getBag(action) {
 function* fetchCompanies(action) {
   try {
     const res = yield call(Api.getRequest, action.endpoint, action.token);
+    console.log('virendra ,mishra .......', res);
     if (res.status) {
       const newdata = yield res.data.map(item => {
         return {

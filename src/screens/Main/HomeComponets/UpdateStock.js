@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useDeferredValue} from 'react';
 import {
   View,
-  Text,
   FlatList,
   TextInput,
   StyleSheet,
@@ -16,7 +15,8 @@ import {useNavigation} from '@react-navigation/native';
 import storage from '../../../utils/storageService';
 import Loader from '../../../components/Loader';
 import Api from '../../../Redux/Api';
-
+import {DataTable, Text} from 'react-native-paper';
+import colors from '../../../assets/colors';
 const Punchorder = () => {
   const navigation = useNavigation();
   const [totalPages, setTotalPages] = useState(60);
@@ -98,8 +98,33 @@ const Punchorder = () => {
     }
   };
 
+  const renderRow = ({item}) => {
+    return (
+      <View style={styles.rowContainer}>
+        <View style={[styles.cell, styles.itemNameCell]}>
+          <Text style={styles.cellText}>{item.itemName}</Text>
+        </View>
+        <View style={styles.itemRowsContainer}>
+          {item?.items?.map((subItem, index) => (
+            <View key={index} style={styles.subRow}>
+              <View style={styles.cell}>
+                <Text style={styles.cellText}>{subItem.colNo}</Text>
+              </View>
+              <View style={styles.cell}>
+                <Text style={styles.cellText}>{subItem.colName}</Text>
+              </View>
+              <View style={styles.cell}>
+                <Text style={styles.cellText}>{subItem.status}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container1}>
       <Header title={'Update Stock'} onPress={() => navigation.openDrawer()} />
       <View style={{height: hp(10), justifyContent: 'center'}}>
         <TextInput
@@ -130,9 +155,43 @@ const Punchorder = () => {
           }}
         />
       </View>
-      {loading && <Loader />}
-      <View style={{marginTop: -18}}>
-        <FlatList
+      {/* {loading && <Loader />} */}
+      {/* <View style={{marginTop: -18}}> */}
+      <View style={styles.container}>
+        <DataTable>
+          <DataTable.Header style={styles.tableHeader}>
+            <DataTable.Title
+              textStyle={[styles.headerText, {marginLeft: '2%'}]}>
+              Item Name
+            </DataTable.Title>
+            <View style={{borderWidth: 1, backgroundColor: '#d3d3d3'}} />
+            <DataTable.Title
+              textStyle={[styles.headerText, {marginLeft: '15%'}]}>
+              Col No
+            </DataTable.Title>
+            <View style={{borderWidth: 1, backgroundColor: '#d3d3d3'}} />
+
+            <DataTable.Title
+              textStyle={[styles.headerText, {marginLeft: '6%'}]}>
+              Col Name
+            </DataTable.Title>
+            <View style={{borderWidth: 1, backgroundColor: '#d3d3d3'}} />
+
+            <DataTable.Title
+              textStyle={[styles.headerText, {marginLeft: '4%'}]}>
+              Upd. Status
+            </DataTable.Title>
+          </DataTable.Header>
+
+          <FlatList
+            data={data1}
+            renderItem={renderRow}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </DataTable>
+      </View>
+
+      {/* <FlatList
           onScroll={onScroll}
           contentContainerStyle={{paddingBottom: hp(25)}}
           data={filteredData}
@@ -147,24 +206,6 @@ const Punchorder = () => {
                 borderRadius: 10,
                 marginHorizontal: 15,
               }}>
-              {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-SemiBold',
-              }}>
-              {'Name : '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-Medium',
-              }}>
-              {'Lorem Ipsum'}
-            </Text>
-          </View> */}
 
               <View style={{flexDirection: 'row', marginTop: 5, width: '100%'}}>
                 <View style={{width: '35%'}}>
@@ -278,52 +319,7 @@ const Punchorder = () => {
                   {'  ' + 'NA'}
                 </Text>
               </View>
-              {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-SemiBold',
-              }}>
-              {'Cut : '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-Medium',
-              }}>
-              {'Lorem Ipsum'}
-            </Text>
-          </View> */}
-              {/* <View style={{flexDirection: 'row', marginTop: 5}}>
-                <View style={{width: '35%'}}>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: '#000',
-                      fontFamily: 'Montserrat-SemiBold',
-                    }}>
-                    {'Price'}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: '#000',
-                    fontFamily: 'Montserrat-SemiBold',
-                  }}>
-                  {':'}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: '#000',
-                    fontFamily: 'Montserrat-Medium',
-                  }}>
-                  {'  ' + data?.rate}
-                </Text>
-              </View> */}
+
               <View style={{flexDirection: 'row', marginTop: 5}}>
                 <View style={{width: '35%'}}>
                   <Text
@@ -352,76 +348,84 @@ const Punchorder = () => {
                   {'  ' + parseFloat(item?.qty ?? '0.000').toFixed(2)}
                 </Text>
               </View>
-              {/* <View style={{marginTop: 5}}>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-SemiBold',
-              }}>
-              {'Description : '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#000',
-                fontFamily: 'Montserrat-Regular',
-              }}>
-              {
-                'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
-              }
-            </Text>
-          </View> */}
+
             </View>
           )}
-        />
-      </View>
-      {/* <View style={{ position: 'absolute', bottom: 20, left: 20 }}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 40,
-            backgroundColor: colors.color1,
-            borderTopLeftRadius: 80,
-            borderTopRightRadius: 40,
-            borderBottomLeftRadius: 80,
-            borderBottomRightRadius: 40
-          }}>
-          <BackArrow />
-        </TouchableOpacity> 
-      </View>*/}
+        /> */}
+      {/* </View> */}
     </View>
   );
 };
 
 export default Punchorder;
 
+const data1 = [
+  {
+    itemName: 'Diatrend',
+    items: [{colNo: '2', colName: '2-Cream', status: 'Add'}],
+  },
+  {
+    itemName: 'Double Maska',
+    items: [
+      {colNo: '3E', colName: '3E-D.Wine', status: 'Add'},
+      {colNo: '6J', colName: '6J-Black', status: 'Add'},
+      {colNo: '6K', colName: '6K-Black', status: 'Add'},
+    ],
+  },
+  // Add more items as needed
+];
+
 const styles = StyleSheet.create({
-  container: {
+  container1: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#f4f4f4',
+  },
+  tableHeader: {
+    backgroundColor: colors.color1,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+  },
+  headerText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+    backgroundColor: '#fff',
+  },
+  itemNameCell: {
+    flex: 2 / 3,
+    // borderRightWidth: 1,
+    borderRightColor: '#d3d3d3',
+  },
+  itemRowsContainer: {
+    flex: 3,
+  },
+  subRow: {
+    flexDirection: 'row',
+    // borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#d3d3d3',
+  },
+  cellText: {
+    color: '#333333',
+    fontSize: 13,
+  },
 });
-const data = [
-  {
-    label: 'Shirt',
-    availble: '1',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  },
-  {
-    label: 'Shirt',
-    availble: '124',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  },
-  {
-    label: 'Shirt',
-    availble: '20',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  },
-];

@@ -59,6 +59,8 @@ const PunchorderList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const getCarts = async () => {
     const carts = await storage.getItem(storage.CART);
+    console.log('card ,,,,,,,,>>>>>', carts);
+
     if (carts) {
       setCarts(carts);
     }
@@ -133,6 +135,7 @@ const PunchorderList = () => {
                   borderRadius: 6,
                   padding: 10,
                 }}>
+                {console.log('gfgdgdgdfgdfg', item)}
                 <TouchableOpacity
                   onPress={async () => {
                     handleDelete(item);
@@ -232,7 +235,7 @@ const PunchorderList = () => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.design?.Design}
+                    {item?.design}
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>

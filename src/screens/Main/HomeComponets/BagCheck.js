@@ -37,7 +37,7 @@ const Punchorder = ({route}) => {
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [dob, setDob] = useState('');
+  const [dob, setDob] = useState();
   const dispatch = useDispatch();
   const [visible, setVisibles] = useState(false);
   const [manuvisble, setMenuVisible] = useState(false);
@@ -217,7 +217,7 @@ const Punchorder = ({route}) => {
         <View style={styles.Main}>
           <Text style={styles.inputText}>Date</Text>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setOpen(true)}
             style={{
               marginTop: wp(2),
@@ -242,7 +242,31 @@ const Punchorder = ({route}) => {
             }}>
             <Text>{dob}</Text>
             <Calendar />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View
+            style={{
+              marginTop: wp(2),
+              borderWidth: 1,
+              borderColor: '#979998',
+              height: hp(5.5),
+              backgroundColor: 'white',
+              borderRadius: wp(2),
+              paddingHorizontal: 12,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 1.41,
+
+              elevation: 3,
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text>{dob}</Text>
+          </View>
         </View>
         <TouchableOpacity
           onPress={() => setVisibles(true)}
@@ -520,7 +544,7 @@ const Punchorder = ({route}) => {
                   padding: 10,
                   borderColor: item.qty < 10 ? 'red' : null,
                 }}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     const newdata = bagdata.filter(
                       items => items.barcode != item.barcode,
@@ -559,8 +583,8 @@ const Punchorder = ({route}) => {
                       source={require('../../../assets/Icon/close.png')}
                     />
                   )}
-                </TouchableOpacity>
-                {/* <View
+                </TouchableOpacity> */}
+                <View
                   style={{
                     flexDirection: 'row',
                     width: '100%',
@@ -573,7 +597,7 @@ const Punchorder = ({route}) => {
                         fontFamily: 'Montserrat-SemiBold',
                         width: '100%',
                       }}>
-                      {'Customer Name  '}
+                      {'Design Name'}
                     </Text>
                     <Text
                       style={{
@@ -584,6 +608,7 @@ const Punchorder = ({route}) => {
                       {':'}
                     </Text>
                   </View>
+                  {console.log('hghfghghgf', item)}
                   <Text
                     style={{
                       marginLeft: 10,
@@ -591,11 +616,12 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.Party.length > 12
-                      ? item?.Party.substring(0, 12) + '...'
-                      : item?.Party}
+                    {item?.DESIGN}
+                    {/* {item?.DESIGN.length > 18
+                      ? item?.DESIGN.substring(0, 10) + '...'
+                      : item?.DESIGN} */}
                   </Text>
-                </View> */}
+                </View>
                 <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
@@ -605,7 +631,7 @@ const Punchorder = ({route}) => {
                         fontFamily: 'Montserrat-SemiBold',
                         width: '100%',
                       }}>
-                      {'Barcode'}
+                      {'Color Number'}
                     </Text>
                     <Text
                       style={{
@@ -623,11 +649,11 @@ const Punchorder = ({route}) => {
                       fontFamily: 'Montserrat-Regular',
                       fontSize: 13,
                     }}>
-                    {item?.barcode}
+                    {item?.color}
                   </Text>
                 </View>
 
-                <View style={{flexDirection: 'row', width: '100%'}}>
+                {/* <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '40%', flexDirection: 'row'}}>
                     <Text
                       style={{
@@ -806,7 +832,7 @@ const Punchorder = ({route}) => {
                     }}>
                     {dob}
                   </Text>
-                </View>
+                </View> */}
               </View>
             </View>
           )}
